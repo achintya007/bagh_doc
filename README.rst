@@ -1,4 +1,9 @@
-Bagh documentation
+Template for the Read the Docs tutorial
 =======================================
 
-BAGH is a quantum chemistry software package, developed by ESTG in IIT Bombay. The lead developer of this software is Prof. Achintya Kumar Dutta.
+This GitHub template includes fictional Python library
+with some basic Sphinx docs.
+
+Read the tutorial here:
+
+https://docs.readthedocs.io/en/stable/tutorial/
