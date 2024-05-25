@@ -1,4 +1,4 @@
-Feactures
+Features
 #########
 
 - RHF MP2
