@@ -20,6 +20,9 @@ Contents
 
    usage
    getting_started 
+   basis
    computational_options
    contact_information
    team
+   
+
