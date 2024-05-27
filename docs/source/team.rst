@@ -5,6 +5,7 @@ Bagh development team
 - Amrita Manna (e-mail: 204033029@iitb.ac.in)
 - Bhavnesh Jangid 
 - Kamal Majee (e-mail: 204033037@iitb.ac.in)
+- Kshitij Surjuse
 - Madhubani Mukherjee
 - Mrinal Thapa (e-mail: 214038002@iitb.ac.in)
 - Sneha (e-mail: sneha_59@iitb.ac.in)
