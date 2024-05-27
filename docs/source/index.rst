@@ -21,6 +21,7 @@ Contents
    usage
    getting_started 
    basis
+   methods_relativistic
    methods_non-Relativistic
    computational_options
    contact_information
