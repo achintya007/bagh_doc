@@ -1,5 +1,5 @@
 Available Methods in Non-Relativistic Framework
-###########################################
+###############################################
 
 Ground State Energy
 ===================
