@@ -5,8 +5,7 @@
 Installation
 ============
 
-Prerequisites:
-###############
+**Prerequisites:**
 
 - python3 (an easy installation guide can be found at https://software.intel.com/content/www/us/en/develop/articles/how-to-install-the-python-version-of-intel-daal-in-linux.html)
 - numpy
@@ -22,8 +21,8 @@ Prerequisites:
 
 
 
-Installation steps
-------------------
+**Installation steps**
+
 
 .. code-block:: shell 
 
