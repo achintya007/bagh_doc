@@ -24,6 +24,7 @@ Contents
    methods_relativistic
    methods_non-Relativistic
    computational_options
+   keyword
    contact_information
    team
    
