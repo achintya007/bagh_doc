@@ -10,7 +10,7 @@ Bagh development team
 - Sneha (e-mail: sneha_59@iitb.ac.in)
 - Somesh Chamoli (e-mail: 204030006@iitb.ac.in)
 - Soumi Haldar 
-- Sudipta Chakraborty (e-mail: sudiptachakraborty080@gmail.com)
+- Sudipta Chakraborty (e-mail: 22d0191@iitb.ac.in)
 - Tamoghna Mukhopadhyay (e-mail: tamoghna@iitb.ac.in)
 
 
