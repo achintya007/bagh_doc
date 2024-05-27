@@ -1,6 +1,6 @@
 Welcome to Bagh's documentation!
 ===================================
-.. image:: logo/bagh_logo.png
+.. image:: logo/bagh_new_logo.jpeg
    :width: 200px
    :align: left
    :alt: bagh logo
