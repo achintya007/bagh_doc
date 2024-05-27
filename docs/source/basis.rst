@@ -5,19 +5,33 @@ The following basis sets are currently available  for the default pyscf interfac
 
 **The following orbital basis sets are available with the keyword as follows :**
 
-- ano
-- anorcc
-- anoroosdz
-- anoroostz
-- roosdz
-- roostz
-- ccpvdz
-- ccpvtz
-- ccpvqz
-- ccpv5z
-- augccpvdz
-- augccpvtz
-- augccpvqz
-- augccpv5z
-- ccpvdzdk
-- 
+ano
+,anorcc
+,anoroosdz
+,anoroostz
+,roosdz
+,roostz
+,ccpvdz
+,ccpvtz
+,ccpvqz
+,ccpv5z
+,augccpvdz
+,augccpvtz
+,augccpvqz
+,augccpv5z
+,ccpvdzdk
+,ccpvtzdk
+,ccpvqzdk
+,ccpv5zdk
+,ccpvdzdkh
+,ccpvtzdkh
+,ccpvqzdkh
+,ccpv5zdkh
+,augccpvdzdk
+,augccpvtzdk
+,augccpvqzdk
+,augccpv5zdk
+,augccpvdzdkh
+,augccpvtzdkh
+,augccpvqzdkh                                                                                       
+,augccpv5zdkh 
