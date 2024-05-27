@@ -1,24 +1,20 @@
-Available Methods in Non-Relativistic framework
------------------------------------------------
+Available Methods in Non-Relativistic Framework
+###########################################
 
-	Ground State Energy
-  ===================
+Ground State Energy
+===================
+		| Coupled Cluster
+		| Unitary Coupled Cluster(UCC)
+		| MBPT
 
-	|	Coupled Cluster
-	|	Unitary Coupled Cluster(UCC)
-	|	MBPT
-
-
-	 Excited State Energy
-   ====================
-
+Excited State Energy
+====================
 		| Coupled Cluster
 		| ADC
 		| UCC
 
-
-	Properties
-  ===========
+Properties
+==========
 
 	|	First order proprty
 	|	Second order property
