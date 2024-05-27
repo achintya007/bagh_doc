@@ -25,6 +25,7 @@ Contents
    methods_non-Relativistic
    computational_options
    keyword
+   bibliography
    contact_information
    team
    
