@@ -1,10 +1,22 @@
 Available Methods in Non-Relativistic Framework
-###############################################
+###########################################
 
-.. toctree:: 
-   :maxdepth: 1
+Ground State Energy
+===================
+		| Coupled Cluster
+		| Unitary Coupled Cluster(UCC)
+		| MBPT
 
-   grounds_tate-nr 
-   excited_state-nr
-   property-nr
+Excited State Energy
+====================
+		| Coupled Cluster
+		| ADC
+		| UCC
+
+Properties
+==========
+
+	|	First order property
+	|	Second order property
+
   
