@@ -16,5 +16,5 @@ Excited State Energy
 Properties
 ==========
 
-	|	First order proprty
+	|	First order property
 	|	Second order property
