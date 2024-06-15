@@ -4,21 +4,22 @@ Available Methods in Relativistic framework
 *******************
 Ground State Energy
 *******************
-===============
-Coupled Cluster
-===============
 CCSD
 ----
 CCSD(T)
 ------
+CCSDT
+-----
 Unitary Coupled Cluster(UCC)
 ----------------------------
+CC2
+---
+CC3
+---
 ********************
 Excited State Energy
 ********************
-===============
-Coupled Cluster
-===============
+
 EOM-CCSD
 --------
 EOM-CC3
