@@ -10,6 +10,7 @@ Coupled Cluster (CC)
 .. math::
 
    |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
+   i \frac{\partial}{\partial t}|\Psi(t)\rangle=H|\Psi(t)\rangle
 
 Coupled Cluster Singles Doubles (CCSD)
 --------------------------------------
