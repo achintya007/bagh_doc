@@ -1,11 +1,18 @@
 Available Methods in Relativistic framework
 ###########################################
 
+*******************
 Ground State Energy
-===================
-		| Coupled Cluster
-		| Unitary Coupled Cluster(UCC)
-		| MBPT
+*******************
+===============
+Coupled Cluster
+===============
+CCSD
+----
+CCSD(T)
+------
+Unitary Coupled Cluster(UCC)
+----------------------------
 
 Excited State Energy
 ====================
