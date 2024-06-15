@@ -1,5 +1,3 @@
-:github_url: https://rupaliprusty-rtd-tutorial.readthedocs-hosted.com/en/latest/
-
 .. _installation:
 
 Installation
