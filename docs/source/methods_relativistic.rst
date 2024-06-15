@@ -13,15 +13,24 @@ CCSD(T)
 ------
 Unitary Coupled Cluster(UCC)
 ----------------------------
-
+********************
 Excited State Energy
-====================
-		| Coupled Cluster
-		| ADC
-		| UCC
-
+********************
+===============
+Coupled Cluster
+===============
+EOM-CCSD
+--------
+EOM-CC3
+-------
+EE-UCC3
+-------
+**********
 Properties
-==========
-
-	|	First order property
-	|	Second order property
+**********
+=====================
+First order property
+=====================
+=====================
+Second order property
+=====================
