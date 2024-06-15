@@ -7,6 +7,10 @@ Ground State Energy
 ================================
 Coupled Cluster (CC)
 ================================
+.. math::
+
+   G^{\alpha}(x)=\left(\frac{2\alpha}{\pi}\right)^{1/4}\sqrt{\frac{\left(4\alpha\right)^i}{\left(2i-1\right)!!}}
+                  x^i\exp\left[-\alpha x^2\right]
 Coupled Cluster Singles Doubles (CCSD)
 --------------------------------------
 
