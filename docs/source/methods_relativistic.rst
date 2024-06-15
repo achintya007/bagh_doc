@@ -9,6 +9,21 @@ Coupled Cluster (CC)
 ================================
 Coupled Cluster Singles Doubles (CCSD)
 --------------------------------------
+
+.. code-block:: shell 
+
+   ! CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 -------------------------------------------------------------------
 Coupled Cluster Singles Doubles Triples (CCSDT)
