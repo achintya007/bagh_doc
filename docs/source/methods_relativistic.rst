@@ -54,7 +54,7 @@ Second order ADC (ADC(2))
 -------------------------
 extended-Second order ADC (ADC(2)-X)
 ------------------------------------
-Third order ADC (ADC(3)
+Third order ADC (ADC(3))
 ----------------------
 **********
 Properties
