@@ -22,7 +22,7 @@ Ground State Energy
 Coupled Cluster (CC)
 ================================
 .. math::
-   |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
+   \[{E_{corr}} = 2\sum\limits_{ia} {f_i^at_i^a}  + 2\sum\limits_{ijab} {\tau _{ij}^{ab}\left\langle {ia\left\| {\left. {jb} \right\rangle } \right.} \right.}  - \sum\limits_{ijab} {\tau _{ij}^{ab}\left\langle {ib\left\| {\left. {ja} \right\rangle } \right.} \right.} \]
 
 Coupled Cluster Singles Doubles (CCSD)
 --------------------------------------
