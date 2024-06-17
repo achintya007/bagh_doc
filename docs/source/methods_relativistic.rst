@@ -150,7 +150,7 @@ Similarly for ionization potential (IP), one needs to change the name of the met
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-For electron affinity, the name of of the should be replaced with ``EA-EOM-CCSD``
+For electron affinity (EA), the name of the method should be replaced with ``EA-EOM-CCSD``
 
 .. code-block:: shell 
 
