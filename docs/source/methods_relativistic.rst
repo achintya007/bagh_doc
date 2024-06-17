@@ -114,6 +114,7 @@ Equation of Motion Coupled Cluster (EOM-CC)
 ==================================================
 EOM-Coupled Cluster Singles Doubles (EOM-CCSD)
 ---------------------------------------------
+To calculate excitation energy in EOM-CCSD framework, the following input format can be used
 
 .. code-block:: shell 
 
@@ -131,10 +132,47 @@ EOM-Coupled Cluster Singles Doubles (EOM-CCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+Similarly for ionization potential (IP), one needs to change the name of the method to ``IP-EOM-CCSD``, for example
+
+.. code-block:: shell 
+
+   ! IP-EOM-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   eom_convergence 1e-6
+   nroots 10
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+For electron affinity, the name of of the should be replaced with ``EA-EOM-CCSD``
+
+.. code-block:: shell 
+
+   ! EA-EOM-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   eom_convergence 1e-6
+   nroots 10
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 .. only:: comment
 
    EOM-Coupled Cluster approximate Doubles (EOM-CC2)
    ------------------------------------------------
+
 EOM-Coupled Cluster approximate Triples (EOM-CC3)
 ------------------------------------------------
 
