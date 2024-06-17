@@ -49,9 +49,9 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
     -----------------------------------------------
     Not Implemented
 
-
-Coupled Cluster approximate Doubles (CC2)
------------------------------------------
+.. only:: comment
+   Coupled Cluster approximate Doubles (CC2)
+   -----------------------------------------
 Coupled Cluster approximate Triples (CC3)
 ----------------------------------------
 
