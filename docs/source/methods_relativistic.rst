@@ -74,8 +74,37 @@ Unitary Coupled Cluster (UCC)
 ===================================
 Third order unitary Coupled Cluster (UCC3)
 ------------------------------------------
+
+.. code-block:: shell 
+
+   ! UCC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 Quadratic unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
+
+.. code-block:: shell 
+
+   ! qUCCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 
 ********************
 Excited State Energy
