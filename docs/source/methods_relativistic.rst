@@ -44,9 +44,11 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-#Coupled Cluster Singles Doubles Triples (CCSDT)
-#-----------------------------------------------
-#Not Implemented
+.. only:: comment
+    Coupled Cluster Singles Doubles Triples (CCSDT)
+    -----------------------------------------------
+    Not Implemented
+
 
 Coupled Cluster approximate Doubles (CC2)
 -----------------------------------------
