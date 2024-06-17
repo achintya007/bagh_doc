@@ -55,6 +55,20 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 Coupled Cluster approximate Triples (CC3)
 ----------------------------------------
 
+.. code-block:: shell 
+
+   ! CC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 ===================================
 Unitary Coupled Cluster (UCC)
 ===================================
