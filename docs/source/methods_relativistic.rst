@@ -243,7 +243,7 @@ Second order ADC (ADC(2))
 
 .. code-block:: shell 
 
-   ! ADC(2) spinor unc-ccpvdz
+   ! EE-ADC(2) spinor unc-ccpvdz
 
    %cc
    incore 5
@@ -260,7 +260,7 @@ Second order-extended ADC (ADC(2)-X)
 
 .. code-block:: shell 
 
-   ! ADC(2)-X spinor unc-ccpvdz
+   ! EE-ADC(2)-X spinor unc-ccpvdz
 
    %cc
    incore 5
@@ -277,7 +277,7 @@ Third order ADC (ADC(3))
 
 .. code-block:: shell 
 
-   ! ADC(3) spinor unc-ccpvdz
+   ! EE-ADC(3) spinor unc-ccpvdz
 
    %cc
    incore 5
