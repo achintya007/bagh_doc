@@ -131,10 +131,28 @@ EOM-Coupled Cluster Singles Doubles (EOM-CCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-EOM-Coupled Cluster approximate Doubles (EOM-CC2)
-------------------------------------------------
+.. only:: comment
+
+   EOM-Coupled Cluster approximate Doubles (EOM-CC2)
+   ------------------------------------------------
 EOM-Coupled Cluster approximate Triples (EOM-CC3)
 ------------------------------------------------
+
+.. code-block:: shell 
+
+   ! EE-EOM-CC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   eom_convergence 1e-6
+   nroots 10
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 
 ===========================================
 Excited state using Unitary Coupled Cluster
