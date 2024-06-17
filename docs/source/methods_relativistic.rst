@@ -197,18 +197,83 @@ Excited state using Unitary Coupled Cluster
 ===========================================
 Third order unitary Coupled Cluster (UCC3)
 ------------------------------------------
+
+.. code-block:: shell 
+
+   ! EE-UCC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   ucc_convergence 1e-6
+   nroots 10
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 Quadratic unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
+
+.. code-block:: shell 
+
+   ! EE-QUCCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   cc_convergence 1e-7
+   ucc_convergence 1e-6
+   nroots 10
+   end
+
+ 
+
+  *xyz 0 1
+  H 0.0 0.0 0.0
+  F 0.0 0.0 0.9168
 
 ================================================
 Algebraic Diagrammatic Construction Theory (ADC)
 ================================================
 Second order ADC (ADC(2))
 -------------------------
+
+.. code-block:: shell 
+
+   ! ADC(3) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   nroots 10
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 extended-Second order ADC (ADC(2)-X)
 ------------------------------------
 Third order ADC (ADC(3))
 ----------------------
+
+.. code-block:: shell 
+
+   ! ADC(3) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   nroots 10
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 **********
 Properties
 **********
