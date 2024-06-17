@@ -1,6 +1,20 @@
 Available Methods in Non-Relativistic Framework
 ###############################################
 
+For non-relativistic ground state correlation energy calculation one can use the spin-adapted formulation for closed shell systems. Available ground state methods in spin-adapted and spin-orbital implementations are summerized below,
+
++---------------------+---------------------+---------------------+
+|      Method         | Spin-orbital        | Spin-adapted        |
++=====================+=====================+=====================+
+|    CCSD             | YES                 |      YES            |
++---------------------+---------------------+---------------------+
+|    CCSD(T)          | YES                 |      YES            |
++---------------------+---------------------+---------------------+
+|    CC3              | YES                 |      NO             |
++---------------------+---------------------+---------------------+
+
+
+
 *******************
 Ground State Energy
 *******************
@@ -15,7 +29,7 @@ Coupled Cluster Singles Doubles (CCSD)
 
 .. code-block:: shell 
 
-   ! CCSD spinorbital unc-ccpvdz
+   ! CCSD unc-ccpvdz
 
    %cc
    incore 5
@@ -32,7 +46,7 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 
 .. code-block:: shell 
 
-   ! CCSD(T) spinorbital unc-ccpvdz
+   ! CCSD(T)  unc-ccpvdz
 
    %cc
    incore 5
