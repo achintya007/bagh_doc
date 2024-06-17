@@ -24,6 +24,11 @@ Coupled Cluster (CC)
 .. math::
    {E_{corr}} = 2\sum\limits_{ia} {f_i^at_i^a}  + 2\sum\limits_{ijab} {\tau _{ij}^{ab}\left\langle {ia\left\| {\left. {jb} \right\rangle } \right.} \right.}  - \sum\limits_{ijab} {\tau _{ij}^{ab}\left\langle {ib\left\| {\left. {ja} \right\rangle } \right.} \right.}
 
+where
+
+.. math::
+   \tau _{ij}^{ab} = \sum {(t_i^at_j^b}  + t_{ij}^{ab})
+
 Coupled Cluster Singles Doubles (CCSD)
 --------------------------------------
 
