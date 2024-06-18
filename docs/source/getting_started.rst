@@ -30,7 +30,7 @@ Example:
    B x2 y2 z2
 
 In %cc block, which desired incore should mentioned for integrals,; if the molecule is linear, then the ``real_ints True``  sentence should written. The ``coupled cluster convergence`` should be mentioned for accuracy, and the ``end``  command should be given.
-The coordinates you are working with should mentioned in the next line, along with the charge and multiplicity. After that, an atomic symbol``(A,B)`` with coordinates (x1,y1,z1) should mentioned.
+The coordinates you are working with should mentioned in the next line, along with the ``charge`` and ``multiplicity``. After that, an atomic symbol``(A,B)`` with coordinates (x1,y1,z1) should mentioned.
 
 For the reference, one input file is given below:
 
