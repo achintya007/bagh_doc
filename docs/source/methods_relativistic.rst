@@ -7,8 +7,6 @@ Ground State Energy
 ================================
 Coupled Cluster (CC)
 ================================
-.. math::
-   |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
 
 Coupled Cluster Singles Doubles (CCSD)
 --------------------------------------
