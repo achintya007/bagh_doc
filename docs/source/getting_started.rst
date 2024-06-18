@@ -11,7 +11,7 @@ Using the PySCF Interface
 
 **Guidelines to write input file of Ground State Energy in relativistic framework :**
 
-While writing the input file, one should write which method is following; it doesn’t matter whether it is lower case or upper case. For a relativistic framework, if the interface is pyscf , one should write ``spinor``. After that, you should write the ``desirable basis set``; if the bond lengths are in Armstrong, there is no need to write anything else you have to write ``Bohr`` at the end   if it is not in the Armstrong unit.
+While writing the input file, one should write which method is following; it doesn’t matter whether it is lower case or upper case. For a relativistic framework, if the interface is pyscf , one should write ``spinor``. After that, you should write the desirable `` basis set``; if the bond lengths are in Armstrong, there is no need to write anything else you have to write ``Bohr`` at the end   if it is not in the Armstrong unit.
 
 Example:
 
