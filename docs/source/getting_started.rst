@@ -17,12 +17,12 @@ Example:
 
 .. code-block:: shell 
 
-   ! method interference basis
+   ! method interface basis-set
 
    %cc
-   -
-   -
-   -
+   ------
+   ------
+   ------
    end
 
    *xyz 0 1
