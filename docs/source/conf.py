@@ -3,7 +3,7 @@
 # -- Project information
 
 project = 'Bagh'
-copyright = '2021,Achintya Kumar Dutta'
+copyright = 'Achintya Kumar Dutta'
 author = 'Achintya Kumar Dutta'
 
 release = '0.1'
