@@ -13,6 +13,7 @@ Using the PySCF Interface
 
 While writing the input file, one should write which method is following; it doesn’t matter whether it is lower case or upper case. For a relativistic framework, if the interference is pyscf , one should write spinor; if the interference is Dirac, then one should write dirac. After that, you should write the desirable basis set; if the bond lengths are in Armstrong, there is no need to write anything else you have to write “borh” at the end   if it is not in the Armstrong unit.
 
+Example:
 .. code-block:: shell 
 
    ! method inference basis 
@@ -46,6 +47,7 @@ For the reference, one input file is given below:
    F 0.0 0.0 0.9168
 
 Here,
+
 | CCSD : method
 | spinor : pyscf inference in relativistic framework 
 | unc-ccpvdz : basis
