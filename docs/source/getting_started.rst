@@ -17,17 +17,17 @@ Example:
 
 .. code-block:: shell 
 
-   ! method inference basis 
+   ! method interference basis
 
    %cc
-   "----"
-   "----"
-   "----"
+   -
+   -
+   -
    end
 
    *xyz 0 1
-   A X1 Y1 Z1
-   B X2 Y2 Z2
+   A x1 y1 z1
+   B x2 y2 z2
 
 In %cc block, which desired incore should mentioned for integrals,; if the molecule is linear, then the “real_ints True ”  sentence should written. The tolerance rate should be mentioned for accuracy, and the “end”  command should be given.
 The coordinates you are working with should mentioned in the next line, along with the charge and multiplicity. After that, an atomic symbol(A,B) with coordinates (X1,Y1,Z1) should mentioned.
