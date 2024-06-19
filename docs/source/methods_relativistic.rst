@@ -14,7 +14,7 @@ Coupled Cluster (CC)
 
 .. math::
 
-   \[T^{i_1 i_2 \dots i_p}_{j_1 j_2} = T(x^{i_1},\dots,x^{i_p},e_{j_1},\dots,e_{j_q}) \]
+   T^{i_1 i_2 \dots i_p}_{j_1 j_2} = T(x^{i_1},\dots,x^{i_p},e_{j_1},\dots,e_{j_q}) \]
    
 
 Coupled Cluster Singles Doubles (CCSD)
