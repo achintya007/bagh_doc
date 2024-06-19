@@ -7,11 +7,10 @@ Ground State Energy
 ================================
 Coupled Cluster (CC)
 ================================
- ..math::
-   |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
+ :math: |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
+  
 
- ..math::
-   \[T^{i_1 i_2 \dots i_p}_{j_1 j_2} =
+ :math:\[T^{i_1 i_2 \dots i_p}_{j_1 j_2} =
    T(x^{i_1},\dots,x^{i_p},e_{j_1},\dots,e_{j_q}) \]
 
 
