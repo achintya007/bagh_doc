@@ -12,7 +12,8 @@ Coupled Cluster (CC)
     |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
 
 .. math::
-   \sum_{n=1}^N n^2
+   \sum_{n=1}^N n^2=
+    \sqrt{n(n+1)}
   
 
 Coupled Cluster Singles Doubles (CCSD)
