@@ -13,7 +13,7 @@ Coupled Cluster (CC)
 
 .. math::
    \sum_{n=1}^N n^2=
-    \[n(n+1)(2n+1)]/6
+    [n(n+1)(2n+1)]/6
   
 
 Coupled Cluster Singles Doubles (CCSD)
