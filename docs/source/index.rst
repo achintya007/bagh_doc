@@ -6,7 +6,7 @@ Welcome to Bagh's documentation!
    :alt: bagh logo
    :target: .
 
-**Bagh** is an electronic structure theory package developed in the Electronic Structure Theory Group, IIT Bombay. It mostly focuses on many body wave-functions based methods with special emphasis on relativistic effects.  Bagh is written primarily in python with bottleneck parts written in cython and fortran
+**Bagh** is an electronic structure theory package developed in the Electronic Structure Theory Group, IIT Bombay. It mostly focuses on many body wave-functions based methods with special emphasis on relativistic effects.  Bagh is written primarily in python with bottleneck parts written in cython and fortran.
 
 
 .. note::
