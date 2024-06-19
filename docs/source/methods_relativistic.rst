@@ -10,6 +10,9 @@ Coupled Cluster (CC)
  .. math::
 
     |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
+
+.. math::
+   \sum_{n=1}^N n^2
   
 
 Coupled Cluster Singles Doubles (CCSD)
