@@ -6,7 +6,7 @@
 Getting started
 ----------------
 
-**Using the PySCF Interface**
+**Relativistic calculation: Using the PySCF Interface**
 
 
 **Guidelines to write input file of Ground State Energy in the relativistic framework:**
