@@ -3,11 +3,11 @@
 
 .. _getting started:
 
-Getting startred
+Getting started
 ----------------
 
-Using the PySCF Interface
-#########################
+**Using the PySCF Interface**
+
 
 **Guidelines to write input file of Ground State Energy in relativistic framework :**
 
