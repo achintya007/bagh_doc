@@ -109,8 +109,7 @@ Here,
 | ``CCSD`` : name of the method
 | ``unc-ccpvdz`` : basis-set
 | ``Bohr`` : unit of bond lenght 
-| ``incore 5`` : desired incore for integrals 
-| ``real_ints`` : For linear molecules, it is preferable  to use ``True`` 
+| ``incore 5`` : desired incore for integrals  
 | ``cc_convergence 1e-7`` :tolerance of CCSD converegnce 
 | ``*xyz`` : Cartesian coordinate
 | ``0`` : charge of the molecule
