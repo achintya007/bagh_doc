@@ -61,5 +61,3 @@ Here,
 | ``1`` : multiplicity
 | ``H,F`` : Atomic symbols
 
-Using the DIRAC Interface
-#########################
