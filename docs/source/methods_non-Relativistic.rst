@@ -80,7 +80,6 @@ Coupled Cluster Singles Doubles (CCSD)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
@@ -97,7 +96,6 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
@@ -122,7 +120,6 @@ Coupled Cluster approximate Triples (CC3)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
@@ -142,7 +139,6 @@ Third order unitary Coupled Cluster (UCC3)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
@@ -159,7 +155,6 @@ Quadratic unitary Coupled Cluster (qUCCSD)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
@@ -184,7 +179,6 @@ To calculate excitation energy in EOM-CCSD framework, the following input format
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    eom_convergence 1e-6
    nroots 10
@@ -202,7 +196,6 @@ Similarly for ionization potential (IP), one needs to change the name of the met
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    eom_convergence 1e-6
    nroots 10
@@ -220,7 +213,6 @@ For electron affinity (EA), the name of the method should be replaced with ``EA-
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    eom_convergence 1e-6
    nroots 10
@@ -244,7 +236,6 @@ EOM-Coupled Cluster approximate Triples (EOM-CC3)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    eom_convergence 1e-6
    nroots 10
@@ -266,7 +257,6 @@ Third order unitary Coupled Cluster (UCC3)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    ucc_convergence 1e-6
    nroots 10
@@ -285,7 +275,6 @@ Quadratic unitary Coupled Cluster (qUCCSD)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    ucc_convergence 1e-6
    nroots 10
@@ -309,7 +298,6 @@ Second order ADC (ADC(2))
 
    %cc
    incore 5
-   real_ints True
    nroots 10
    End
 
@@ -326,7 +314,6 @@ Second order-extended ADC (ADC(2)-X)
 
    %cc
    incore 5
-   real_ints True
    nroots 10
    End
 
@@ -343,7 +330,6 @@ Third order ADC (ADC(3))
 
    %cc
    incore 5
-   real_ints True
    nroots 10
    End
 
