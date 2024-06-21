@@ -58,6 +58,6 @@ Here,
 | ``cc_convergence 1e-7`` :tolerance of CCSD converegnce 
 | ``*xyz`` : Cartesian coordinate
 | ``0`` : charge of the molecule
-| ``1`` : multiplicity
+| ``1`` : spin multiplicity (2S+1)
 | ``H,F`` : Atomic symbols
 
