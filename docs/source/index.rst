@@ -39,7 +39,7 @@ Contents
    bibliography
 
 .. toctree::
-   :caption:Available Methods 
+   :caption: Additional Information 
    :maxdepth: 1
 
    contact_information
