@@ -25,7 +25,7 @@ Contents
    
 .. toctree::
    :caption:Available Methods 
-   :maxdepth: 3
+   :maxdepth: 2
 
    basis
    methods_relativistic
@@ -33,7 +33,7 @@ Contents
 
 .. toctree::
    :caption: References 
-   :maxdepth:2
+   :maxdepth: 2
 
    keyword
    bibliography
@@ -45,4 +45,3 @@ Contents
    contact_information
    team
    
-
