@@ -68,7 +68,7 @@ Here,
 
 **Guidelines to write input file of Ground State Energy in the non-relativistic framework:**
 
-While writing the input file, one should write which method is following; it doesn’t matter whether it is lower case or upper case. For a non-relativistic framework, if the interface is pyscf spin adopted implementation, then there is no need to write anything. After that, you should write the desirable ``basis-set``; if the bond lengths are in Armstrong, there is no need to write anything else you have to write ``Bohr`` at the end if it is not in the Armstrong unit.
+The input file for a non-relativistic frame is nearly identical to that for a relativistic framework. For a non-relativistic framework, if the interface is a pyscf spin-adapted implementation, then there is no need to write anything regarding the interface in the input file.
 
 Example:
 
@@ -86,10 +86,8 @@ Example:
    A x1 y1 z1
    B x2 y2 z2
 
-In %cc block, which desired incore should mentioned for integrals. The coupled cluster convergence tolerance should be mentioned for the desired accuracy using ``cc_convergence`` keyword. 
-The coordinates you are working with should be mentioned in the next line (``*xyz``), along with the ``charge`` and ``multiplicity``. After that, the coordinates of the molecule need to be mentioned in the cartesian co-ordinates with proper atomic symbols ( ``A``, ``B`` ). 
-
-For example a four-component relativistic coupled cluster singles doubles (CCSD) calculation using pyscf interface can be performed using the following input file,
+The %cc block is also similar to the relativistic one, with the change that'real_ints ''true'should not be present. 
+For example a four-component non-relativistic coupled cluster singles doubles (CCSD) calculation using pyscf interface spin-adapted implementation can be performed using the following input file,
 
 .. code-block:: shell 
 
@@ -104,14 +102,4 @@ For example a four-component relativistic coupled cluster singles doubles (CCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 1.7325
 
-Here,
-
-| ``CCSD`` : name of the method
-| ``unc-ccpvdz`` : basis-set
-| ``Bohr`` : unit of bond lenght 
-| ``incore 5`` : desired incore for integrals  
-| ``cc_convergence 1e-7`` :tolerance of CCSD converegnce 
-| ``*xyz`` : Cartesian coordinate
-| ``0`` : charge of the molecule
-| ``1`` : spin multiplicity (2S+1)
-| ``H,F`` : Atomic symbols
+Keywords have been mentioned in the relativistic part.
