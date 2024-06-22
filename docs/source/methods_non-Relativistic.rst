@@ -1,5 +1,5 @@
-Available Methods in Non-Relativistic Framework
-###############################################
+Non-Relativistic Framework
+###########################
 
 For non-relativistic ground state correlation energy calculation one can use the spin-adapted formulation for closed shell systems. Available ground state methods in spin-adapted and spin-orbital implementations are summerized below,
 
