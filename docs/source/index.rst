@@ -15,18 +15,33 @@ Welcome to Bagh's documentation!
 
 Contents
 --------
-
 .. toctree::
-   :maxdepth: 3
+   :caption: Introduction
+   :maxdepth: 2
 
    usage
-   getting_started 
+   getting_started
+   computational_options
+   
+.. toctree::
+   :caption:Available Methods 
+   :maxdepth: 3
+
    basis
    methods_relativistic
    methods_non-Relativistic
-   computational_options
+
+.. toctree::
+   :caption: References 
+   :maxdepth:2
+
    keyword
    bibliography
+
+.. toctree::
+   :caption:Available Methods 
+   :maxdepth: 1
+
    contact_information
    team
    
