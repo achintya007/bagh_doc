@@ -24,7 +24,7 @@ Contents
    computational_options
    
 .. toctree::
-   :caption:Available Methods 
+   :caption: Available Methods 
    :maxdepth: 2
 
    basis
