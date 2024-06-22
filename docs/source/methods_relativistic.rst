@@ -11,9 +11,6 @@ Coupled Cluster (CC)
 
     |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
 
-.. math::
-   \sum_{n=1}^N n^2=
-    [n(n+1)(2n+1)]/6
   
 
 Coupled Cluster Singles Doubles (CCSD)
