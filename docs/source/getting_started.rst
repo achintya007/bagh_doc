@@ -68,7 +68,7 @@ Here,
 
 **Guidelines to write input file of Ground State Energy in the non-relativistic framework:**
 
-The input file for a non-relativistic frame is nearly identical to that for a relativistic framework. For a non-relativistic framework, if the interface is a pyscf spin-adapted implementation, then there is no need to write anything regarding the interface in the input file.
+The input file for a non-relativistic framework is nearly identical to that for a relativistic framework. For a non-relativistic framework, if the interface is a pyscf spin-adapted implementation, then there is no need to write anything regarding the interface in the input file.
 
 Example:
 
@@ -87,7 +87,7 @@ Example:
    B x2 y2 z2
 
 The %cc block is also similar to the relativistic one, with the change that'real_ints ''true'should not be present. 
-For example a four-component non-relativistic coupled cluster singles doubles (CCSD) calculation using pyscf interface spin-adapted implementation can be performed using the following input file,
+For example a four-component non-relativistic coupled cluster singles doubles (CCSD) calculation using within pyscf interface spin-adapted implementation can be performed using the following input file,
 
 .. code-block:: shell 
 
@@ -102,4 +102,4 @@ For example a four-component non-relativistic coupled cluster singles doubles (C
    H 0.0 0.0 0.0
    F 0.0 0.0 1.7325
 
-Keywords have been mentioned in the relativistic part.
+
