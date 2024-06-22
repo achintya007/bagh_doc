@@ -86,7 +86,7 @@ Example:
    A x1 y1 z1
    B x2 y2 z2
 
-The %cc block is also similar to the relativistic one, with the change that'real_ints ''true'should not be present. 
+The %cc block is also similar to the relativistic one, with the change that'real_ints ''true'' should not be present. 
 For example a non-relativistic coupled cluster singles doubles (CCSD) calculation using  pyscf interface within spin-adapted implementation can be performed using the following input file,
 
 .. code-block:: shell 
