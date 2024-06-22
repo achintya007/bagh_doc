@@ -27,7 +27,6 @@ Contents
    :caption: Available Methods 
    :maxdepth: 2
 
-   basis
    methods_relativistic
    methods_non-Relativistic
 
