@@ -1,5 +1,5 @@
-Available Methods in Relativistic Framework
-###########################################
+Relativistic Framework
+######################
 
 *******************
 Ground State Energy
