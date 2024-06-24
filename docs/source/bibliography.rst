@@ -13,7 +13,7 @@ Bibliography
        .. image:: https://img.shields.io/badge/DOI-10.1002/wcms.1464-yellow 
           :target: https://pubs.aip.org/aip/jcp/article/159/8/084113/2908276
 
-.. bibliography:: docs/source/pub.bib
+.. bibliography:: pub.bib
    :all:
    :style: unsrtalpha
 
