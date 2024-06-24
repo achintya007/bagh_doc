@@ -1,12 +1,17 @@
 Bibliography
 ============
 
+.. list-table::
+
+   * - **Paper:**
+     - .. image:: https://img.shields.io/badge/DOI-10.1002/wcms.1462-blue
+          :target: https://pubs.aip.org/aip/jcp/article/156/20/204120/2841325
+
+       .. image:: https://img.shields.io/badge/hal-preprint-red
+          :target: https://pubs.aip.org/aip/jcp/article/156/20/204120/2841325
+
 .. bibliography:: pub.bib
    :all:
    :style: unsrtalpha
 
-Other references
-----------------
 
-.. bibliography:: ref.bib
-   :style: alpha
