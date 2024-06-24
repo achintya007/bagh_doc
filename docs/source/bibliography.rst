@@ -1,6 +1,8 @@
 Bibliography
 ============
 
+.. _publications:
+
 .. list-table::
 
    * - **Paper:**
