@@ -5,7 +5,7 @@ Bibliography
 
    * - **Paper:**
      - .. image:: https://img.shields.io/badge/DOI-10.1002/wcms.1462-blue
-          :target: https://pubs.aip.org/aip/jcp/article/156/20/204120/2841325
+          :target: https://doi.org/10.1063/5.0085932
 
        .. image:: https://img.shields.io/badge/DOI-10.1002/wcms.1463-green
           :target: https://pubs.aip.org/aip/jcp/article/157/20/204106/2842109
