@@ -34,8 +34,7 @@ html_theme = 'sphinx_rtd_theme'
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
 
- + "/../build/libadcc_docs/xml"
-)
+
 breathe_projects = {"bagh"}
 breathe_default_project = "bagh"
 # Bibtex
