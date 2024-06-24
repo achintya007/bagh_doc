@@ -15,7 +15,7 @@ Bibliography
 
 .. bibliography:: pub.bib
    :all:
-   :style: unsrtalpha
+   :style: alpha
 
 
      
