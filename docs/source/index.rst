@@ -36,7 +36,6 @@ Contents
 
    keyword
    bibliography
-   pub
 
 .. toctree::
    :caption: Additional Information 
