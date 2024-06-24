@@ -4,7 +4,7 @@ Bibliography
 .. _publications:
 
 
-- Somesh Chamoli, Kshitijkumar Surjuse, Bhavnesh Jangid, Malaya K. Nayak, Achintya Kumar Dutta : A reduced cost four-component relativistic coupled cluster method based on natural spinors. The Journal of chemical physics, 2022.
+- Somesh Chamoli, Kshitijkumar Surjuse, Bhavnesh Jangid, Malaya K. Nayak, Achintya Kumar Dutta : A reduced cost four-component relativistic coupled cluster method based on natural spinors.  J. Chem. Phys., 156, 2022.
 
 .. list-table::
 
