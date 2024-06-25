@@ -1,17 +1,6 @@
 Relativistic Framework
 ######################
 
-*******************
-Ground State Energy
-*******************
-================================
-Coupled Cluster (CC)
-================================
- .. math::
-
-    |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
-
-  
 +---------------------+---------------------+---------------------+-----------------+
 |      Method         |        IP           |         EA          |     EE          |
 +=====================+=====================+=====================+=================+
@@ -30,6 +19,15 @@ Coupled Cluster (CC)
 |    qUCCSD           |       **---**       |     **---**         |      YES        |
 +---------------------+---------------------+---------------------+-----------------+
 
+*******************
+Ground State Energy
+*******************
+================================
+Coupled Cluster (CC)
+================================
+ .. math::
+
+    |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
 
 
 Coupled Cluster Singles Doubles (CCSD)
@@ -128,7 +126,7 @@ Quadratic unitary Coupled Cluster (qUCCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-For the UCC framework, the IP-UCC3 method is also available for IP accessibility.
+To calculate the ionisation potential in the UCC framework, one can write ``IP-UCC3`` in place of method in the input file.
 
 ********************
 Excited State Energy
@@ -314,7 +312,8 @@ Third order ADC (ADC(3))
    F 0.0 0.0 0.9168
 
 
-For the ADC framework, IP-ADC(2), IP-ADC(2)-X, IP-ADC(3), EA-ADC(2), EA-ADC(2)-X, and EA-ADC(3) methods are also available for EA and IP accessibility.
+To calculate the ionisation potential and electron affinity in the ADC framework, one can write ``IP-ADC(2)``, ``IP-ADC(2)-X``, ``IP-ADC(3)``, ``EA-ADC(2)``, ``EA-ADC(2)-X``, and ``EA-ADC(3)`` in place of method in the input file.
+ 
 
 **********
 Properties
