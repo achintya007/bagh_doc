@@ -128,6 +128,8 @@ Quadratic unitary Coupled Cluster (qUCCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+For the UCC framework, the IP-UCC3 method is also available for IP accessibility.
+
 ********************
 Excited State Energy
 ********************
