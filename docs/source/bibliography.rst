@@ -4,7 +4,7 @@ Bibliography
 .. _publications:
 
 
-- Somesh Chamoli, Kshitijkumar Surjuse, Bhavnesh Jangid, Malaya K. Nayak, Achintya Kumar Dutta : A reduced cost four-component relativistic coupled cluster method based on natural spinors.  J. Chem. Phys., 156, 2022.
+- Somesh Chamoli, Kshitijkumar Surjuse, Bhavnesh Jangid, Malaya K. Nayak, Achintya Kumar Dutta, "A reduced cost four-component relativistic coupled cluster method based on natural spinors."  J. Chem. Phys., 156, 2022.
 
 .. list-table::
 
@@ -14,7 +14,7 @@ Bibliography
 
 
      
-- Kshitijkumar Surjuse, Somesh Chamoli, Malaya K. Nayak, Achintya Kumar Dutta : A low-cost four-component relativistic equation of motion coupled cluster method based on frozen natural spinors: Theory, implementation, and benchmark. J. Chem. Phys., 157, 2022. 
+- Kshitijkumar Surjuse, Somesh Chamoli, Malaya K. Nayak, Achintya Kumar Dutta, "A low-cost four-component relativistic equation of motion coupled cluster method based on frozen natural spinors: Theory, implementation, and benchmark." J. Chem. Phys., 157, 2022. 
 
 .. list-table::
 
@@ -23,7 +23,7 @@ Bibliography
           :target: https://pubs.aip.org/aip/jcp/article/157/20/204106/2842109
 
 
-- Tamoghna Mukhopadhyay, Bhavnesh Jangid, Achintya Kumar Dutta : State-specific frozen natural orbital for reduced-cost algebraic diagrammatic construction calculations: The application to ionization problem. J. Chem. Phys., 159, 2023. 
+- Tamoghna Mukhopadhyay, Bhavnesh Jangid, Achintya Kumar Dutta, "State-specific frozen natural orbital for reduced-cost algebraic diagrammatic construction calculations: The application to ionization problem." J. Chem. Phys., 159, 2023. 
 
 .. list-table::
 
