@@ -181,6 +181,8 @@ Quadratic unitary Coupled Cluster (qUCCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+To calculate the ionisation potential in the UCC framework, one can write ``IP-UCC3`` in place of method in the input file.
+
 ********************
 Excited State Energy
 ********************
