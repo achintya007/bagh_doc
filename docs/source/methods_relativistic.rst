@@ -312,8 +312,7 @@ Third order ADC (ADC(3))
    F 0.0 0.0 0.9168
 
 
-
- For the ADC framework, IP-ADC(2), IP-ADC(2)-X, IP-ADC(3), EA-ADC(2), EA-ADC(2)-X, and EA-ADC(3) methods are also available for EA and IP accessibility.
+For the ADC framework, IP-ADC(2), IP-ADC(2)-X, IP-ADC(3), EA-ADC(2), EA-ADC(2)-X, and EA-ADC(3) methods are also available for EA and IP accessibility.
 
 **********
 Properties
