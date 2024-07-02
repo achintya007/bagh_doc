@@ -265,7 +265,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   int_restart 
+   int_restart integer
 
 .. code-block:: shell
 
@@ -313,7 +313,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   act_cvir  
+   act_cvir 
 
 .. code-block:: shell
 
@@ -321,15 +321,15 @@ Keyword Reference
 
 .. code-block:: shell
 
-   splitfno
+   splitfno boolean
 
 .. code-block:: shell
 
-   runmrcc
+   runmrcc boolean
 
 .. code-block:: shell
 
-   symmetry
+   symmetry boolean
 
 .. code-block:: shell
 
@@ -337,23 +337,23 @@ Keyword Reference
 
 .. code-block:: shell
 
-   correction = False
+   correction boolean
 
 .. code-block:: shell
 
-   splitorders
+   splitorders integer
 
 .. code-block:: shell
 
-   mpi 
+   mpi boolean
 
 .. code-block:: shell
 
-   scf_guess_read
+   scf_guess_read boolean
 
 .. code-block:: shell
 
-   pic_change
+   pic_change boolean
 
 .. code-block:: shell
 
@@ -365,23 +365,23 @@ Keyword Reference
 
 .. code-block:: shell
 
-   povo_ex=None
+   povo_ex
 
 .. code-block:: shell
 
-   omega = 0
+   omega 
 
 .. code-block:: shell
 
-   pytranf=False
+   pytranf boolean
 
 .. code-block:: shell
 
-   dirac_complex 
+   dirac_complex boolean
 
 .. code-block:: shell
 
-   plotnat
+   plotnat 
 
 .. code-block:: shell
 
@@ -389,7 +389,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   plotnto = False
+   plotnto boolean
 
 .. code-block:: shell
 
@@ -397,51 +397,51 @@ Keyword Reference
 
 .. code-block:: shell
 
-   Triplet
+   Triplet boolean
 
 .. code-block:: shell
 
-   DysonOrbPlot 
+   DysonOrbPlot boolean
 
 .. code-block:: shell
 
-   exdm = True
+   exdm boolean
 
 .. code-block:: shell
 
-   tdm 
+   tdm boolean
 
 .. code-block:: shell
 
-   z_axis 
+   z_axis boolean
 
 .. code-block:: shell
 
-   x_axis = False
+   x_axis boolean
 
 .. code-block:: shell
 
-   ucc_prop = False
+   ucc_prop boolean
 
 .. code-block:: shell
 
-   fort = True
+   fort boolean
 
 .. code-block:: shell
 
-   CD 
+   CD boolean
 
 .. code-block:: shell
 
-   ccpert_lambda 
+   ccpert_lambda boolean
 
 .. code-block:: shell
 
-   T3
+   T3 boolean
 
 .. code-block:: shell
 
-   bulksize
+   bulksize integer
 
 .. code-block:: shell 
 
@@ -449,7 +449,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   Pembed
+   Pembed boolean
 
 .. code-block:: shell 
 
@@ -457,7 +457,7 @@ Keyword Reference
 
 .. code-block:: shell 
 
-   CD_Threshold 
+   CD_Threshold float
 
 .. code-block:: shell
 
@@ -465,11 +465,11 @@ Keyword Reference
 
 .. code-block:: shell
 
-   cpy 
+   cpy boolean
 
 .. code-block:: shell
 
-   cav_frequency 
+   cav_frequency float
 
 .. code-block:: shell
 
