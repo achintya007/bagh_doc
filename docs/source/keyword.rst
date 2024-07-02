@@ -1,18 +1,6 @@
 Keyword Reference
 #################
 
-CALL section_create(subsection, __LOCATION__, name="EACH", &
-                          description="This section specifies how often this property is printed. "// &
-                          "Each keyword inside this section is mapping to a specific iteration level and "// &
-                          "the value of each of these keywords is matched with the iteration level during "// &
-                          "the calculation. How to handle the last iteration is treated "// &
-                          "separately in ADD_LAST (this mean that each iteration level (MD, GEO_OPT, etc..), "// &
-                          "though equal to 0, might print the last iteration). If an iteration level is specified "// &
-                          "that is not present in the flow of the calculation it is just ignored.", &
-                          n_keywords=2, n_subsections=0, repeats=.FALSE., &
-                          citations=citations)
-
-
 Keywords for ``%CC block``
 ----------------------
 
