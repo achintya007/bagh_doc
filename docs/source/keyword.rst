@@ -125,3 +125,8 @@ Keywords for ``%CC block``
 .. code-block:: shell
 
    qed
+
+
+.. SECTION_PARAMETERS::
+
+   test only
