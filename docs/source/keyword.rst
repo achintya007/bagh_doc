@@ -1,8 +1,7 @@
 Keyword Reference
 #################
 
-Keywords for ``%CC block``
-----------------------
+**Keywords for ``%CC block``**
 
 .. code-block:: shell
 
@@ -214,27 +213,27 @@ Keywords for ``%CC block``
 
 .. code-block:: shell
 
-   noact
+   noact integer
 
 .. code-block:: shell
 
-   nvact
+   nvact ineger
 
 .. code-block:: shell
 
-   DoACTCC
+   DoACTCC boolean
 
 .. code-block:: shell
 
-   Gaunt
+   Gaunt boolean
 
 .. code-block:: shell
 
-   Breit
+   Breit boolean
 
 .. code-block:: shell
 
-   ssss
+   ssss boolean
 
 .. code-block:: shell
 
@@ -246,23 +245,23 @@ Keywords for ``%CC block``
 
 .. code-block:: shell
 
-  DoLo
+  DoLoc boolean
 
 .. code-block:: shell
 
-   DIIS 
+   DIIS boolean
 
 .. code-block:: shell
 
-   NumProc 
+   NumProc integer
 
 .. code-block:: shell
 
-   TCutPair = 1e-5
+   TCutPair float
 
 .. code-block:: shell
 
-   TCutPNO 
+   TCutPNO float
 
 .. code-block:: shell
 
@@ -270,56 +269,51 @@ Keywords for ``%CC block``
 
 .. code-block:: shell
 
-   cis_restart 
+   cis_restart integer
 
 .. code-block:: shell
 
-   cc_restart 
-
-.. code-block:: shell
-
-   imds_restart = []
+   imds_restart 
 
 .. code-block:: shell
 
    ext_e 
 
+.. code-block:: shell
+
+   pyberny_flag integer
 
 .. code-block:: shell
 
-   pyberny_flag 
+   rootno boolean
 
 .. code-block:: shell
 
-   rootno=False
+    max_space integer
 
 .. code-block:: shell
 
-    max_space
+   max_cycle integer
 
 .. code-block:: shell
 
-   max_cycle
+   x2c boolean
 
 .. code-block:: shell
 
-   x2c
+   relcc boolean
 
 .. code-block:: shell
 
-   relcc
+   ccsdnat boolean
 
 .. code-block:: shell
 
-   ccsdnat
+   actspace_overide boolen
 
 .. code-block:: shell
 
-   actspace_overide
-
-.. code-block:: shell
-
-   act_cvir 
+   act_cvir  
 
 .. code-block:: shell
 
