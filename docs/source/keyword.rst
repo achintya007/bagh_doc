@@ -1,7 +1,7 @@
 Keyword Reference
 #################
 
-**Keywords for ``%CC block``**
+**Keywords for %cc block**
 
 .. code-block:: shell
 
