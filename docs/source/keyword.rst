@@ -483,5 +483,7 @@ Keyword Reference
 
    cav_lambda_z 
 
- 
-.. autofunction:: adcc.run_adc
+
+
+
+
