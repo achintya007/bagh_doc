@@ -3,13 +3,17 @@ Keyword Reference
 
 **Keywords for %cc block**
 
+ - cc_convergence float
+
 .. code-block:: shell
 
-   cc_convergence float
+   self.cc_convergence  = 1.0e-10
+
+- adc_convergence float 
 
 .. code-block:: shell
  
-   adc_convergence float
+   self.adc_convergence = 1.0e-6
 
 .. code-block:: shell
 
