@@ -3,107 +3,107 @@ Keyword Reference
 
 **Keywords for %cc block**
 
-cc_convergence float
+**cc_convergence**
 
 .. code-block:: shell
 
-   cc_convergence  = 1.0e-10
+   cc_convergence 1.0e-10
 
-- adc_convergence float 
+**adc_convergence float**
 
 .. code-block:: shell
  
-   adc_convergence = 1.0e-6
+   adc_convergence  1.0e-6
 
-- eom_convergence float
+**eom_convergence**
 
 .. code-block:: shell
 
-   eom_convergence = 1.0e-6
+   eom_convergence 1.0e-6
 
-- lambda_convergence float
+**lambda_convergence**
 
 .. code-block:: shell
 
    lambda_convergence = 1.0e-6
 
-- resp_convergence float
+**resp_convergence float**
 
 .. code-block:: shell
 
-   resp_convergence = 1.0e-10
+   resp_convergence 1.0e-10
 
--  ucc_convergence float
+**ucc_convergence**
 
 .. code-block:: shell
 
-   ucc_convergence = 1.0e-7
+   ucc_convergence 1.0e-7
 
-- NRoots integer
+**NRoots**
 
 .. code-block:: shell
 
    NRoots=2
 
-- koopmans boolean 
+**koopmans boolean**
 
 .. code-block:: shell
 
-   koopmans=True
+   koopmans True
 
-- Opt boolean
+**Opt**
 
 .. code-block:: shell 
 
-   Opt=False
+   Opt False
 
-- CCSD2 boolean 
-
-.. code-block:: shell
-
-   CCSD2 = False 
-
-- cc_restart float
+**CCSD2** 
 
 .. code-block:: shell
 
-   cc_restart = 0
+   CCSD2  False 
 
-- real_ints boolean
+**cc_restart float**
+
+.. code-block:: shell
+
+   cc_restart 0
+
+**real_ints**
 
 .. code-block:: shell
 
    real_ints = flase
 
-- CD_Threshold float
+**CD_Threshold**
 
 .. code-block:: shell
 
    CD_Threshold = 1e-5
 
-- scf_guess_read boolean 
+**scf_guess_read**
 
 .. code-block:: shell
 
-   scf_guess_read = False
+   scf_guess_read False
 
-- remove_linear_dependency boolean
-
-.. code-block:: shell
-
-   remove_linear_dependency = False
-
-- cpy boolean
+**remove_linear_dependency**
 
 .. code-block:: shell
 
-   cpy = False
+   remove_linear_dependency False
 
-- DoCore boolean
+**cpy**
 
 .. code-block:: shell
 
-   DoCore boolean
+   cpy False
+
+**DoCore**
+
+.. code-block:: shell
+
+   DoCore False
 
 - DoCVS boolean
 
