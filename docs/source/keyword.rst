@@ -153,53 +153,73 @@ DoR3CVS boolean
 
    CoreHole = 0
 
-.. code-block:: shell
-
-   initial_eta float
+- initial_eta float
 
 .. code-block:: shell
 
-   ita_step float
+   initial_eta = 0.0
+
+- ita_step float 
 
 .. code-block:: shell
 
-   max_ita_iter integer
+   ita_step = 0.001
+
+-  max_ita_iter integer
 
 .. code-block:: shell
 
-   Dolambda boolean
+   max_ita_iter = 100
+
+- Dolambda boolean
 
 .. code-block:: shell
 
-   qed boolean
+   Dolambda = False
+
+- qed boolean
 
 .. code-block:: shell
 
-   Dopertrip boolean
+   qed = False
+
+- Dopertrip boolean
 
 .. code-block:: shell
 
-   lambda_restart integer
+   Dopertrip = False
+
+- lambda_restart integer
 
 .. code-block:: shell
 
-   printlevel integer
+   lambda_restart = 0
+
+- printlevel integer
 
 .. code-block:: shell
 
-   maxcore integer
+   printlevel = 0
+
+- maxcore integer 
 
 .. code-block:: shell
 
-   ML boolean
+   maxcore = 0
+
+-ML boolean
 
 .. code-block:: shell
 
-   pct_occ float
+   ML = False
 
 .. code-block:: shell
 
-   pct_occ_ex float
+- pct_occ float
+
+.. code-block:: shell
+
+   pct_occ_ex = 0.0
 
 .. code-block:: shell
 
