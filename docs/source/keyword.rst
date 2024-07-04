@@ -7,7 +7,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   self.cc_convergence  = 1.0e-10
+   cc_convergence  = 1.0e-10
 
 - adc_convergence float 
 
@@ -39,21 +39,29 @@ Keyword Reference
 
    ucc_convergence = 1.0e-7
 
-.. code-block:: shell
-
-   NRoots integer
+- NRoots integer
 
 .. code-block:: shell
 
-   koopmans boolean
+   NRoots=2
+
+- koopmans boolean 
+
+.. code-block:: shell
+
+   koopmans=True
+
+- Opt boolean
 
 .. code-block:: shell 
 
-   Opt boolean
+   Opt=False
+
+ CCSD2 boolean 
 
 .. code-block:: shell
 
-   CCSD2 boolean 
+   CCSD2 = False 
 
 .. code-block:: shell
 
