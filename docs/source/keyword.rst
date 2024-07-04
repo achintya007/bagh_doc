@@ -221,25 +221,35 @@ DoR3CVS boolean
 
    pct_occ_ex = 0.0
 
-.. code-block:: shell
-
-   incore integer
+- incore integer
 
 .. code-block:: shell
 
-   DoADC2 boolean
+   incore = 5
+
+- DoADC2 boolean
 
 .. code-block:: shell
 
-   reldipole boolean
+   DoADC2 = False
+
+- reldipole boolean
 
 .. code-block:: shell
 
-   DumpEOM boolean
+   reldipole = False
+
+- DumpEOM boolean
 
 .. code-block:: shell
 
-   DoNataux boolean
+   DumpEOM = False
+
+- DoNataux boolean
+
+.. code-block:: shell
+
+   DoNataux = False
 
 .. code-block:: shell
 
