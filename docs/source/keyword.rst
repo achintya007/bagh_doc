@@ -473,15 +473,15 @@ Keyword Reference
 
 .. code-block:: shell
 
-   cav_lambda_x 
+   cav_lambda_x float 
 
 .. code-block:: shell
 
-   cav_lambda_y 
+   cav_lambda_y  float
 
 .. code-block:: shell
 
-   cav_lambda_z 
+   cav_lambda_z  float
 
 
 
