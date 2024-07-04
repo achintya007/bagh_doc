@@ -21,7 +21,7 @@ Keyword Reference
 
    eom_convergence = 1.0e-6
 
-- `lambda_convergence float`
+- lambda_convergence float
 
 .. code-block:: shell
 
@@ -63,65 +63,95 @@ Keyword Reference
 
    CCSD2 = False 
 
-.. code-block:: shell
-
-   cc_restart float
+- cc_restart float
 
 .. code-block:: shell
 
-   real_ints float
+   cc_restart = 0
+
+- real_ints boolean
 
 .. code-block:: shell
 
-   CD_Threshold float
+   real_ints = flase
+
+- CD_Threshold float
 
 .. code-block:: shell
 
-   scf_guess_read boolean 
+   CD_Threshold = 1e-5
+
+- scf_guess_read boolean 
 
 .. code-block:: shell
 
-   remove_linear_dependency boolean
+   scf_guess_read = False
+
+- remove_linear_dependency boolean
 
 .. code-block:: shell
 
-   cpy boolean 
+   remove_linear_dependency = False
+
+- cpy boolean
+
+.. code-block:: shell
+
+   cpy = False
+
+- DoCore boolean
 
 .. code-block:: shell
 
    DoCore boolean
 
-.. code-block:: shell
-
-   DoCVS boolean
+- DoCVS boolean
 
 .. code-block:: shell
 
-   DoR3CVS boolean 
+   DoCVS = False
+
+DoR3CVS boolean
 
 .. code-block:: shell
 
-   DoR3OPT boolean 
+   DoR3CVS = False
+
+-  DoR3OPT boolean
 
 .. code-block:: shell
 
-   Debug boolean
+   DoR3OPT = True 
+
+- Debug boolean
 
 .. code-block:: shell
 
-   DF boolean
+   Debug = False
+
+-  DF boolean
 
 .. code-block:: shell
 
-   CVSMIN float
+   DF = False
+
+- CVSMIN float
 
 .. code-block:: shell
 
-   CVSMAX float
+   CVSMIN = 0
+
+- CVSMAX integer
 
 .. code-block:: shell
 
-   CoreHole integer 
+   CVSMAX = 0
+
+- CoreHole integer 
+
+.. code-block:: shell
+
+   CoreHole = 0
 
 .. code-block:: shell
 
