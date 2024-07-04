@@ -15,21 +15,29 @@ Keyword Reference
  
    self.adc_convergence = 1.0e-6
 
-.. code-block:: shell
-
-   eom_convergence float
+- eom_convergence float
 
 .. code-block:: shell
 
-   lambda_convergence float
+   eom_convergence = 1.0e-6
+
+- lambda_convergence float
 
 .. code-block:: shell
 
-   resp_convergence float
+   lambda_convergence = 1.0e-6
+
+- resp_convergence float
 
 .. code-block:: shell
 
-   ucc_convergence float
+   resp_convergence = 1.0e-10
+
+-  ucc_convergence float
+
+.. code-block:: shell
+
+   ucc_convergence = 1.0e-7
 
 .. code-block:: shell
 
