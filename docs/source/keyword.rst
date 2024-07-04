@@ -57,7 +57,7 @@ Keyword Reference
 
    Opt=False
 
- CCSD2 boolean 
+- CCSD2 boolean 
 
 .. code-block:: shell
 
