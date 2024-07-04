@@ -3,25 +3,25 @@ Keyword Reference
 
 **Keywords for %cc block**
 
-- cc_convergence float
+- `cc_convergence float`
 
 .. code-block:: shell
 
    self.cc_convergence  = 1.0e-10
 
-- adc_convergence float 
+- `adc_convergence float` 
 
 .. code-block:: shell
  
    self.adc_convergence = 1.0e-6
 
-- eom_convergence float
+- `eom_convergence float`
 
 .. code-block:: shell
 
    eom_convergence = 1.0e-6
 
-- lambda_convergence float
+- `lambda_convergence float`
 
 .. code-block:: shell
 
@@ -33,7 +33,7 @@ Keyword Reference
 
    resp_convergence = 1.0e-10
 
--  ucc_convergence float
+-  `ucc_convergence float`
 
 .. code-block:: shell
 
