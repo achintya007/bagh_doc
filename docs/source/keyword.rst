@@ -236,13 +236,13 @@ Keyword Reference
 
 .. code-block:: shell
 
-   reldipole = False
+   reldipole False
 
 **DumpEOM**
 
 .. code-block:: shell
 
-   DumpEOM = False
+   DumpEOM False
 
 - DoNataux boolean
 
@@ -280,7 +280,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   Natauxthresh_ex_bottleneck =1e-1
+   Natauxthresh_ex_bottleneck 1e-1
 
 **nfr_h**
 
@@ -292,7 +292,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-  nfr_p = 3
+  nfr_p 3
 
 **fc**
 
@@ -328,7 +328,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   Gaunt = False
+   Gaunt False
 
 **Breit**
 
@@ -346,7 +346,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-  custom_basis = None
+  custom_basis  None
 
 **light_speed**
 
@@ -360,241 +360,354 @@ Keyword Reference
 
   DoLoc False
 
-.. code-block:: shell
-
-   DIIS boolean
+**DIIS**
 
 .. code-block:: shell
 
-   NumProc integer
+   DIIS True
+
+**NumProc**
 
 .. code-block:: shell
 
-   TCutPair float
+   NumProc 1
+
+**TCutPair**
 
 .. code-block:: shell
 
-   TCutPNO float
+   TCutPair 1e-5
+
+**TCutPNO**
 
 .. code-block:: shell
 
-   int_restart integer
+   TCutPNO 
+
+**int_restart**
 
 .. code-block:: shell
 
-   cis_restart integer
+   int_restart 0
+
+**cis_restart**
 
 .. code-block:: shell
 
-   imds_restart 
+   cis_restart 0
+
+**imds_restart**
 
 .. code-block:: shell
 
-   ext_e 
+   imds_restart []
+
+**ext_e**
 
 .. code-block:: shell
 
-   pyberny_flag integer
+   ext_e None
+
+**pyberny_flag**
 
 .. code-block:: shell
 
-   rootno boolean
+   pyberny_flag 0
+
+**rootno**
 
 .. code-block:: shell
 
-    max_space integer
+   rootno False
+
+**max_space**
 
 .. code-block:: shell
 
-   max_cycle integer
+    max_space 100
+
+**max_cycle**
 
 .. code-block:: shell
 
-   x2c boolean
+   max_cycle 100
+
+**x2c**
 
 .. code-block:: shell
 
-   relcc boolean
+   x2c False
+
+**relcc**
 
 .. code-block:: shell
 
-   ccsdnat boolean
+   relcc False
+
+**ccsdnat**
 
 .. code-block:: shell
 
-   actspace_overide boolen
+   ccsdnat False
+
+**actspace_overide**
 
 .. code-block:: shell
 
-   act_cvir 
+   actspace_overide False
+
+**act_cvir**
 
 .. code-block:: shell
 
-   povo_can 
+   act_cvir None
+
+**povo_can**
 
 .. code-block:: shell
 
-   splitfno boolean
+   povo_can None
+
+**splitfno**
 
 .. code-block:: shell
 
-   runmrcc boolean
+   splitfno False
+
+**runmrcc**
 
 .. code-block:: shell
 
-   symmetry boolean
+   runmrcc False
+
+**symmetry**
 
 .. code-block:: shell
 
-   symmetry_subgroup
+   symmetry False
+
+**symmetry_subgroup**
 
 .. code-block:: shell
 
-   correction boolean
+   symmetry_subgroup c1
+
+**correction**
 
 .. code-block:: shell
 
-   splitorders integer
+   correction False
+
+**splitorders**
 
 .. code-block:: shell
 
-   mpi boolean
+   splitorders 1,2,3
+
+**mpi**
 
 .. code-block:: shell
 
-   scf_guess_read boolean
+   mpi False
+
+**scf_guess_read**
+
+.. code-block:: shell
+
+   scf_guess_read False
 
 .. code-block:: shell
 
    pic_change boolean
 
-.. code-block:: shell
-
-   remove_linear_dependency 
+**remove_linear_dependency**
 
 .. code-block:: shell
 
-   povo
+   remove_linear_dependency False
+
+**povo**
 
 .. code-block:: shell
 
-   povo_ex
+   povo None
+
+**povo_ex**
 
 .. code-block:: shell
 
-   omega 
+   povo_ex None
+
+**omega**
 
 .. code-block:: shell
 
-   pytranf boolean
+   omega 0
+
+**pytranf**
 
 .. code-block:: shell
 
-   dirac_complex boolean
+   pytranf False
+
+**dirac_complex**
 
 .. code-block:: shell
 
-   plotnat 
+   dirac_complex False
+
+**plotnat**
 
 .. code-block:: shell
 
-   plotnat_no
+   plotnat False
+
+**plotnat_no**
 
 .. code-block:: shell
 
-   plotnto boolean
+   plotnat_no []
+
+**plotnto**
 
 .. code-block:: shell
 
-   plotnto_no 
+   plotnto False
+
+**plotnto_no**
 
 .. code-block:: shell
 
-   Triplet boolean
+   plotnto_no []
+
+**Triplet boolean**
 
 .. code-block:: shell
 
-   DysonOrbPlot boolean
+   Triplet False
+
+**DysonOrbPlot**
 
 .. code-block:: shell
 
-   exdm boolean
+   DysonOrbPlot False
+
+**exdm**
 
 .. code-block:: shell
 
-   tdm boolean
+   exdm True
+
+**tdm**
 
 .. code-block:: shell
 
-   z_axis boolean
+   tdm True
+
+**z_axis**
+.. code-block:: shell
+
+   z_axis False
+
+**x_axis**
 
 .. code-block:: shell
 
-   x_axis boolean
+   x_axis False
+
+**ucc_prop**
 
 .. code-block:: shell
 
-   ucc_prop boolean
+   ucc_prop False
+
+**fort**
 
 .. code-block:: shell
 
-   fort boolean
+   fort True
+
+**CD**
 
 .. code-block:: shell
 
    CD boolean
 
-.. code-block:: shell
-
-   ccpert_lambda boolean
+**ccpert_lambda**
 
 .. code-block:: shell
 
-   T3 boolean
+   ccpert_lambda True
+
+**T3**
 
 .. code-block:: shell
 
-   bulksize integer
+   T3 False
+
+**bulksize**
+
+.. code-block:: shell
+
+   bulksize 10
+
+**dtype**
 
 .. code-block:: shell 
 
-   dtype
+   dtype None
+
+**Pembed**
 
 .. code-block:: shell
 
-   Pembed boolean
+   Pembed False
+
+**shift_e**
 
 .. code-block:: shell 
 
-   shift_e 
+   shift_e 0 
+
+**CD_Threshold**
 
 .. code-block:: shell 
 
-   CD_Threshold float
+    CD_Threshold 1e-5
 
 .. code-block:: shell
 
    active_atoms
 
-.. code-block:: shell
-
-   cpy boolean
+**cpy**
 
 .. code-block:: shell
 
-   cav_frequency float
+   cpy False
+
+**cav_frequency**
 
 .. code-block:: shell
 
-   cav_lambda_x float 
+   cav_frequency 0
+
+**cav_lambda_x**
 
 .. code-block:: shell
 
-   cav_lambda_y  float
+   cav_lambda_x None
+
+**cav_lambda_y**
 
 .. code-block:: shell
 
-   cav_lambda_z  float
+   cav_lambda_y  None
+
+**cav_lambda_z**
+
+.. code-block:: shell
+
+   cav_lambda_z  None
 
 
 
