@@ -140,7 +140,7 @@ Keyword Reference
 
    CVSMIN 0
 
-- CVSMAX integer
+**CVSMAX integer**
 
 .. code-block:: shell
 
@@ -156,7 +156,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   initial_eta = 0.0
+   initial_eta 0.0
 
 **ita_step**
 
@@ -249,8 +249,6 @@ Keyword Reference
 .. code-block:: shell
 
    DoNataux False
-
-.. code-block:: shell
 
 **Natauxpct_ex**
 
