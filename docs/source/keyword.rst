@@ -217,19 +217,19 @@ Keyword Reference
 
 .. code-block:: shell
 
-   pct_occ_ex = 0.0
+   pct_occ_ex 0.0
 
 **incore**
 
 .. code-block:: shell
 
-   incore = 5
+   incore 5
 
 **DoADC2**
 
 .. code-block:: shell
 
-   DoADC2 = False
+   DoADC2 False
 
 **reldipole**
 
