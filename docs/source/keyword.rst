@@ -105,23 +105,23 @@ Keyword Reference
 
    DoCore False
 
-- DoCVS boolean
+**DoCVS**
 
 .. code-block:: shell
 
-   DoCVS = False
+   DoCVS False
 
-DoR3CVS boolean
-
-.. code-block:: shell
-
-   DoR3CVS = False
-
--  DoR3OPT boolean
+**DoR3CVS**
 
 .. code-block:: shell
 
-   DoR3OPT = True 
+   DoR3CVS False
+
+**DoR3OPT**
+
+.. code-block:: shell
+
+   DoR3OPT True 
 
 - Debug boolean
 
@@ -129,17 +129,17 @@ DoR3CVS boolean
 
    Debug = False
 
--  DF boolean
+**DF**
 
 .. code-block:: shell
 
-   DF = False
+   DF False
 
-- CVSMIN float
+**CVSMIN**
 
 .. code-block:: shell
 
-   CVSMIN = 0
+   CVSMIN 0
 
 - CVSMAX integer
 
@@ -147,61 +147,61 @@ DoR3CVS boolean
 
    CVSMAX = 0
 
-- CoreHole integer 
+**CoreHole**
 
 .. code-block:: shell
 
    CoreHole = 0
 
-- initial_eta float
+**initial_eta**
 
 .. code-block:: shell
 
    initial_eta = 0.0
 
-- ita_step float 
+**ita_step**
 
 .. code-block:: shell
 
-   ita_step = 0.001
+   ita_step 0.001
 
--  max_ita_iter integer
-
-.. code-block:: shell
-
-   max_ita_iter = 100
-
-- Dolambda boolean
+**max_ita_iter**
 
 .. code-block:: shell
 
-   Dolambda = False
+   max_ita_iter 100
 
-- qed boolean
-
-.. code-block:: shell
-
-   qed = False
-
-- Dopertrip boolean
+**Dolambda**
 
 .. code-block:: shell
 
-   Dopertrip = False
+   Dolambda False
 
-- lambda_restart integer
-
-.. code-block:: shell
-
-   lambda_restart = 0
-
-- printlevel integer
+**qed**
 
 .. code-block:: shell
 
-   printlevel = 0
+   qed False
 
-- maxcore integer 
+**Dopertrip**
+
+.. code-block:: shell
+
+   Dopertrip False
+
+**lambda_restart**
+
+.. code-block:: shell
+
+   lambda_restart 0
+
+**printlevel**
+
+.. code-block:: shell
+
+   printlevel 0
+
+**maxcore**
 
 .. code-block:: shell
 
@@ -215,7 +215,7 @@ DoR3CVS boolean
 
 .. code-block:: shell
 
-- pct_occ float
+**pct_occ_ex**
 
 .. code-block:: shell
 
