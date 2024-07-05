@@ -27,7 +27,7 @@ Keyword Reference
 
    lambda_convergence = 1.0e-6
 
-**resp_convergence float**
+**resp_convergence**
 
 .. code-block:: shell
 
@@ -63,7 +63,7 @@ Keyword Reference
 
    CCSD2  False 
 
-**cc_restart float**
+**cc_restart**
 
 .. code-block:: shell
 
@@ -244,7 +244,7 @@ Keyword Reference
 
    DumpEOM False
 
-- DoNataux boolean
+**DoNataux**
 
 .. code-block:: shell
 
