@@ -43,7 +43,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   NRoots=2
+   NRoots 2
 
 **koopmans**
 
@@ -127,7 +127,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   Debug = False
+   Debug False
 
 **DF**
 
@@ -212,8 +212,6 @@ Keyword Reference
 .. code-block:: shell
 
    ML False
-
-.. code-block:: shell
 
 **pct_occ_ex**
 
