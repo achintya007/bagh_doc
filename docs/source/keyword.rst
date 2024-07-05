@@ -25,7 +25,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   lambda_convergence = 1.0e-6
+   lambda_convergence 1.0e-6
 
 **resp_convergence**
 
