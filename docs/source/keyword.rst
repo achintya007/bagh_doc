@@ -205,13 +205,13 @@ Keyword Reference
 
 .. code-block:: shell
 
-   maxcore = 0
+   maxcore 0
 
--ML boolean
+**ML**
 
 .. code-block:: shell
 
-   ML = False
+   ML False
 
 .. code-block:: shell
 
