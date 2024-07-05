@@ -1,7 +1,7 @@
 Keyword Reference
 #################
 
-**Keywords for %cc block**
+**Keywords for** ``%cc`` **block**
 
 **cc_convergence**
 
