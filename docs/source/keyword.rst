@@ -379,7 +379,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   TCutPNO 
+   TCutPNO 1e-6
 
 **int_restart**
 
@@ -628,7 +628,7 @@ Keyword Reference
 
 .. code-block:: shell
 
-   CD boolean
+   CD False
 
 **ccpert_lambda**
 
