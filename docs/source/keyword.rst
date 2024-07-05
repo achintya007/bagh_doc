@@ -9,7 +9,7 @@ Keyword Reference
 
    cc_convergence 1.0e-10
 
-**adc_convergence float**
+**adc_convergence**
 
 .. code-block:: shell
  
@@ -45,7 +45,7 @@ Keyword Reference
 
    NRoots=2
 
-**koopmans boolean**
+**koopmans**
 
 .. code-block:: shell
 
@@ -73,13 +73,13 @@ Keyword Reference
 
 .. code-block:: shell
 
-   real_ints = flase
+   real_ints flase
 
 **CD_Threshold**
 
 .. code-block:: shell
 
-   CD_Threshold = 1e-5
+   CD_Threshold 1e-5
 
 **scf_guess_read**
 
@@ -144,13 +144,13 @@ Keyword Reference
 
 .. code-block:: shell
 
-   CVSMAX = 0
+   CVSMAX 0
 
 **CoreHole**
 
 .. code-block:: shell
 
-   CoreHole = 0
+   CoreHole 0
 
 **initial_eta**
 
