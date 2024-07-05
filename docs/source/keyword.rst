@@ -123,8 +123,7 @@ Keyword Reference
 
    DoR3OPT True 
 
-- Debug boolean
-
+**Debug**
 .. code-block:: shell
 
    Debug = False
@@ -221,25 +220,25 @@ Keyword Reference
 
    pct_occ_ex = 0.0
 
-- incore integer
+**incore**
 
 .. code-block:: shell
 
    incore = 5
 
-- DoADC2 boolean
+**DoADC2**
 
 .. code-block:: shell
 
    DoADC2 = False
 
-- reldipole boolean
+**reldipole**
 
 .. code-block:: shell
 
    reldipole = False
 
-- DumpEOM boolean
+**DumpEOM**
 
 .. code-block:: shell
 
@@ -249,83 +248,117 @@ Keyword Reference
 
 .. code-block:: shell
 
-   DoNataux = False
+   DoNataux False
 
 .. code-block:: shell
 
-   Natauxpct integer 
+**Natauxpct_ex**
 
 .. code-block:: shell
 
-   Natauxpct_ex integer
+   Natauxpct_ex 100
+
+**Natauxthresh**
 
 .. code-block:: shell
 
-   Natauxthresh integer
+   Natauxthresh 0
+
+**Natauxthresh_ex**
 
 .. code-block:: shell
 
-   Natauxthresh_ex integer
+   Natauxthresh_ex 100
+
+**Natauxthresh_bottleneck**
 
 .. code-block:: shell
 
-   Natauxthresh_bottleneck float
+   Natauxthresh_bottleneck 1e-1
+
+**Natauxthresh_ex_bottleneck**
 
 .. code-block:: shell
 
-   Natauxthresh_ex_bottleneck float
+   Natauxthresh_ex_bottleneck =1e-1
+
+**nfr_h**
 
 .. code-block:: shell
 
-   nfr_h integer 
+   nfr_h 3 
+
+**nfr_p**
 
 .. code-block:: shell
 
-  nfr_p integer 
+  nfr_p = 3
+
+**fc**
 
 .. code-block:: shell
 
-   fc boolean
+   fc False
+
+**fc_no**
 
 .. code-block:: shell
 
-   fc_no integer
+   fc_no -1
+
+**noact**
 
 .. code-block:: shell
 
-   noact integer
+   noact 1
+
+**nvact**
 
 .. code-block:: shell
 
-   nvact ineger
+   nvact  1
+
+**DoACTCC**
 
 .. code-block:: shell
 
-   DoACTCC boolean
+   DoACTCC False
+
+**Gaunt**
 
 .. code-block:: shell
 
-   Gaunt boolean
+   Gaunt = False
+
+**Breit**
 
 .. code-block:: shell
 
-   Breit boolean
+   Breit False
+
+**ssss**
 
 .. code-block:: shell
 
-   ssss boolean
+   ssss = True
+
+**custom_basis**
 
 .. code-block:: shell
 
-   custom_basis
+  custom_basis = None
+
+**light_speed**
 
 .. code-block:: shell
 
-   light_speed
+   light_speed None
+
+**DoLoc**
 
 .. code-block:: shell
 
-  DoLoc boolean
+  DoLoc False
 
 .. code-block:: shell
 
