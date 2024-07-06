@@ -19,7 +19,7 @@ Contents
    :caption: Introduction
    :maxdepth: 2
 
-   usage
+   installation
    getting_started
    computational_options
    
