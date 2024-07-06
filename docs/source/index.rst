@@ -21,7 +21,7 @@ Contents
 
    installation
    getting_started
-   computational_options
+   Features
    
 .. toctree::
    :caption: Available Methods 
