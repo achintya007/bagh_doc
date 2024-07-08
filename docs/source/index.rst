@@ -17,7 +17,7 @@ Contents
 --------
 .. toctree::
    :caption: Introduction
-   :maxdepth: 2
+   :maxdepth: 3
 
    installation
    getting_started
