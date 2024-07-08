@@ -2,7 +2,7 @@
 
 # -- Project information
 
-project = 'BaghHH'
+project = 'Bagh'
 copyright = 'Achintya Kumar Dutta'
 author = 'Achintya Kumar Dutta'
 
