@@ -321,6 +321,16 @@ Properties
 =====================
 First order property
 =====================
+Transition dipole moment using expectation value approach:
+----------------------------------------------------------
+The ground to excited state transition moment in EOM-CCSD framework can be expressed as
+
+.. math::
+
+    \[{\left| {{\mu _{o \to k}}} \right|^2} = \left\langle {{\Phi _0}} \right|(1 + \hat \Lambda )\bar \mu {\hat R_k}\left| {{\Phi _0}} \right\rangle \left\langle {{\Phi _0}} \right|{\hat L_k}\bar \mu \left| {{\Phi _0}} \right\rangle \]
+
+
+
 =====================
 Second order property
 =====================
