@@ -33,6 +33,10 @@ Contents
 
    basis
 
+.. toctree::
+   :caption: Available Methods 
+   :maxdepth: 2
+
    methods_relativistic
    methods_non-Relativistic
 
