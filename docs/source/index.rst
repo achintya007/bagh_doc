@@ -1,4 +1,4 @@
-Welcome to Bagh's documentation!
+Welcome to BAGH's documentation!
 ===================================
 .. image:: logo/bagh_new_logo.jpeg
    :width: 200px
