@@ -3,9 +3,9 @@ Keyword Reference
 
 The default values are given as an example below for each keyword of the ``%cc`` block. 
 
-**********************************
+***********************************************
 **Keyword descpriptions for** ``%cc`` **block**
-**********************************
+***********************************************
 
 **cc_convergence**: ``Float``
 
@@ -608,6 +608,7 @@ Controls the desired convergence criteria for CCSD correlation energy.
    tdm True
 
 **z_axis**
+
 .. code-block:: shell
 
    z_axis False
