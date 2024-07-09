@@ -4,60 +4,60 @@ Keyword Reference
 The default values are given as an example below for each keyword of the ``%cc`` block. 
 
 **********************************
-**Keywords for** ``%cc`` **block**
+**Keyword descpriptions for** ``%cc`` **block**
 **********************************
 
-**cc_convergence** ``Float``
+**cc_convergence**: ``Float``
 
-To control the desired convergence criteria for CCSD correlation energy
+Controls the desired convergence criteria for CCSD correlation energy.
 
 .. code-block:: shell
 
    cc_convergence 1.0e-10
 
-**adc_convergence**
+**adc_convergence**: ``Float``
 
 .. code-block:: shell
  
    adc_convergence  1.0e-6
 
-**eom_convergence**
+**eom_convergence**: ``Float``
 
 .. code-block:: shell
 
    eom_convergence 1.0e-6
 
-**lambda_convergence**
+**lambda_convergence**: ``Float``
 
 .. code-block:: shell
 
    lambda_convergence 1.0e-6
 
-**resp_convergence**
+**resp_convergence**: ``Float``
 
 .. code-block:: shell
 
    resp_convergence 1.0e-10
 
-**ucc_convergence**
+**ucc_convergence**: ``Float``
 
 .. code-block:: shell
 
    ucc_convergence 1.0e-7
 
-**NRoots**
+**NRoots**: ``Integer``
 
 .. code-block:: shell
 
    NRoots 2
 
-**koopmans**
+**koopmans**: ``Logical``
 
 .. code-block:: shell
 
    koopmans True
 
-**Opt**
+**Opt**: ``Logical``
 
 .. code-block:: shell 
 
