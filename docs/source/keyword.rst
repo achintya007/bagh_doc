@@ -1,4 +1,4 @@
-Keyword Referenceeeeeeeeeeeeeeeeeeee
+Keyword Reference
 ####################################
 
 The default values are given as an example below for each keyword of the ``%cc`` block. 
