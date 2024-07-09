@@ -323,13 +323,28 @@ First order property
 =====================
 Transition dipole moment using expectation value approach:
 ----------------------------------------------------------
-The ground to excited state transition moment in EOM-CCSD framework can be expressed as
+The ground to excited state transition moment in the EOM-CCSD framework can be expressed as
 
 .. math::
 
     {\left| {{\mu _{o \to k}}} \right|^2} = \left\langle {{\Phi _0}} \right|(1 + \hat \Lambda )\bar \mu {\hat R_k}\left| {{\Phi _0}} \right\rangle \left\langle {{\Phi _0}} \right|{\hat L_k}\bar \mu \left| {{\Phi _0}} \right\rangle
 
+To calculate the transition dipole moment (TDM) in the EOM-CCSD framework one needs to solve both right and left eigenvectors due to the non-hermitian nature of the similarity-transformed Hamiltonian. This can be performed by adding ``DoLambda True`` in the ``%cc`` block. For example the following input can be used to compute excitation energies, TDM and Oscillator strengths in 4c-relativistic framework,
 
+.. code-block:: shell 
+
+   ! EE-EOM-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   nroots 10
+   DoLambda True
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 
 =====================
 Second order property
