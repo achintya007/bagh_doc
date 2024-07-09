@@ -3,7 +3,7 @@ Keyword Reference
 
 **Keywords for** ``%cc`` **block**
 
-**cc_convergence**
+**cc_convergence** ``Float``
 
 .. code-block:: shell
 
