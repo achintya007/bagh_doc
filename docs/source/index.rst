@@ -22,10 +22,16 @@ Contents
    installation
    getting_started
    Features
-   
+
 .. toctree::
    :caption: Available Methods 
    :maxdepth: 2
+
+.. toctree::
+   :caption: basis 
+   :maxdepth: 1
+
+   basis
 
    methods_relativistic
    methods_non-Relativistic
