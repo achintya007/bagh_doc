@@ -147,7 +147,7 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    CVSMIN 0
 
-**CVSMAX integer**
+**CVSMAX**: ``integer``
 
 .. code-block:: shell
 
