@@ -7,7 +7,7 @@ Features
 - RHF EE-EOM-CCSD
 - Density fitting approximation for RHF Couple cluster and EOMCC
 - Spin Orbital MP2
-- RHF EE-EOM-CCSD
+- RHFSO EE-EOM-CCSD
 - Spin Orbital IP-EOM-CCSD, EA-EOM-CCSD, EE-EOM-CCSD with triples correction for IP and EA
 - Projector based embedding
 - Frozen Natural Orbital for RHF -CCSD, RHF-IP-CCSD and Triples corrected  RHF-IP-CCSD
