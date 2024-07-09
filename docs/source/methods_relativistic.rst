@@ -322,7 +322,6 @@ Properties
 First order property
 =====================
 
-Ground state dip
 Transition dipole moment using expectation value approach:
 ----------------------------------------------------------
 The ground to excited state transition moment in the EOM-CCSD framework can be expressed as
