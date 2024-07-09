@@ -32,7 +32,7 @@ Contents
 
 .. toctree::
    :caption: References 
-   :maxdepth: 2
+   :maxdepth: 1
 
    keyword
    bibliography
