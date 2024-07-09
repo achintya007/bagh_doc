@@ -99,12 +99,6 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    remove_linear_dependency False
 
-**cpy**
-
-.. code-block:: shell
-
-   cpy False
-
 **DoCore**
 
 .. code-block:: shell
@@ -678,6 +672,8 @@ Controls the desired convergence criteria for CCSD correlation energy.
 .. code-block:: shell 
 
     CD_Threshold 1e-5
+
+**active_atoms**
 
 .. code-block:: shell
 
