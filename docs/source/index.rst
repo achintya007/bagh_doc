@@ -28,12 +28,6 @@ Contents
    :maxdepth: 2
 
 .. toctree::
-   :caption: basis 
-   :maxdepth: 1
-
-   basis
-
-.. toctree::
    :caption: Available Methods 
    :maxdepth: 2
 
