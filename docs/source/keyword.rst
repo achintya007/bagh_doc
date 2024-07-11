@@ -63,31 +63,31 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    Opt False
 
-**CCSD2** 
+**CCSD2** ``Logical``
 
 .. code-block:: shell
 
    CCSD2  False 
 
-**cc_restart**
+**cc_restart** ``Integer``
 
 .. code-block:: shell
 
    cc_restart 0
 
-**real_ints**
+**real_ints** ``Logical``
 
 .. code-block:: shell
 
    real_ints flase
 
-**CD_Threshold**
+**CD_Threshold** ``Float``
 
 .. code-block:: shell
 
    CD_Threshold 1e-5
 
-**scf_guess_read**
+**scf_guess_read** ``Logical``
 
 .. code-block:: shell
 
