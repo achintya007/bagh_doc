@@ -93,223 +93,223 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    scf_guess_read False
 
-**remove_linear_dependency**
+**remove_linear_dependency** ``Logical``
 
 .. code-block:: shell
 
    remove_linear_dependency False
 
-**DoCore**
+**DoCore** ``Logical``
 
 .. code-block:: shell
 
    DoCore False
 
-**DoCVS**
+   **DoCVS** ``Logical``
 
 .. code-block:: shell
 
    DoCVS False
 
-**DoR3CVS**
+**DoR3CVS** ``Logical``
 
 .. code-block:: shell
 
    DoR3CVS False
 
-**DoR3OPT**
+**DoR3OPT** ``Logical``
 
 .. code-block:: shell
 
    DoR3OPT True 
 
-**Debug**
+**Debug** ``Logical``
 
 .. code-block:: shell
 
    Debug False
 
-**DF**
+**DF** ``Logical``
 
 .. code-block:: shell
 
    DF False
 
-**CVSMIN**
+**CVSMIN** ``Integer``
 
 .. code-block:: shell
 
    CVSMIN 0
 
-**CVSMAX**: ``integer``
+**CVSMAX**: ``Integer``
 
 .. code-block:: shell
 
    CVSMAX 0
 
-**CoreHole**
+**CoreHole** ``Integer``
 
 .. code-block:: shell
 
    CoreHole 0
 
-**initial_eta**
+**initial_eta** ``Float``
 
 .. code-block:: shell
 
    initial_eta 0.0
 
-**ita_step**
+**ita_step** ``Float``
 
 .. code-block:: shell
 
    ita_step 0.001
 
-**max_ita_iter**
+**max_ita_iter** ``Integer``
 
 .. code-block:: shell
 
    max_ita_iter 100
 
-**Dolambda**
+**Dolambda** ``Logical``
 
 .. code-block:: shell
 
    Dolambda False
 
-**qed**
+**qed** ``Logical``
 
 .. code-block:: shell
 
    qed False
 
-**Dopertrip**
+**Dopertrip** ``Logical``
 
 .. code-block:: shell
 
    Dopertrip False
 
-**lambda_restart**
+**lambda_restart** ``Integer``
 
 .. code-block:: shell
 
    lambda_restart 0
 
-**printlevel**
+**printlevel** ``Integer``
 
 .. code-block:: shell
 
    printlevel 0
 
-**maxcore**
+**maxcore** ``Integer``
 
 .. code-block:: shell
 
    maxcore 0
 
-**ML**
+**ML** ``Logical``
 
 .. code-block:: shell
 
    ML False
 
-**pct_occ_ex**
+**pct_occ_ex** ``Float``
 
 .. code-block:: shell
 
    pct_occ_ex 0.0
 
-**incore**
+**incore** ``Integer``
 
 .. code-block:: shell
 
    incore 5
 
-**DoADC2**
+**DoADC2** ``Logical``
 
 .. code-block:: shell
 
    DoADC2 False
 
-**reldipole**
+**reldipole** ``Logical``
 
 .. code-block:: shell
 
    reldipole False
 
-**DumpEOM**
+**DumpEOM** ``Logical``
 
 .. code-block:: shell
 
    DumpEOM False
 
-**DoNataux**
+**DoNataux** ``Logical``
 
 .. code-block:: shell
 
    DoNataux False
 
-**Natauxpct_ex**
+**Natauxpct_ex** ``Integer``
 
 .. code-block:: shell
 
    Natauxpct_ex 100
 
-**Natauxthresh**
+**Natauxthresh** ``Integer``
 
 .. code-block:: shell
 
    Natauxthresh 0
 
-**Natauxthresh_ex**
+**Natauxthresh_ex** ``Integer``
 
 .. code-block:: shell
 
    Natauxthresh_ex 100
 
-**Natauxthresh_bottleneck**
+**Natauxthresh_bottleneck** ``Float``
 
 .. code-block:: shell
 
    Natauxthresh_bottleneck 1e-1
 
-**Natauxthresh_ex_bottleneck**
+**Natauxthresh_ex_bottleneck** ``Float``
 
 .. code-block:: shell
 
    Natauxthresh_ex_bottleneck 1e-1
 
-**nfr_h**
+**nfr_h** ``Integer``
 
 .. code-block:: shell
 
    nfr_h 3 
 
-**nfr_p**
+**nfr_p** ``Integer``
 
 .. code-block:: shell
 
   nfr_p 3
 
-**fc**
+**fc** ``Logical``
 
 .. code-block:: shell
 
    fc False
 
-**fc_no**
+**fc_no** ``Integer``
 
 .. code-block:: shell
 
    fc_no -1
 
-**noact**
+**noact** ``Integer``
 
 .. code-block:: shell
 
    noact 1
 
-**nvact**
+**nvact** ``Integer``
 
 .. code-block:: shell
 
