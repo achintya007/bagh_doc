@@ -315,169 +315,169 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    nvact  1
 
-**DoACTCC**
+**DoACTCC** ``Logical``
 
 .. code-block:: shell
 
    DoACTCC False
 
-**Gaunt**
+**Gaunt** ``Logical``
 
 .. code-block:: shell
 
    Gaunt False
 
-**Breit**
+**Breit** ``Logical``
 
 .. code-block:: shell
 
    Breit False
 
-**ssss**
+**ssss** ``Logical``
 
 .. code-block:: shell
 
-   ssss = True
+   ssss True
 
-**custom_basis**
+**custom_basis** ``Integer``
 
 .. code-block:: shell
 
   custom_basis  None
 
-**light_speed**
+**light_speed** ``Integer``
 
 .. code-block:: shell
 
    light_speed None
 
-**DoLoc**
+**DoLoc** ``Logical``
 
 .. code-block:: shell
 
   DoLoc False
 
-**DIIS**
+**DIIS** ``Logical``
 
 .. code-block:: shell
 
    DIIS True
 
-**NumProc**
+**NumProc** ``Integer``
 
 .. code-block:: shell
 
    NumProc 1
 
-**TCutPair**
+**TCutPair** ``Float``
 
 .. code-block:: shell
 
    TCutPair 1e-5
 
-**TCutPNO**
+**TCutPNO** ``Float``
 
 .. code-block:: shell
 
    TCutPNO 1e-6
 
-**int_restart**
+**int_restart** ``Integer``
 
 .. code-block:: shell
 
    int_restart 0
 
-**cis_restart**
+**cis_restart** ``Integer``
 
 .. code-block:: shell
 
    cis_restart 0
 
-**imds_restart**
+**imds_restart** ``Integer``
 
 .. code-block:: shell
 
    imds_restart []
 
-**ext_e**
+**ext_e** ``Integer``
 
 .. code-block:: shell
 
    ext_e None
 
-**pyberny_flag**
+**pyberny_flag** ``Integer``
 
 .. code-block:: shell
 
    pyberny_flag 0
 
-**rootno**
+**rootno** ``Logical``
 
 .. code-block:: shell
 
    rootno False
 
-**max_space**
+**max_space** ``Integer``
 
 .. code-block:: shell
 
     max_space 100
 
-**max_cycle**
+**max_cycle** ``Integer``
 
 .. code-block:: shell
 
    max_cycle 100
 
-**x2c**
+**x2c** ``Logical``
 
 .. code-block:: shell
 
    x2c False
 
-**relcc**
+**relcc** ``Logical``
 
 .. code-block:: shell
 
    relcc False
 
-**ccsdnat**
+**ccsdnat** ``Logical``
 
 .. code-block:: shell
 
    ccsdnat False
 
-**actspace_overide**
+**actspace_overide** ``Logical``
 
 .. code-block:: shell
 
    actspace_overide False
 
-**act_cvir**
+**act_cvir** ``Integer``
 
 .. code-block:: shell
 
    act_cvir None
 
-**povo_can**
+**povo_can** ``Integer``
 
 .. code-block:: shell
 
    povo_can None
 
-**splitfno**
+**splitfno** ``Logical``
 
 .. code-block:: shell
 
    splitfno False
 
-**runmrcc**
+**runmrcc** ``Logical``
 
 .. code-block:: shell
 
    runmrcc False
 
-**symmetry**
+**symmetry** ``Logical``
 
 .. code-block:: shell
 
@@ -489,35 +489,37 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    symmetry_subgroup c1
 
-**correction**
+**correction**  ``Logical``
 
 .. code-block:: shell
 
    correction False
 
-**splitorders**
+**splitorders** ``Integer``
 
 .. code-block:: shell
 
    splitorders 1,2,3
 
-**mpi**
+**mpi** ``Logical``
 
 .. code-block:: shell
 
    mpi False
 
-**scf_guess_read**
+**scf_guess_read** ``Logical``
 
 .. code-block:: shell
 
    scf_guess_read False
 
+**pic_change** ``Logical``
+
 .. code-block:: shell
 
-   pic_change boolean
+   pic_change 
 
-**remove_linear_dependency**
+**remove_linear_dependency**  ``Logical``
 
 .. code-block:: shell
 
@@ -535,37 +537,37 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    povo_ex None
 
-**omega**
+**omega** ``Integer``
 
 .. code-block:: shell
 
    omega 0
 
-**pytranf**
+**pytranf** ``Logical``
 
 .. code-block:: shell
 
    pytranf False
 
-**dirac_complex**
+**dirac_complex** ``Logical``
 
 .. code-block:: shell
 
    dirac_complex False
 
-**plotnat**
+**plotnat** ``Logical``
 
 .. code-block:: shell
 
    plotnat False
 
-**plotnat_no**
+**plotnat_no** 
 
 .. code-block:: shell
 
    plotnat_no []
 
-**plotnto**
+**plotnto** ``Logical``
 
 .. code-block:: shell
 
@@ -577,97 +579,97 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    plotnto_no []
 
-**Triplet boolean**
+**Triplet** ``Logical``
 
 .. code-block:: shell
 
    Triplet False
 
-**DysonOrbPlot**
+**DysonOrbPlot** ``Logical``
 
 .. code-block:: shell
 
    DysonOrbPlot False
 
-**exdm**
+**exdm** ``Logical``
 
 .. code-block:: shell
 
    exdm True
 
-**tdm**
+**tdm** ``Logical``
 
 .. code-block:: shell
 
    tdm True
 
-**z_axis**
+**z_axis** ``Logical``
 
 .. code-block:: shell
 
    z_axis False
 
-**x_axis**
+**x_axis** ``Logical``
 
 .. code-block:: shell
 
    x_axis False
 
-**ucc_prop**
+**ucc_prop** ``Logical``
 
 .. code-block:: shell
 
    ucc_prop False
 
-**fort**
+**fort** ``Logical``
 
 .. code-block:: shell
 
    fort True
 
-**CD**
+**CD** ``Logical``
 
 .. code-block:: shell
 
    CD False
 
-**ccpert_lambda**
+**ccpert_lambda** ``Logical``
 
 .. code-block:: shell
 
    ccpert_lambda True
 
-**T3**
+**T3** ``Logical``
 
 .. code-block:: shell
 
    T3 False
 
-**bulksize**
+**bulksize** ``Integer``
 
 .. code-block:: shell
 
    bulksize 10
 
-**dtype**
+**dtype** ``Integer``
 
 .. code-block:: shell 
 
    dtype None
 
-**Pembed**
+**Pembed** ``Logical``
 
 .. code-block:: shell
 
    Pembed False
 
-**shift_e**
+**shift_e** ``Integer ``
 
 .. code-block:: shell 
 
    shift_e 0 
 
-**CD_Threshold**
+**CD_Threshold** ``Float``
 
 .. code-block:: shell 
 
@@ -679,31 +681,31 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    active_atoms
 
-**cpy**
+**cpy** ``Logical``
 
 .. code-block:: shell
 
    cpy False
 
-**cav_frequency**
+**cav_frequency** ``Integer``
 
 .. code-block:: shell
 
    cav_frequency 0
 
-**cav_lambda_x**
+**cav_lambda_x** ``Integer``
 
 .. code-block:: shell
 
    cav_lambda_x None
 
-**cav_lambda_y**
+**cav_lambda_y** ``Integer``
 
 .. code-block:: shell
 
    cav_lambda_y  None
 
-**cav_lambda_z**
+**cav_lambda_z** ``Integer``
 
 .. code-block:: shell
 
