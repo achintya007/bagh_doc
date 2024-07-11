@@ -105,7 +105,7 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    DoCore False
 
-   **DoCVS** ``Logical``
+**DoCVS** ``Logical``
 
 .. code-block:: shell
 
