@@ -34,7 +34,7 @@ Contents
    :caption: Detailed documentations 
    :maxdepth: 2
 
-   Algebraic Diagrammatic Construction (ADC)
+   adc
 
 .. toctree::
    :caption: References 
