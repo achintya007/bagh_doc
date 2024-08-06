@@ -31,6 +31,12 @@ Contents
    methods_non-Relativistic
 
 .. toctree::
+   :caption: Detailed documentations 
+   :maxdepth: 2
+
+   Algebraic Diagrammatic Construction (ADC)
+
+.. toctree::
    :caption: References 
    :maxdepth: 1
 
