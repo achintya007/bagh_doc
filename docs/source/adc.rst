@@ -91,3 +91,79 @@ With the above computational procedure, we obtain the following excitation energ
   8 --> 11 0.22 	
   9 --> 10 0.45 	
   9 --> 11 0.20
+
+A similar type of the above input file can be used for IP and EA also. One just needs to change the name of the method in the input file.
+
+********************************************************
+Transition dipole moment and excited state dipole moment
+********************************************************
+
+To get the transition dipole moment and excited state dipole moment, two extra keywords that have to be added in the %cc block are ``tdm`` and ``exdm``. A example input file is shown below:
+
+.. code-block:: shell 
+
+   ! EE-ADC(3) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   nroots 10
+   tdm True
+   exdm True
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+By switching on the ``tdm`` and ``exdm`` we obtain:
+
+.. code-block:: shell
+
+               ************************ Transition Dipole Moment *****************************
+			-------------------------------------------------------------------------------------------
+
+			         ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS
+
+			-------------------------------------------------------------------------------------------
+
+                         State     Energy      Wavelength      fosc         T2          TX        TY         TZ
+                                   (cm-1)        (nm)                    (au**2)       (au)      (au)       (au)      
+			-------------------------------------------------------------------------------------------
+
+			   1       82593.6       121.075      0.00000     0.00000     0.00000   0.00000   0.00000
+			   2       82593.6       121.075      0.00000     0.00000     0.00000   0.00000   0.00000
+			   3       82734.1       120.869      0.00001     0.00003     0.00466   0.00708   0.00000
+			   4       82734.1       120.869      0.00001     0.00002     0.00691   0.00477   0.00000
+			   5       82883.0       120.652      0.00000     0.00000     0.00000   0.00000   0.00000
+			   6       82883.7       120.651      0.00001     0.00003     0.00000   0.00000   0.00555
+			   7       87742.9       113.969      0.02065     0.07750     0.27840   0.00262   0.00000
+			   8       87742.9       113.969      0.02171     0.08145     0.00256   0.28541   0.00000
+			   9      109722.6        91.139      0.00000     0.00000     0.00000   0.00000   0.00000
+			  10      109722.8        91.139      0.00000     0.00000     0.00162   0.00001   0.00000
+
+      MP2 contribution (Electronic) to ground state dip moment in a.u. [0.000000000000125 0.000000000000000   0.043739251678833]
+
+              ************************ Excited State Dipole Moment *****************************
+			-------------------------------------------------------------------------------------------
+
+                         State     Energy      Wavelength      fosc         T2          TX        TY         TZ
+                                   (cm-1)        (nm)                    (au**2)       (au)      (au)       (au)      
+			-------------------------------------------------------------------------------------------
+
+			   1       82593.6       121.075      0.66368     2.64537     0.00000   0.00000   1.62646
+			   2       82593.6       121.075      0.66368     2.64537     0.00000   0.00000   1.62646
+			   3       82734.1       120.869      0.66479     2.64532     0.00000   0.00000   1.62644
+			   4       82734.1       120.869      0.66479     2.64532     0.00000   0.00000   1.62644
+			   5       82883.0       120.652      0.66598     2.64527     0.00000   0.00000   1.62643
+			   6       82883.7       120.651      0.66595     2.64512     0.00000   0.00000   1.62638
+			   7       87742.9       113.969      0.71816     2.69455     0.00000   0.00000   1.64151
+			   8       87742.9       113.969      0.71816     2.69455     0.00000   0.00000   1.64151
+			   9      109722.6        91.139      0.77565     2.32727     0.00000   0.00000   1.52554
+			  10      109722.8        91.139      0.77564     2.32724     0.00000   0.00000   1.52553
+
+In the excited state dipole moment section, a change in the dipole moment due to the excitation from ground to excited is listed. To get the total dipole moment for a particular excited state, MP2 contribution needs to be included. 
+
+
+
+
