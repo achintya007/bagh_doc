@@ -1,23 +1,9 @@
 Relativistic Framework
 ######################
 
-+---------------------+---------------------+---------------------+-----------------+
-|      Method         |        IP           |         EA          |     EE          |
-+=====================+=====================+=====================+=================+
-|   EOM-CCSD          |        YES          |      YES            |      YES        |
-+---------------------+---------------------+---------------------+-----------------+
-|    EOM-CC3          |      **---**        |     **---**         |      YES        |
-+---------------------+---------------------+---------------------+-----------------+
-|    ADC(2)           |        YES          |      YES            |      YES        |
-+---------------------+---------------------+---------------------+-----------------+
-|    ADC(2)-X         |        YES          |      YES            |      YES        |
-+---------------------+---------------------+---------------------+-----------------+
-|    ADC(3)           |        YES          |      YES            |      YES        |
-+---------------------+---------------------+---------------------+-----------------+
-|    UCC(3)           |        YES          |     **---**         |      YES        |
-+---------------------+---------------------+---------------------+-----------------+
-|    qUCCSD           |       **---**       |     **---**         |      YES        |
-+---------------------+---------------------+---------------------+-----------------+
+1. Four-component Methods
+For the generation of one- and two-electron integrals and the converged four-component DHF spinors, BAGH is currently interfaced with PySCF and DIRAC.
+For the PySCF interface, use the keyword 'spinor'
 
 *******************
 Ground State Energy
@@ -32,20 +18,20 @@ Coupled Cluster (CC)
 
 Coupled Cluster Singles Doubles (CCSD)
 --------------------------------------
-
 .. code-block:: shell 
 
    ! CCSD spinor unc-ccpvdz
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+You can control the CCSD energy covergence using the keyword 'cc_convergence'
 
 Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 -------------------------------------------------------------------
@@ -56,7 +42,6 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
@@ -81,7 +66,6 @@ Coupled Cluster approximate Triples (CC3)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    end
 
@@ -126,17 +110,34 @@ Quadratic unitary Coupled Cluster (qUCCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-To calculate the ionisation potential in the UCC framework, one can write ``IP-UCC3`` in place of method in the input file.
+****************************
+Beyond Ground State Methods
+****************************
+The following methods are also available in BAGH.
++---------------------+---------------------+---------------------+-----------------+
+|      Method         |        IP           |         EA          |     EE          |
++=====================+=====================+=====================+=================+
+|   EOM-CCSD          |        YES          |      YES            |      YES        |
++---------------------+---------------------+---------------------+-----------------+
+|    EOM-CC3          |      **---**        |     **---**         |      YES        |
++---------------------+---------------------+---------------------+-----------------+
+|    ADC(2)           |        YES          |      YES            |      YES        |
++---------------------+---------------------+---------------------+-----------------+
+|    ADC(2)-X         |        YES          |      YES            |      YES        |
++---------------------+---------------------+---------------------+-----------------+
+|    ADC(3)           |        YES          |      YES            |      YES        |
++---------------------+---------------------+---------------------+-----------------+
+|    UCC(3)           |        YES          |     **---**         |      YES        |
++---------------------+---------------------+---------------------+-----------------+
+|    qUCCSD           |       **---**       |     **---**         |      YES        |
++---------------------+---------------------+---------------------+-----------------+
 
-********************
-Excited State Energy
-********************
 ==================================================
 Equation of Motion Coupled Cluster (EOM-CC)
 ==================================================
 EOM-Coupled Cluster Singles Doubles (EOM-CCSD)
 ---------------------------------------------
-To calculate excitation energy in EOM-CCSD framework, the following input format can be used
+To calculate excitation energy in the EOM-CCSD framework, the following input format can be used.
 
 .. code-block:: shell 
 
@@ -144,7 +145,6 @@ To calculate excitation energy in EOM-CCSD framework, the following input format
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    eom_convergence 1e-6
    nroots 10
@@ -154,7 +154,7 @@ To calculate excitation energy in EOM-CCSD framework, the following input format
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-Similarly for ionization potential (IP), one needs to change the name of the method to ``IP-EOM-CCSD``, for example
+Similarly, for ionization potential (IP), one needs to change the name of the method to ``IP-EOM-CCSD``; for example
 
 .. code-block:: shell 
 
@@ -162,7 +162,6 @@ Similarly for ionization potential (IP), one needs to change the name of the met
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    eom_convergence 1e-6
    nroots 10
@@ -217,7 +216,7 @@ EOM-Coupled Cluster approximate Triples (EOM-CC3)
 ===========================================
 Excited state using Unitary Coupled Cluster
 ===========================================
-Third order unitary Coupled Cluster (UCC3)
+Third-order unitary Coupled Cluster (UCC3)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -235,6 +234,8 @@ Third order unitary Coupled Cluster (UCC3)
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+To calculate the ionization potential in the UCC framework, one can write ``IP-UCC3`` in place of the method in the input file.
 
 Quadratic unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
@@ -312,8 +313,47 @@ Third order ADC (ADC(3))
    F 0.0 0.0 0.9168
 
 
-To calculate the ionisation potential and electron affinity in the ADC framework, one can write ``IP-ADC(2)``, ``IP-ADC(2)-X``, ``IP-ADC(3)``, ``EA-ADC(2)``, ``EA-ADC(2)-X``, and ``EA-ADC(3)`` in place of method in the input file.
- 
+To calculate the ionization potential and electron affinity in the ADC framework, one can write ``IP-ADC(2)``, ``IP-ADC(2)-X``, ``IP-ADC(3)``, ``EA-ADC(2)``, ``EA-ADC(2)-X``, and ``EA-ADC(3)`` in place of method in the input file.
+
+*******************
+Low-Cost Techniques
+*******************
+============================
+Frozen Natural Spinors (FNS)
+============================
+To truncate the virtual space, frozen natural spinors (FNS) generated out of a one-body reduced correlated density matrix can be used. There are two types of truncation criteria:
+1. occupation number: It uses the exact value of the occupation number to truncate the virtual space. Use the keyword fnothresh for this criterion. By default, fnothresh is zero (0), which means no truncation at all.
+
+.. code-block:: shell 
+
+   ! FNO-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   fnothresh 1e-5
+   cc_convergence 1e-7
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+2. Percentage of virtual orbital (povo): It uses the percentage of the virtual space to keep. Use the keyword povo for this criterion.
+
+.. code-block:: shell 
+
+   ! FNO-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   povo 50
+   cc_convergence 1e-7
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 
 **********
 Properties
@@ -324,7 +364,7 @@ First order property
 
 Transition dipole moment using expectation value approach:
 ----------------------------------------------------------
-The ground to excited state transition moment in the EOM-CCSD framework can be expressed as
+The ground-to-excited state transition moment in the EOM-CCSD framework can be expressed as
 
 .. math::
 
@@ -347,7 +387,7 @@ To calculate the transition dipole moment (TDM) in the EOM-CCSD framework one ne
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-Similarly ground state dipole moment using CCSD in relativistic framework can be obtained using the following input:
+Similarly, ground state dipole moment using CCSD in a relativistic framework can be obtained using the following input:
 
 .. code-block:: shell 
 
@@ -366,3 +406,146 @@ Similarly ground state dipole moment using CCSD in relativistic framework can be
 =====================
 Second order property
 =====================
+
+2. Two-component Methods
+The two-component DHF calculations are done using the X2CAMF scheme of the socutils package interfaced with the BAGH.
+To use the two-component method, use the keyword 'SOC-X2CAMF'.
+*******************
+Ground State Energy
+*******************
+================================
+Coupled Cluster (CC)
+================================
+ .. math::
+
+    |\Psi_{cc} \rangle = e^{\hat{T}} |\Phi_{0} \rangle
+
+
+Coupled Cluster Singles Doubles (CCSD)
+--------------------------------------
+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
+-------------------------------------------------------------------
+Use the keyword 'Dopertrip' to enable the perturbative triples calculations   
+.. code-block:: shell 
+
+   ! SOC-X2CAMF CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   Dopertrip True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+****************************
+Beyond Ground State Methods
+****************************
+The following methods are also available in a two-component method.
++---------------------+---------------------+---------------------+-----------------+
+|      Method         |        IP           |         EA          |       EE        |
++=====================+=====================+=====================+=================+
+|       CCSD          |      **---**        |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+|      EOM-CCSD       |        YES          |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+|      ADC(2)         |        YES          |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+
+==================================================
+Equation of Motion Coupled Cluster (EOM-CC)
+==================================================
+EOM-Coupled Cluster Singles Doubles (EOM-CCSD)
+---------------------------------------------
+The following input format can be used to calculate ionization potential (IP) in the EOM-CCSD framework.
+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF IP-EOM-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   eom_convergence 1e-6
+   nroots 10
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+*******************
+Low-Cost Techniques
+*******************
+============================
+Frozen Natural Spinors (FNS)
+============================
+The following methods are available with the FNS technique in a two-component method.
++---------------------+---------------------+---------------------+-----------------+
+|      Method         |        IP           |         EA          |       EE        |
++=====================+=====================+=====================+=================+
+|    FNO-CCSD         |      **---**        |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+|   FNO-EOM-CCSD      |        YES          |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+|    FNO-ADC(2)       |      **---**        |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF FNO-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   fnothresh 1e-5
+   cc_convergence 1e-7
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+============================
+Cholesky Decomposition (CD)
+============================
+The Cholesky decomposition scheme can reduce disk space and memory demands by decomposing the two-electron integrals. Use the keyword 'CD' to enable Cholesky decomposition and CD_Threshold to adjust the accuracy. By default, CD_Threshold is 1e-5.
+
+The following methods are available with the CD technique in a two-component method.
++---------------------+---------------------+---------------------+-----------------+
+|      Method         |        IP           |         EA          |       EE        |
++=====================+=====================+=====================+=================+
+|       CCSD          |      **---**        |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+|     EOM-CCSD        |        YES          |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+|      ADC(2)         |      **---**        |      **---**        |      **---**    |
++---------------------+---------------------+---------------------+-----------------+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   CD True
+   CD_Threshold 1e-3
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
