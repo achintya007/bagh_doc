@@ -1,7 +1,9 @@
 Relativistic Framework
 ######################
 
+*************************
 1. Four-component Methods
+*************************
 For the generation of one- and two-electron integrals and the converged four-component DHF spinors, BAGH is currently interfaced with PySCF and DIRAC.
 For the PySCF interface, use the keyword 'spinor'
 
@@ -407,7 +409,9 @@ Similarly, ground state dipole moment using CCSD in a relativistic framework can
 Second order property
 =====================
 
+************************
 2. Two-component Methods
+************************
 The two-component DHF calculations are done using the X2CAMF scheme of the socutils package interfaced with the BAGH.
 To use the two-component method, use the keyword 'SOC-X2CAMF'.
 *******************
