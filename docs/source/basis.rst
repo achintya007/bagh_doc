@@ -1,17 +1,44 @@
 Ways to assign basis sets
 #########################
 
-Similar to the other part of the input file in BAGH, the basis set assignment is case and space-insensitive (as long as different keywords are separated) unless mentioned otherwise. There are 3 ways basis sets are assigned to different atoms in BAGH:
+Similar to the other part of the input file in BAGH, the basis set assignment is case and space-insensitive (as long as different keywords are separated) unless mentioned otherwise. There are 3 ways basis sets are assigned to different atoms in BAGH (arranged according to the priorities):
 
-1. Atom-specific basis sets
+1. Atom-specific basis set
 2. Custom basis set
 3. Universal basis set
 
-The highest priority is given to the atom-specific basis sets, and the lowest goes to the universal basis set assignment. If no basis set is assigned to an atom, by default, STO-3G is assigned to it.
+The highest priority is given to the atom-specific basis sets, and the lowest goes to the universal basis set assignment. If no basis set is assigned to an atom at all, by default, STO-3G is assigned to it.
+
+A sample input file is shown below:
+
+
+
+.. code-block:: shell 
+
+   ! CCSD spinor  pos3   pos4   pos5
+
+   %cc
+   incore 5
+   end
+
+   %basis
+   pos2
+   end
+
+   *xyz 0 1
+   H	 0.0000	-0.9377	-0.3816   pos1
+   H	 0.8121	 0.4689	-0.3816
+   H	-0.8121	 0.4689	-0.3816
+   N	 0.0000	 0.0000	 0.0000    
+
+All 3 positions are shown in the above example. pos1, pos2 and pos3 refer to the positions of atom-specific basis, custom basis and universal basis, respectively. A basis set can be assigned to an atom in either of these 3 ways. In the above example, one of the ``H`` atoms is being assigned a basis set from the atom-specific basis (pos1). The rest of the two ``H`` atoms and the N atom can either be assigned by the custom basis (pos2) or the universal basis (pos3) only if any atom is left unassigned in the custom basis. Let's say custom basis only contains basis functions for ``N`` atom, then rest of the two ``H`` atoms will be assigned from the universal basis in pos3. The positions pos4 and pos5 refer to the position of JK and RI basis positions, respectively (if any).
+
 
 ***********************
 Atom-specific basis set
 ***********************
+
+Atom-specific basis sets are written within the coordinate block ``*xyz``.
 
 ****************
 Custom basis set
@@ -33,13 +60,17 @@ Universal basis set
 Available basis sets
 ####################
 
+**************
+Main basis set
+**************
+
 There are several basis sets that are currently available in BAGH as a keyword. Basis sets keywords are usually slightly different than their respective names but they are simple and comprehensible eg. ``aug-cc-pVDZ`` basis set is called as ``augccpvdz`` etc. Following is the list of exact keywords of all currently available basis sets in BAGH.
 
 .. raw:: html
 
    <!-- Dropdown Menu HTML -->
    <div class="dropdown">
-       <button class="dropdown-btn">Choose a basis</button>
+       <button class="dropdown-btn">Choose main basis</button>
        <div class="dropdown-content" style="display: none;">
            <ul>
                <li>ano</li>
@@ -380,6 +411,8 @@ There are several basis sets that are currently available in BAGH as a keyword. 
        }
    </style>
 
+
+
 .. raw:: html
 
    <!-- Custom JavaScript -->
@@ -402,3 +435,244 @@ There are several basis sets that are currently available in BAGH as a keyword. 
        });
    </script>
 
+There are additional dyall basis sets, for which a separate discussion is done in a different section.
+
+**********************
+JK auxiliary basis set
+**********************
+
+.. raw:: html
+
+   <!-- Dropdown Menu HTML -->
+   <div class="dropdown">
+       <button class="dropdown-btn">Choose JK auxiliary basis</button>
+       <div class="dropdown-content" style="display: none;">
+           <ul>
+               <li>ccpvdzjkfit</li>                                                                               
+               <li>ccpvtzjkfit</li>                                                    
+               <li>ccpvqzjkfit</li>                                                                                   
+               <li>ccpv5zjkfit</li>
+               <li>weigendjkfit</li>
+               <li>augccpvdzjkfit</li>                                                                                  
+               <li>augccpvdzpjkfit</li>                                                                                
+               <li>augccpvtzjkfit</li>                                                                               
+               <li>augccpvqzjkfit</li>
+               <li>augccpv5zjkfit</li>
+               <li>heavyaugccpvdzjkfit</li>
+               <li>heavyaugccpvtzjkfit</li>
+               <li>def2svpjfit</li>
+               <li>def2svpjkfit</li>
+               <li>def2tzvpjfit</li>
+               <li>def2tzvpjkfit</li>
+               <li>def2tzvppjfit</li>
+               <li>def2tzvppjkfit</li>
+               <li>def2qzvpjfit</li>
+               <li>def2qzvpjkfit</li>
+               <li>def2qzvppjfit</li>
+               <li>def2qzvppjkfit</li>
+               <li>def2universaljfit</li>
+               <li>def2universaljkfit</li>
+           </ul>
+       </div>
+   </div>
+
+.. raw:: html
+
+   <!-- Custom CSS -->
+   <style>
+       .dropdown {
+           margin: 20px 0;
+           font-family: Arial, sans-serif;
+           position: relative;
+           width: 200px;
+       }
+
+       .dropdown-btn {
+           cursor: pointer;
+           background-color: #007bff;
+           color: white;
+           border: none;
+           padding: 10px 15px;
+           font-size: 16px;
+           border-radius: 5px;
+           text-align: left;
+           width: 100%;
+       }
+
+       .dropdown-btn:hover {
+           background-color: #0056b3;
+       }
+
+       .dropdown-content {
+           position: absolute;
+           top: 100%;
+           left: 0;
+           right: 0;
+           max-height: 200px; /* Limits the height of the dropdown */
+           overflow-y: auto; /* Adds vertical scrolling */
+           border: 1px solid #ddd;
+           background-color: #f9f9f9;
+           border-radius: 5px;
+           box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+           z-index: 1000;
+       }
+
+       .dropdown-content ul {
+           list-style: none;
+           padding: 0;
+           margin: 0;
+       }
+
+       .dropdown-content li {
+           padding: 10px;
+           cursor: pointer;
+           border-bottom: 1px solid #ddd;
+       }
+
+       .dropdown-content li:hover {
+           background-color: #e9e9e9;
+       }
+
+       .dropdown-content li:last-child {
+           border-bottom: none;
+       }
+   </style>
+
+.. raw:: html
+
+   <!-- Custom JavaScript -->
+   <script>
+       document.addEventListener("DOMContentLoaded", function() {
+           const dropdownBtn = document.querySelector(".dropdown-btn");
+           const dropdownContent = document.querySelector(".dropdown-content");
+
+           dropdownBtn.addEventListener("click", function() {
+               const isHidden = dropdownContent.style.display === "none" || dropdownContent.style.display === "";
+               dropdownContent.style.display = isHidden ? "block" : "none";
+           });
+
+           // Hide dropdown if clicked outside
+           document.addEventListener("click", function(event) {
+               if (!dropdownBtn.contains(event.target) && !dropdownContent.contains(event.target)) {
+                   dropdownContent.style.display = "none";
+               }
+           });
+       });
+   </script>
+
+**********************
+RI auxiliary basis set
+**********************
+
+.. raw:: html
+
+   <!-- Dropdown Menu HTML -->
+   <div class="dropdown">
+       <button class="dropdown-btn">Choose RI auxiliary basis</button>
+       <div class="dropdown-content" style="display: none;">
+           <ul>
+               <li>cc-pvdz-ri</li>
+               <li>cc-pvtz-ri</li>
+               <li>cc-pvqz-ri</li>
+               <li>cc-pv5z-ri</li>
+               <li>cc-pv6z-ri</li>
+               <li>cc-pwcvdz-ri</li>
+               <li>cc-pwcvtz-ri</li>
+               <li>cc-pwcvqz-ri</li>
+               <li>cc-pwcv5z-ri</li>
+               <li>cc-pwcv6z-ri</li>
+               <li>aug-cc-pvdz-ri</li>
+               <li>aug-cc-pvtz-ri</li>
+               <li>aug-cc-pvqz-ri</li>
+               <li>aug-cc-pv5z-ri</li>
+               <li>aug-cc-pv6z-ri</li>
+               <li>def2-svp-ri</li>
+               <li>def2-tzvp-ri</li>
+               <li>def2-qzvp-ri</li>
+           </ul>
+       </div>
+   </div>
+
+.. raw:: html
+
+   <!-- Custom CSS -->
+   <style>
+       .dropdown {
+           margin: 20px 0;
+           font-family: Arial, sans-serif;
+           position: relative;
+           width: 200px;
+       }
+
+       .dropdown-btn {
+           cursor: pointer;
+           background-color: #007bff;
+           color: white;
+           border: none;
+           padding: 10px 15px;
+           font-size: 16px;
+           border-radius: 5px;
+           text-align: left;
+           width: 100%;
+       }
+
+       .dropdown-btn:hover {
+           background-color: #0056b3;
+       }
+
+       .dropdown-content {
+           position: absolute;
+           top: 100%;
+           left: 0;
+           right: 0;
+           max-height: 200px; /* Limits the height of the dropdown */
+           overflow-y: auto; /* Adds vertical scrolling */
+           border: 1px solid #ddd;
+           background-color: #f9f9f9;
+           border-radius: 5px;
+           box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+           z-index: 1000;
+       }
+
+       .dropdown-content ul {
+           list-style: none;
+           padding: 0;
+           margin: 0;
+       }
+
+       .dropdown-content li {
+           padding: 10px;
+           cursor: pointer;
+           border-bottom: 1px solid #ddd;
+       }
+
+       .dropdown-content li:hover {
+           background-color: #e9e9e9;
+       }
+
+       .dropdown-content li:last-child {
+           border-bottom: none;
+       }
+   </style>
+
+.. raw:: html
+
+   <!-- Custom JavaScript -->
+   <script>
+       document.addEventListener("DOMContentLoaded", function() {
+           const dropdownBtn = document.querySelector(".dropdown-btn");
+           const dropdownContent = document.querySelector(".dropdown-content");
+
+           dropdownBtn.addEventListener("click", function() {
+               const isHidden = dropdownContent.style.display === "none" || dropdownContent.style.display === "";
+               dropdownContent.style.display = isHidden ? "block" : "none";
+           });
+
+           // Hide dropdown if clicked outside
+           document.addEventListener("click", function(event) {
+               if (!dropdownBtn.contains(event.target) && !dropdownContent.contains(event.target)) {
+                   dropdownContent.style.display = "none";
+               }
+           });
+       });
+   </script>
