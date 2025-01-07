@@ -358,6 +358,9 @@ There are additional dyall basis sets, for which a separate discussion is done i
 JK auxiliary basis set
 **********************
 
+Following is the list of exact keywords of all currently available JK auxiliary basis sets in BAGH.
+
+
 .. raw:: html
 
    <!-- Dropdown Menu HTML -->
@@ -398,6 +401,9 @@ JK auxiliary basis set
 **********************
 RI auxiliary basis set
 **********************
+
+Following is the list of exact keywords of all currently available RI auxiliary basis sets in BAGH.
+
 
 .. raw:: html
 
