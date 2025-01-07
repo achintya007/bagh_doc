@@ -38,11 +38,53 @@ All 3 positions are shown in the above example. pos1, pos2 and pos3 refer to the
 Atom-specific basis set
 ***********************
 
-Atom-specific basis sets are written within the coordinate block ``*xyz`` in the 5th column as in pos1 in Example 1
+Atom-specific basis sets are written within the coordinate block ``*xyz`` in the 5th column as in pos1 in Example 1. The basis set is assigned only to that particular atom (eg. first ``H`` atom in Example 1). The rest of the atoms remain unassigned. A sample input file is shown where all of the atoms are assigned using atom-specific basis set.
+
+Example 2:
+
+.. code-block:: shell 
+
+   ! CCSD spinor
+
+   %cc
+   incore 5
+   end
+
+   *xyz 0 1
+   H	 0.0000	-0.9377	-0.3816   ccpvdz
+   H	 0.8121	 0.4689	-0.3816   ccpvdz
+   H	-0.8121	 0.4689	-0.3816   ccpvdz
+   N	 0.0000	 0.0000	 0.0000   augccpvdz
+
+Here all 3 ``H`` atoms are assigned ``cc-pVDZ`` basis set, while ``N`` atom is assigned to ``aug-cc-pVDZ`` basis set. One can also assign different basis sets for different atoms of the same element as in the following example.
+
+Example 3:
+
+.. code-block:: shell 
+
+   ! CCSD spinor
+
+   %cc
+   incore 5
+   end
+
+   *xyz 0 1
+   H	 0.0000	-0.9377	-0.3816   ccpvdz
+   H	 0.8121	 0.4689	-0.3816   631g
+   H	-0.8121	 0.4689	-0.3816   ccpvtz
+   N	 0.0000	 0.0000	 0.0000   augccpvdz
+
 
 ****************
 Custom basis set
 ****************
+
+If an atom remains unassigned to any basis set in an atom-specific way, the flow of code searches for that atom in the custom basis set. The custom basis set is provided within ``%basis`` block of the input file and it ends with a single ``end`` at the end. There should not be any other text in the middle as they may interfere with the proper running of the code, especially another ``end`` in the middle. Only one ``end`` keyword will be used for the entire ``%basis`` block. The custom basis has to be in the ``NWCHEM`` format.
+
+**Caution!**   Space-sensitivity in the custom basis
+
+   - Basis function type eg. ``S``, ``P``, ``D``, ``F``... has to start from the 6th column of the input file.
+
 
 *******************
 Universal basis set
