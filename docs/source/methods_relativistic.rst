@@ -116,6 +116,7 @@ Quadratic unitary Coupled Cluster (qUCCSD)
 Beyond Ground State Methods
 ****************************
 The following methods are also available in BAGH.
+
 +---------------------+---------------------+---------------------+-----------------+
 |      Method         |        IP           |         EA          |     EE          |
 +=====================+=====================+=====================+=================+
@@ -462,6 +463,7 @@ Use the keyword 'Dopertrip' to enable the perturbative triples calculations
 Beyond Ground State Methods
 ****************************
 The following methods are also available in a two-component method.
+
 +---------------------+---------------------+---------------------+-----------------+
 |      Method         |        IP           |         EA          |       EE        |
 +=====================+=====================+=====================+=================+
@@ -501,6 +503,7 @@ Low-Cost Techniques
 Frozen Natural Spinors (FNS)
 ============================
 The following methods are available with the FNS technique in a two-component method.
+
 +---------------------+---------------------+---------------------+-----------------+
 |      Method         |        IP           |         EA          |       EE        |
 +=====================+=====================+=====================+=================+
@@ -530,6 +533,7 @@ Cholesky Decomposition (CD)
 The Cholesky decomposition scheme can reduce disk space and memory demands by decomposing the two-electron integrals. Use the keyword 'CD' to enable Cholesky decomposition and CD_Threshold to adjust the accuracy. By default, CD_Threshold is 1e-5.
 
 The following methods are available with the CD technique in a two-component method.
+
 +---------------------+---------------------+---------------------+-----------------+
 |      Method         |        IP           |         EA          |       EE        |
 +=====================+=====================+=====================+=================+
