@@ -36,7 +36,6 @@ All 3 positions are shown in the above example. pos1, pos2 and pos3 refer to the
 .. note::
 
    One can assign a JK auxiliary basis even if there is no universal main basis.
-
    One can assign a RI auxiliary basis even if there is no universal main basis or JK auxiliary basis or both.
 
 ***********************
