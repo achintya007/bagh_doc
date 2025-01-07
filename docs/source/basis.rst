@@ -85,19 +85,214 @@ If an atom remains unassigned to any basis set in an atom-specific way, the flow
 
    - Basis function type eg. ``S``, ``P``, ``D``, ``F``... has to start from the 6th column of the input file.
 
+A sample input file is provided containing only custom basis assignment to each atom.
+
+Example 4:
+
+.. code-block:: shell 
+
+   ! CCSD spinor
+
+   %cc
+   incore 5
+   end
+
+   %basis
+   H    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H    P
+         7.270000E-01           1.0000000
+   N    S
+         9.046000E+03           7.000000E-04          -1.530000E-04           0.000000E+00
+         1.357000E+03           5.389000E-03          -1.208000E-03           0.000000E+00
+         3.093000E+02           2.740600E-02          -5.992000E-03           0.000000E+00
+         8.773000E+01           1.032070E-01          -2.454400E-02           0.000000E+00
+         2.856000E+01           2.787230E-01          -6.745900E-02           0.000000E+00
+         1.021000E+01           4.485400E-01          -1.580780E-01           0.000000E+00
+         3.838000E+00           2.782380E-01          -1.218310E-01           0.000000E+00
+         7.466000E-01           1.544000E-02           5.490030E-01           0.000000E+00
+         2.248000E-01          -2.864000E-03           5.788150E-01           1.000000E+00
+   N    P
+         1.355000E+01           3.991900E-02           0.000000E+00
+         2.917000E+00           2.171690E-01           0.000000E+00
+         7.973000E-01           5.103190E-01           0.000000E+00
+         2.185000E-01           4.622140E-01           1.000000E+00
+   N    D
+         8.170000E-01           1.0000000
+   end
+
+   *xyz 0 1
+   H	 0.0000	-0.9377	-0.3816
+   H	 0.8121	 0.4689	-0.3816
+   H	-0.8121	 0.4689	-0.3816
+   N	 0.0000	 0.0000	 0.0000
+
+If one wants to assign different basis sets to different atoms of the same element, eg. ``aug-cc-pVDZ`` basis set need to be assigned to one of the ``H`` atom and for all other atoms ``cc-pVDZ`` need to be assigned. One can do that using custom basis but in that case one has to number the atoms (Here ``H`` atoms).
+
+Example 5:
+
+.. code-block:: shell 
+
+   ! CCSD spinor
+
+   %cc
+   incore 5
+   end
+
+   %basis
+   H1    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H1    S
+         0.0297400              1.0000000
+   H1    P
+         7.270000E-01           1.0000000
+   H1    P
+         0.1410000              1.0000000 
+   H    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H    P
+         7.270000E-01           1.0000000
+   N    S
+         9.046000E+03           7.000000E-04          -1.530000E-04           0.000000E+00
+         1.357000E+03           5.389000E-03          -1.208000E-03           0.000000E+00
+         3.093000E+02           2.740600E-02          -5.992000E-03           0.000000E+00
+         8.773000E+01           1.032070E-01          -2.454400E-02           0.000000E+00
+         2.856000E+01           2.787230E-01          -6.745900E-02           0.000000E+00
+         1.021000E+01           4.485400E-01          -1.580780E-01           0.000000E+00
+         3.838000E+00           2.782380E-01          -1.218310E-01           0.000000E+00
+         7.466000E-01           1.544000E-02           5.490030E-01           0.000000E+00
+         2.248000E-01          -2.864000E-03           5.788150E-01           1.000000E+00
+   N    P
+         1.355000E+01           3.991900E-02           0.000000E+00
+         2.917000E+00           2.171690E-01           0.000000E+00
+         7.973000E-01           5.103190E-01           0.000000E+00
+         2.185000E-01           4.622140E-01           1.000000E+00
+   N    D
+         8.170000E-01           1.0000000
+   end
+
+   *xyz 0 1
+   H1	 0.0000	-0.9377	-0.3816
+   H2	 0.8121	 0.4689	-0.3816
+   H3	-0.8121	 0.4689	-0.3816
+   N	 0.0000	 0.0000	 0.0000
+
+In the above example, ``H1`` (first hydrogen atom) is assigned to the custom basis set of ``aug-cc-pVDZ``, while all other ``H`` atoms and ``N`` atom are assigned to cc-pVDZ basis set. In the %basis block, only ``H`` written in the left side (the place of atom) assigns it to all unassigned atoms of the same element. The numbered atom (eg. ``H1`` in this case) takes the priority to be assigned differently.
 
 *******************
 Universal basis set
 *******************
 
-This is a universal basis set.
+If no basis set is assigned to an atom, it gets assigned using the universal basis set as in pos3 in Example 1. Universal basis set is a single basis set that gets assigned to all atoms yet unassigned. Let's see an example:
 
+Example 6:
 
+.. code-block:: shell 
 
+   ! CCSD spinor ccpvdz
 
+   %cc
+   incore 5
+   end
 
+   *xyz 0 1
+   H	 0.0000	-0.9377	-0.3816
+   H	 0.8121	 0.4689	-0.3816
+   H	-0.8121	 0.4689	-0.3816
+   N	 0.0000	 0.0000	 0.0000
 
+Here, in Example 6, all atoms are assigned to ``cc-pVDZ`` basis set.
 
+Now, let's discuss a complicated basis assignment (see following):
+
+Example 6:
+
+.. code-block:: shell 
+
+   ! CCSD spinor def2qzvp
+
+   %cc
+   incore 5
+   end
+
+   %basis
+   H1   S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H1   S
+         0.0297400              1.0000000
+   H1   P
+         7.270000E-01           1.0000000
+   H1   P
+         0.1410000              1.0000000 
+   H    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H    P
+         7.270000E-01           1.0000000
+   end
+
+   *xyz 0 1
+   H1	 0.0000	-0.9377	-0.3816
+   H2	 0.8121	 0.4689	-0.3816
+   H3	-0.8121	 0.4689	-0.3816   631g
+   N	 0.0000	 0.0000	 0.0000
+
+Here, ``H1`` is assigned to the custom basis of ``aug-cc-pVDZ`` as a numbered atom, ``H2`` is assigned to the custom basis of ``cc-pVDZ`` as an unnumbered atom, ``H3`` is assigned to ``6-31G`` basis set as atom-specific assignment and ``N`` atom is assigned to the ``def2-QZVP`` basis set as an universal basis set of this input file.
+
+If an atom still remains unassigned (as in Example 7), it by default, gets assigned to ``STO-3G`` basis set.
+
+Example 7:
+
+.. code-block:: shell 
+
+   ! CCSD spinor
+
+   %cc
+   incore 5
+   end
+
+   %basis
+   H1   S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H1   S
+         0.0297400              1.0000000
+   H1   P
+         7.270000E-01           1.0000000
+   H1   P
+         0.1410000              1.0000000 
+   H    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H    P
+         7.270000E-01           1.0000000
+   end
+
+   *xyz 0 1
+   H1	 0.0000	-0.9377	-0.3816
+   H2	 0.8121	 0.4689	-0.3816
+   H3	-0.8121	 0.4689	-0.3816   631g
+   N	 0.0000	 0.0000	 0.0000
+
+Here, in Example 7, ``N`` atom is not assigned to any basis in any way. So, it takes ``STO-3G`` basis set.
 
 
 Available basis sets
