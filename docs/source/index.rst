@@ -37,6 +37,12 @@ Contents
    adc
 
 .. toctree::
+   :caption: Basis sets
+   :maxdepth: 3
+
+   basis
+
+.. toctree::
    :caption: References 
    :maxdepth: 1
 
