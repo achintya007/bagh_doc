@@ -188,6 +188,10 @@ Example 5:
 
 In the above example, ``H1`` (first hydrogen atom) is assigned to the custom basis set of ``aug-cc-pVDZ``, while all other ``H`` atoms and ``N`` are assigned to ``cc-pVDZ`` basis set. In the ``%basis`` block, only the element (eg. ``H`` here) written in the left side (the place of atom) assigns it to all unassigned atoms of the same element. The numbered atom (eg. ``H1`` in this case) takes the priority to be assigned differently.
 
+**Note:**
+   - Numbered atoms are prioritized over unnumbered atoms in the ``%basis`` block.
+
+
 *******************
 Universal basis set
 *******************
@@ -592,7 +596,7 @@ There are additional dyall basis sets, for which a separate discussion is done i
 JK auxiliary basis set
 **********************
 
-Following is the list of exact keywords of all currently available JK auxiliary basis sets in BAGH.
+Following is the list of exact keywords of all currently available JK auxiliary basis sets in BAGH. JK basis can only be assigned using universal basis assignment (as in pos4 in Example 1).
 
 .. raw:: html
 
@@ -629,13 +633,11 @@ Following is the list of exact keywords of all currently available JK auxiliary 
        </div>
    </div>
 
-
-
 **********************
 RI auxiliary basis set
 **********************
 
-Following is the list of exact keywords of all currently available RI auxiliary basis sets in BAGH.
+Following is the list of exact keywords of all currently available RI auxiliary basis sets in BAGH. RI basis can only be assigned using universal basis assignment (as in pos5 in Example 1).
 
 .. raw:: html
 
@@ -753,3 +755,26 @@ Following is the list of exact keywords of all currently available RI auxiliary 
           });
       });
    </script>
+
+Uncontraction of the basis sets
+###############################
+
+The atom-specific and universal basis sets can be uncontracted by adding a prefix ``unc-`` to the name of the basis set. eg. for an uncontracted version of the ``aug-cc-pVDZ`` basis set, one has to write ``unc-augccpvdz`` in the place of the basis set. See the following example:
+
+Example 8:
+
+.. code-block:: shell 
+
+   ! CCSD spinor unc-augccpvdz
+
+   %cc
+   incore 5
+   end
+
+   *xyz 0 1
+   H	 0.0000	-0.9377	-0.3816
+   H	 0.8121	 0.4689	-0.3816
+   H	-0.8121	 0.4689	-0.3816 unc-631g
+   N	 0.0000	 0.0000	 0.0000
+
+In the custom basis, one can uncontract beforehand if they need it.
