@@ -11,7 +11,7 @@ The highest priority is given to the atom-specific basis sets, and the lowest go
 
 A sample input file is shown below:
 
-
+Example1:
 
 .. code-block:: shell 
 
@@ -38,7 +38,7 @@ All 3 positions are shown in the above example. pos1, pos2 and pos3 refer to the
 Atom-specific basis set
 ***********************
 
-Atom-specific basis sets are written within the coordinate block ``*xyz``.
+Atom-specific basis sets are written within the coordinate block ``*xyz`` in the 5th column as in pos1 in Example 1
 
 ****************
 Custom basis set
