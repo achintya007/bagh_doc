@@ -48,7 +48,7 @@ Custom basis set
 Universal basis set
 *******************
 
-This is a universal basis set
+This is a universal basis set.
 
 
 
