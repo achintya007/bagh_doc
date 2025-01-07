@@ -11,7 +11,7 @@ The highest priority is given to the atom-specific basis sets, and the lowest go
 
 A sample input file is shown below:
 
-Example1:
+Example 1:
 
 .. code-block:: shell 
 
