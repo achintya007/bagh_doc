@@ -23,9 +23,9 @@ Universal basis set
 
 
 Available basis sets
-================================
+####################
 
-This is an example of a dropdown menu with a scrollable list and a dragger (scrollbar). You can select specific items from the list.
+There are several basis sets that are currently available in bagh as a keyword. Following is the list of all currently available basis sets in BAGH.
 
 .. raw:: html
 
