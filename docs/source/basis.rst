@@ -1,10 +1,12 @@
-Priorities
-##########
+Ways to assign basis sets
+#########################
 
 Similar to the other part of the input file in BAGH, the basis set assignment is case and space-insensitive (as long as different keywords are separated) unless mentioned otherwise. There are 3 ways basis sets are assigned to different atoms in BAGH:
+
 1. Atom-specific basis sets
 2. Custom basis set
 3. Universal basis set
+
 The highest priority is given to the atom-specific basis sets, and the lowest goes to the universal basis set assignment. If no basis set is assigned to an atom, by default, STO-3G is assigned to it.
 
 ***********************
@@ -20,7 +22,7 @@ Universal basis set
 *******************
 
 
-Scrollable Dropdown Menu Example
+Available basis sets
 ================================
 
 This is an example of a dropdown menu with a scrollable list and a dragger (scrollbar). You can select specific items from the list.
