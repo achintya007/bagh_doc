@@ -39,10 +39,6 @@ All 3 positions are shown in the above example. pos1, pos2 and pos3 refer to the
 
    One can assign a RI auxiliary basis even if there is no universal main basis or JK auxiliary basis or both.
 
-**Note:**
-   - One can assign a JK auxiliary basis even if there is no universal main basis.
-   - One can assign a RI auxiliary basis even if there is no universal main basis or JK auxiliary basis or both.
-
 ***********************
 Atom-specific basis set
 ***********************
@@ -90,9 +86,9 @@ Custom basis set
 
 If an atom remains unassigned to any basis set in an atom-specific way, the flow of code searches for that atom in the custom basis set. The custom basis set is provided within ``%basis`` block of the input file and it ends with a single ``end`` at the end. There should not be any other text in the middle as they may interfere with the proper running of the code, especially another ``end`` in the middle. Only one ``end`` keyword will be used for the entire ``%basis`` block. The custom basis has to be in the ``NWCHEM`` format.
 
-**Caution!**   Space-sensitivity in the custom basis
+.. caution::
 
-   - Basis function type eg. ``S``, ``P``, ``D``, ``F``... has to start from the 6th column of the input file.
+   **Space-sensitivity in the custom basis:** Basis function type eg. ``S``, ``P``, ``D``, ``F``... has to start from the 6th column of the input file.
 
 A sample input file is provided containing only custom basis assignment to each atom.
 
@@ -197,9 +193,9 @@ Example 5:
 
 In the above example, ``H1`` (first hydrogen atom) is assigned to the custom basis set of ``aug-cc-pVDZ``, while all other ``H`` atoms and ``N`` are assigned to ``cc-pVDZ`` basis set. In the ``%basis`` block, only the element (eg. ``H`` here) written in the left side (the place of atom) assigns it to all unassigned atoms of the same element. The numbered atom (eg. ``H1`` in this case) takes the priority to be assigned differently.
 
-**Note:**
-   - Numbered atoms are prioritized over unnumbered atoms in the ``%basis`` block.
+.. note::
 
+   Numbered atoms are prioritized over unnumbered atoms in the ``%basis`` block.
 
 *******************
 Universal basis set
