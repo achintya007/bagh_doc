@@ -33,6 +33,11 @@ Example 1:
 
 All 3 positions are shown in the above example. pos1, pos2 and pos3 refer to the positions of atom-specific basis, custom basis and universal basis, respectively. A basis set can be assigned to an atom in either of these 3 ways. In the above example, one of the ``H`` atoms is being assigned a basis set from the atom-specific basis (pos1). The rest of the two ``H`` atoms and the N atom can either be assigned by the custom basis (pos2) or the universal basis (pos3) only if any atom is left unassigned in the custom basis. Let's say custom basis only contains basis functions for ``N`` atom, then rest of the two ``H`` atoms will be assigned from the universal basis in pos3. The positions pos4 and pos5 refer to the position of JK and RI basis positions, respectively (if any).
 
+.. note::
+
+   -One can assign a JK auxiliary basis even if there is no universal main basis.
+   -One can assign a RI auxiliary basis even if there is no universal main basis or JK auxiliary basis or both.
+
 **Note:**
    - One can assign a JK auxiliary basis even if there is no universal main basis.
    - One can assign a RI auxiliary basis even if there is no universal main basis or JK auxiliary basis or both.
