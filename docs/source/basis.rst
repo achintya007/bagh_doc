@@ -783,20 +783,24 @@ Following is the list of exact keywords of all currently available RI auxiliary 
 
    <!-- Custom JavaScript -->
    <script>
-       document.addEventListener("DOMContentLoaded", function() {
-           const dropdownBtn = document.querySelector(".dropdown-btn");
-           const dropdownContent = document.querySelector(".dropdown-content");
-
-           dropdownBtn.addEventListener("click", function() {
-               const isHidden = dropdownContent.style.display === "none" || dropdownContent.style.display === "";
-               dropdownContent.style.display = isHidden ? "block" : "none";
-           });
-
-           // Hide dropdown if clicked outside
-           document.addEventListener("click", function(event) {
-               if (!dropdownBtn.contains(event.target) && !dropdownContent.contains(event.target)) {
-                   dropdownContent.style.display = "none";
-               }
-           });
-       });
+      document.addEventListener("DOMContentLoaded", function() {
+          const dropdowns = document.querySelectorAll(".dropdown");
+      
+          dropdowns.forEach((dropdown) => {
+              const dropdownBtn = dropdown.querySelector(".dropdown-btn");
+              const dropdownContent = dropdown.querySelector(".dropdown-content");
+      
+              dropdownBtn.addEventListener("click", function() {
+                  const isHidden = dropdownContent.style.display === "none" || dropdownContent.style.display === "";
+                  dropdownContent.style.display = isHidden ? "block" : "none";
+              });
+      
+              // Hide dropdown if clicked outside
+              document.addEventListener("click", function(event) {
+                  if (!dropdown.contains(event.target)) {
+                      dropdownContent.style.display = "none";
+                  }
+              });
+          });
+      });
    </script>
