@@ -1,5 +1,5 @@
 Priorities
-##########
+----------
 Similar to the other part of the input file in BAGH, the basis set assignment is case and space insensitive (as long as different keywords are separated). There are 3 ways basis sets are assigned to different atoms in BAGH:
 1. Atom-specific basis sets
 2. Custom basis set
