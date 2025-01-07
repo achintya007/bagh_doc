@@ -360,14 +360,14 @@ JK auxiliary basis set
 
 Following is the list of exact keywords of all currently available JK auxiliary basis sets in BAGH.
 
-
 .. raw:: html
 
    <!-- Dropdown Menu HTML -->
    <div class="dropdown">
-       <button class="dropdown-btn">Choose JK auxiliary basis</button>
+       <button class="dropdown-btn">Choose main basis</button>
        <div class="dropdown-content" style="display: none;">
            <ul>
+               <li>ano</li>
                <li>ccpvdzjkfit</li>                                                                               
                <li>ccpvtzjkfit</li>                                                    
                <li>ccpvqzjkfit</li>                                                                                   
@@ -404,14 +404,14 @@ RI auxiliary basis set
 
 Following is the list of exact keywords of all currently available RI auxiliary basis sets in BAGH.
 
-
 .. raw:: html
 
    <!-- Dropdown Menu HTML -->
    <div class="dropdown">
-       <button class="dropdown-btn">Choose RI auxiliary basis</button>
+       <button class="dropdown-btn">Choose main basis</button>
        <div class="dropdown-content" style="display: none;">
            <ul>
+               <li>ano</li>
                <li>cc-pvdz-ri</li>
                <li>cc-pvtz-ri</li>
                <li>cc-pvqz-ri</li>
