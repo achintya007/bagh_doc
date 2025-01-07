@@ -294,7 +294,6 @@ Example 7:
 
 Here, in Example 7, ``N`` atom is not assigned to any basis in any way. So, it takes ``STO-3G`` basis set.
 
-
 Available basis sets
 ####################
 
