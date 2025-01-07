@@ -186,7 +186,7 @@ Example 5:
    H3	-0.8121	 0.4689	-0.3816
    N	 0.0000	 0.0000	 0.0000
 
-In the above example, ``H1`` (first hydrogen atom) is assigned to the custom basis set of ``aug-cc-pVDZ``, while all other ``H`` atoms and ``N`` atom are assigned to cc-pVDZ basis set. In the %basis block, only ``H`` written in the left side (the place of atom) assigns it to all unassigned atoms of the same element. The numbered atom (eg. ``H1`` in this case) takes the priority to be assigned differently.
+In the above example, ``H1`` (first hydrogen atom) is assigned to the custom basis set of ``aug-cc-pVDZ``, while all other ``H`` atoms and ``N`` atom are assigned to ``cc-pVDZ basis set. In the %basis block, only ``H`` written in the left side (the place of atom) assigns it to all unassigned atoms of the same element. The numbered atom (eg. ``H1`` in this case) takes the priority to be assigned differently.
 
 *******************
 Universal basis set
