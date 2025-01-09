@@ -266,7 +266,7 @@ Here, ``H1`` is assigned to the custom basis of ``aug-cc-pVDZ`` as a numbered at
 
 If an atom still remains unassigned (as in Example 7), it by default, gets assigned to ``STO-3G`` basis set.
 
-Example 7:
+Example 8:
 
 .. code-block:: shell 
 
@@ -768,7 +768,7 @@ Uncontraction of the basis sets
 
 The atom-specific and universal basis sets can be uncontracted by adding a prefix ``unc-`` to the name of the basis set. eg. for an uncontracted version of the ``aug-cc-pVDZ`` basis set, one has to write ``unc-augccpvdz`` in the place of the basis set. See the following example:
 
-Example 8:
+Example 9:
 
 .. code-block:: shell 
 
