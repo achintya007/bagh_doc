@@ -15,7 +15,7 @@ Example 1:
 
 .. code-block:: shell 
 
-   ! CCSD spinor  pos3   pos4   pos5
+   ! CCSD pos3   pos4   pos5
 
    %cc
    incore 5
@@ -37,6 +37,7 @@ All 3 positions are shown in the above example. ``pos1``, ``pos2`` and ``pos3`` 
 
       - One can assign a JK auxiliary basis even if there is no universal main basis.
       - One can assign a RI auxiliary basis even if there is no universal main basis or JK auxiliary basis or both.
+      - JK and  RI auxiliary basis sets are only assigned in the RHF (spin-summed MO) interface of the code.
 
 ***********************
 Atom-specific basis set
