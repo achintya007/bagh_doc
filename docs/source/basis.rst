@@ -597,7 +597,7 @@ There are several basis sets that are currently available in BAGH as a keyword. 
        </div>
    </div>
 
-There are additional dyall basis sets, for which a separate discussion is done in a different section.
+There are additional dyall basis sets, for which a separate discussion is done in the section ``Additional information on Dyall basis sets``.
 
 **********************
 JK auxiliary basis set
