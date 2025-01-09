@@ -310,7 +310,7 @@ Here, in Example 8, ``N`` atom is not assigned to any basis in any way. So, it t
 Basis set assignment to ghost atoms
 ###################################
 
-Ghost atoms are defined as ``X`` atom in BAGH. Basis sets to ghost atoms are assigned in the same way as other atoms. In the Example 8, if all ``H`` atoms are replaced by ghost atoms, the input structure looks like the following.
+Ghost atoms are defined as ``X`` atom in BAGH. Basis sets to ghost atoms are assigned in the same way as other atoms. In the Example 8, if first two ``H`` atoms are replaced by ghost atoms, the input structure looks like the following.
 
 Example 9:
 
@@ -346,7 +346,7 @@ Example 9:
    *xyz 0 1
    X	 0.0000	-0.9377	-0.3816
    X	 0.8121	 0.4689	-0.3816
-   X	-0.8121	 0.4689	-0.3816   631g
+   H	-0.8121	 0.4689	-0.3816   631g
    N	 0.0000	 0.0000	 0.0000
 
 Basis set assignments in BAGH can be checked from the ouput file whether they are assigned correctly.
