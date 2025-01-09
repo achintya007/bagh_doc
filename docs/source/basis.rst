@@ -763,6 +763,10 @@ Following is the list of exact keywords of all currently available RI auxiliary 
       });
    </script>
 
+Additional information on Dyall basis sets
+##########################################
+
+
 Uncontraction of the basis sets
 ###############################
 
@@ -785,3 +789,47 @@ Example 9:
    N	 0.0000	 0.0000	 0.0000
 
 In the custom basis, one can uncontract beforehand if they need it.
+
+Basis set assignment to ghost atoms
+###################################
+
+Ghost atoms are defined as ``X`` atom in BAGH. Basis sets to ghost atoms are assigned in the same way as other atoms. In the example 8, if all ``H`` atoms are replaced by ghost atoms, the input structure looks like the following.
+
+Example 10:
+
+.. code-block:: shell 
+
+   ! CCSD spinor
+
+   %cc
+   incore 5
+   end
+
+   %basis
+   X    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   X    P
+         7.270000E-01           1.0000000
+   X1   S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   X1   S
+         0.0297400              1.0000000
+   X1   P
+         7.270000E-01           1.0000000
+   X1   P
+         0.1410000              1.0000000 
+   end
+
+   *xyz 0 1
+   X	 0.0000	-0.9377	-0.3816
+   X	 0.8121	 0.4689	-0.3816
+   X	-0.8121	 0.4689	-0.3816   631g
+   N	 0.0000	 0.0000	 0.0000
+
+Basis set assignments in BAGH can be checked from the ouput file whether they are assigned correctly.
