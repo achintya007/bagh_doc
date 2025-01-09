@@ -42,7 +42,7 @@ All 3 positions are shown in the above example. ``pos1``, ``pos2`` and ``pos3`` 
 Atom-specific basis set
 ***********************
 
-Atom-specific basis sets are written within the coordinate block ``*xyz`` in the 5th column as in pos1 in Example 1. The basis set is assigned only to that particular atom (eg. first ``H`` atom in Example 1). The rest of the atoms remain unassigned. A sample input file is shown where all of the atoms are assigned using atom-specific basis set.
+Atom-specific basis sets are written within the coordinate block ``*xyz`` in the 5th column as in ``pos1`` in Example 1. The basis set is assigned only to that particular atom (eg. first ``H`` atom in Example 1). The rest of the atoms remain unassigned. A sample input file is shown where all of the atoms are assigned using atom-specific basis set.
 
 Example 2:
 
@@ -603,7 +603,7 @@ There are additional dyall basis sets, for which a separate discussion is done i
 JK auxiliary basis set
 **********************
 
-Following is the list of exact keywords of all currently available JK auxiliary basis sets in BAGH. JK basis can only be assigned using universal basis assignment (as in pos4 in Example 1).
+Following is the list of exact keywords of all currently available JK auxiliary basis sets in BAGH. JK basis can only be assigned using universal basis assignment (as in ``pos4`` in Example 1).
 
 .. raw:: html
 
@@ -644,7 +644,7 @@ Following is the list of exact keywords of all currently available JK auxiliary 
 RI auxiliary basis set
 **********************
 
-Following is the list of exact keywords of all currently available RI auxiliary basis sets in BAGH. RI basis can only be assigned using universal basis assignment (as in pos5 in Example 1).
+Following is the list of exact keywords of all currently available RI auxiliary basis sets in BAGH. RI basis can only be assigned using universal basis assignment (as in ``pos5`` in Example 1).
 
 .. raw:: html
 
