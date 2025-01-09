@@ -31,7 +31,7 @@ Example 1:
    H	-0.8121	 0.4689	-0.3816
    N	 0.0000	 0.0000	 0.0000    
 
-All 3 positions are shown in the above example. pos1, pos2 and pos3 refer to the positions of atom-specific basis, custom basis and universal basis, respectively. A basis set can be assigned to an atom in either of these 3 ways. In the above example, one of the ``H`` atoms is being assigned a basis set from the atom-specific basis (pos1). The rest of the two ``H`` atoms and the N atom can either be assigned by the custom basis (pos2) or the universal basis (pos3) only if any atom is left unassigned in the custom basis. Let's say custom basis only contains basis functions for ``N`` atom, then rest of the two ``H`` atoms will be assigned from the universal basis in pos3. The positions pos4 and pos5 refer to the position of JK and RI basis positions, respectively (if any).
+All 3 positions are shown in the above example. ``pos1``, ``pos2`` and ``pos3`` refer to the positions of atom-specific basis, custom basis and universal basis, respectively. A basis set can be assigned to an atom in either of these 3 ways. In the above example, one of the ``H`` atoms is being assigned a basis set from the atom-specific basis (``pos1``). The rest of the two ``H`` atoms and the ``N`` atom can either be assigned by the custom basis (``pos2``) or the universal basis (``pos3``) only if any atom is left unassigned in the custom basis. Let's say custom basis only contains basis functions for ``N`` atom, then rest of the two ``H`` atoms will be assigned from the universal basis in ``pos3``. The positions ``pos4`` and ``pos5`` refer to the position of JK and RI basis positions, respectively (if any).
 
 .. note::
 
@@ -134,7 +134,7 @@ Example 4:
    H	-0.8121	 0.4689	-0.3816
    N	 0.0000	 0.0000	 0.0000
 
-If one wants to assign different basis sets to different atoms of the same element, eg. ``aug-cc-pVDZ`` basis set need to be assigned to one of the ``H`` atom and for all other atoms ``cc-pVDZ`` need to be assigned. One can do that using custom basis but in that case one has to number the atoms (Here ``H`` atoms).
+If one wants to assign different basis sets to different atoms of the same element, eg. ``aug-cc-pVDZ`` basis set need to be assigned to one of the ``H`` atom and for all other atoms ``cc-pVDZ`` need to be assigned, one can do that using custom basis but in that case one has to number the atoms (Here ``H`` atoms).
 
 Example 5:
 
@@ -147,17 +147,6 @@ Example 5:
    end
 
    %basis
-   H1    S
-         1.301000E+01           1.968500E-02           0.000000E+00
-         1.962000E+00           1.379770E-01           0.000000E+00
-         4.446000E-01           4.781480E-01           0.000000E+00
-         1.220000E-01           5.012400E-01           1.000000E+00
-   H1    S
-         0.0297400              1.0000000
-   H1    P
-         7.270000E-01           1.0000000
-   H1    P
-         0.1410000              1.0000000 
    H    S
          1.301000E+01           1.968500E-02           0.000000E+00
          1.962000E+00           1.379770E-01           0.000000E+00
@@ -165,6 +154,17 @@ Example 5:
          1.220000E-01           5.012400E-01           1.000000E+00
    H    P
          7.270000E-01           1.0000000
+   H1   S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H1   S
+         0.0297400              1.0000000
+   H1   P
+         7.270000E-01           1.0000000
+   H1   P
+         0.1410000              1.0000000 
    N    S
          9.046000E+03           7.000000E-04          -1.530000E-04           0.000000E+00
          1.357000E+03           5.389000E-03          -1.208000E-03           0.000000E+00
@@ -185,9 +185,9 @@ Example 5:
    end
 
    *xyz 0 1
-   H1	 0.0000	-0.9377	-0.3816
-   H2	 0.8121	 0.4689	-0.3816
-   H3	-0.8121	 0.4689	-0.3816
+   H	 0.0000	-0.9377	-0.3816
+   H	 0.8121	 0.4689	-0.3816
+   H	-0.8121	 0.4689	-0.3816
    N	 0.0000	 0.0000	 0.0000
 
 In the above example, ``H1`` (first hydrogen atom) is assigned to the custom basis set of ``aug-cc-pVDZ``, while all other ``H`` atoms and ``N`` are assigned to ``cc-pVDZ`` basis set. In the ``%basis`` block, only the element (eg. ``H`` here) written in the left side (the place of atom) assigns it to all unassigned atoms of the same element. The numbered atom (eg. ``H1`` in this case) takes the priority to be assigned differently.
@@ -195,12 +195,13 @@ In the above example, ``H1`` (first hydrogen atom) is assigned to the custom bas
 .. note::
 
    Numbered atoms are prioritized over unnumbered atoms in the ``%basis`` block.
+   Numbered atoms' basis sets have to be written after the basis set for the unnumbered atom of the same elemnt in the ``%basis`` block.
 
 *******************
 Universal basis set
 *******************
 
-If no basis set is assigned to an atom, it gets assigned using the universal basis set as in pos3 in Example 1. Universal basis set is a single basis set that gets assigned to all atoms yet unassigned. Let's see an example:
+If no basis set is assigned to an atom, it gets assigned using the universal basis set as in ``pos3`` in Example 1. Universal basis set is a single basis set that gets assigned to all atoms yet unassigned. Let's see an example:
 
 Example 6:
 
@@ -222,7 +223,7 @@ Here, in Example 6, all atoms are assigned to ``cc-pVDZ`` basis set.
 
 Now, let's discuss a complicated basis assignment (see following):
 
-Example 6:
+Example 7:
 
 .. code-block:: shell 
 
@@ -233,6 +234,13 @@ Example 6:
    end
 
    %basis
+   H    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H    P
+         7.270000E-01           1.0000000
    H1   S
          1.301000E+01           1.968500E-02           0.000000E+00
          1.962000E+00           1.379770E-01           0.000000E+00
@@ -244,19 +252,12 @@ Example 6:
          7.270000E-01           1.0000000
    H1   P
          0.1410000              1.0000000 
-   H    S
-         1.301000E+01           1.968500E-02           0.000000E+00
-         1.962000E+00           1.379770E-01           0.000000E+00
-         4.446000E-01           4.781480E-01           0.000000E+00
-         1.220000E-01           5.012400E-01           1.000000E+00
-   H    P
-         7.270000E-01           1.0000000
    end
 
    *xyz 0 1
-   H1	 0.0000	-0.9377	-0.3816
-   H2	 0.8121	 0.4689	-0.3816
-   H3	-0.8121	 0.4689	-0.3816   631g
+   H	 0.0000	-0.9377	-0.3816
+   H	 0.8121	 0.4689	-0.3816
+   H	-0.8121	 0.4689	-0.3816   631g
    N	 0.0000	 0.0000	 0.0000
 
 Here, ``H1`` is assigned to the custom basis of ``aug-cc-pVDZ`` as a numbered atom, ``H2`` is assigned to the custom basis of ``cc-pVDZ`` as an unnumbered atom, ``H3`` is assigned to ``6-31G`` basis set as atom-specific assignment and ``N`` atom is assigned to the ``def2-QZVP`` basis set as an universal basis set of this input file.
@@ -274,6 +275,13 @@ Example 7:
    end
 
    %basis
+   H    S
+         1.301000E+01           1.968500E-02           0.000000E+00
+         1.962000E+00           1.379770E-01           0.000000E+00
+         4.446000E-01           4.781480E-01           0.000000E+00
+         1.220000E-01           5.012400E-01           1.000000E+00
+   H    P
+         7.270000E-01           1.0000000
    H1   S
          1.301000E+01           1.968500E-02           0.000000E+00
          1.962000E+00           1.379770E-01           0.000000E+00
@@ -285,19 +293,12 @@ Example 7:
          7.270000E-01           1.0000000
    H1   P
          0.1410000              1.0000000 
-   H    S
-         1.301000E+01           1.968500E-02           0.000000E+00
-         1.962000E+00           1.379770E-01           0.000000E+00
-         4.446000E-01           4.781480E-01           0.000000E+00
-         1.220000E-01           5.012400E-01           1.000000E+00
-   H    P
-         7.270000E-01           1.0000000
    end
 
    *xyz 0 1
-   H1	 0.0000	-0.9377	-0.3816
-   H2	 0.8121	 0.4689	-0.3816
-   H3	-0.8121	 0.4689	-0.3816   631g
+   H	 0.0000	-0.9377	-0.3816
+   H	 0.8121	 0.4689	-0.3816
+   H	-0.8121	 0.4689	-0.3816   631g
    N	 0.0000	 0.0000	 0.0000
 
 Here, in Example 7, ``N`` atom is not assigned to any basis in any way. So, it takes ``STO-3G`` basis set.
