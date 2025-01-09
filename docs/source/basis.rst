@@ -194,11 +194,12 @@ Example 5:
 In the above example, ``H1`` (first hydrogen atom) is assigned to the custom basis set of ``aug-cc-pVDZ``, while all other ``H`` atoms and ``N`` are assigned to ``cc-pVDZ`` basis set. In the ``%basis`` block, only the element (eg. ``H`` here) written in the left side (the place of atom) assigns it to all unassigned atoms of the same element. The numbered atom (eg. ``H1`` in this case) takes the priority to be assigned differently.
 
 .. note::
-
    Numbered atoms are prioritized over unnumbered atoms in the ``%basis`` block.
 
 .. caution::
-   Numbered atoms' basis sets have to be written after the basis set for the unnumbered atom of the same elemnt in the ``%basis`` block.
+      - Numbered atoms' basis sets have to be written after the basis set for the unnumbered atom of the same elemnt in the ``%basis`` block.
+      - If numbered atoms are present in the custom basis set, a warning pops up saying *"Custom basis provided for specified elements will be overwritten."*. That can be ignored in such cases.
+   
 
 *******************
 Universal basis set
