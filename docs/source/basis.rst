@@ -197,7 +197,7 @@ In the above example, ``H1`` (first hydrogen atom) is assigned to the custom bas
    Numbered atoms are prioritized over unnumbered atoms in the ``%basis`` block.
 
 .. caution::
-      - Numbered atoms' basis sets have to be written after the basis set for the unnumbered atom of the same elemnt in the ``%basis`` block.
+      - Numbered atoms' basis sets have to be written after the basis set for the unnumbered atom (if any) of the same elemnt in the ``%basis`` block.
       - If numbered atoms are present in the custom basis set, a warning pops up saying *"Custom basis provided for specified elements will be overwritten."*. That can be ignored in such cases.
    
 
