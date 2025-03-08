@@ -409,6 +409,11 @@ Similarly, ground state dipole moment using CCSD in a relativistic framework can
 =====================
 Second order property
 =====================
+BAGH currently supports the calculation of second-order properties, specifically the static and dynamic polarizability of the ground state. These polarizabilities can be computed using linear response coupled cluster singles and doubles (LR-CCSD) within the four-component (4c) framework. The linear response function within the coupled cluster framework can be defined as,
+
+.. math::
+
+    \left\langle \left\langle \textbf{A};\textbf{B} \right\rangle \right\rangle = \frac{1}{2} \hat{P}(A,B) \left[ \left\langle \Phi_0 \left| [Y_{\omega_1}^{B}, \bar{A}] \right| \Phi_0 \right\rangle \right.  + \left.  \left\langle \Phi_0 \left|(1+\hat{\Lambda}) [\bar{A},X_{\omega_1}^{B}] \right| \Phi_0 \right\rangle \right]
 
 ************************
 2. Two-component Methods
