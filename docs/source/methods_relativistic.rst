@@ -420,6 +420,25 @@ BAGH currently supports the calculation of second-order properties, specifically
 + \frac{1}{2} [[\bar{H}, \hat{X}^{A}_{-\omega_{1}}], \hat{X}^{B}_{\omega_{1}}] \Big) 
 \Big| \Phi_0 \Big\rangle
 
+To compute polarizability at a specific frequency within the four-component (4c) relativistic framework, one must solve the ground-state left and right coupled cluster amplitudes and the perturbed left and right amplitudes. For example the following input can be used to compute the dynamic polarizability of the HF molecule at an external frequency of 0.07198 a.u.
+
+.. code-block:: shell 
+
+   ! LR-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   DoLambda True
+   omega 0.07198
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+The external frequency can be specified by setting ``omega`` to the desired user-defined value.
+
 ************************
 2. Two-component Methods
 ************************
