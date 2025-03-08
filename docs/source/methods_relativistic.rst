@@ -413,14 +413,9 @@ BAGH currently supports the calculation of second-order properties, specifically
 
 .. math::
 
-    \langle\langle \mathbf{A}; \mathbf{B} \rangle\rangle_{\omega_{1}} =  
-\frac{1}{2} \hat{C}^{\pm \omega_{1}} \hat{P} [A(-\omega_{1}), B(+\omega_{1})] 
-\Big\langle \Phi_0 \Big| (1 + \hat{\Lambda}) 
- \times \Big( [\bar{A}, \hat{X}^{B}_{\omega_{1}}] 
-+ \frac{1}{2} [[\bar{H}, \hat{X}^{A}_{-\omega_{1}}], \hat{X}^{B}_{\omega_{1}}] \Big) 
-\Big| \Phi_0 \Big\rangle
+    \langle\langle \mathbf{A}; \mathbf{B} \rangle\rangle_{\omega_{1}} =  \frac{1}{2} \hat{C}^{\pm \omega_{1}} \hat{P} [A(-\omega_{1}), B(+\omega_{1})] \Big\langle \Phi_0 \Big| (1 + \hat{\Lambda}) \times \Big( [\bar{A}, \hat{X}^{B}_{\omega_{1}}] + \frac{1}{2} [[\bar{H}, \hat{X}^{A}_{-\omega_{1}}], \hat{X}^{B}_{\omega_{1}}] \Big) \Big| \Phi_0 \Big\rangle
 
-To compute polarizability at a specific frequency within the four-component (4c) relativistic framework, one must solve the ground-state left and right coupled cluster amplitudes and the perturbed left and right amplitudes. For example the following input can be used to compute the dynamic polarizability of the HF molecule at an external frequency of 0.07198 a.u.
+To compute polarizability at a specific frequency within the four-component (4c) relativistic framework, one must solve the ground-state left and right coupled cluster amplitudes and the perturbed left and right amplitudes. For example, the following input can be used to compute the dynamic polarizability of the HF molecule at an external frequency of 0.07198 a.u.
 
 .. code-block:: shell 
 
