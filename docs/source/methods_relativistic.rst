@@ -413,7 +413,12 @@ BAGH currently supports the calculation of second-order properties, specifically
 
 .. math::
 
-    \left\langle \left\langle \textbf{A};\textbf{B} \right\rangle \right\rangle = \frac{1}{2} \hat{P}(A,B) \left[ \left\langle \Phi_0 \left| [Y_{\omega_1}^{B}, \bar{A}] \right| \Phi_0 \right\rangle \right.  + \left.  \left\langle \Phi_0 \left|(1+\hat{\Lambda}) [\bar{A},X_{\omega_1}^{B}] \right| \Phi_0 \right\rangle \right]
+    \langle\langle \mathbf{A}; \mathbf{B} \rangle\rangle_{\omega_{1}} =  
+\frac{1}{2} \hat{C}^{\pm \omega_{1}} \hat{P} [A(-\omega_{1}), B(+\omega_{1})] 
+\Big\langle \Phi_0 \Big| (1 + \hat{\Lambda}) 
+ \times \Big( [\bar{A}, \hat{X}^{B}_{\omega_{1}}] 
++ \frac{1}{2} [[\bar{H}, \hat{X}^{A}_{-\omega_{1}}], \hat{X}^{B}_{\omega_{1}}] \Big) 
+\Big| \Phi_0 \Big\rangle
 
 ************************
 2. Two-component Methods
