@@ -493,9 +493,7 @@ The following methods are also available in a two-component method.
 +---------------------+---------------------+---------------------+-----------------+
 |      Method         |        IP           |         EA          |       EE        |
 +=====================+=====================+=====================+=================+
-|       CCSD          |      **---**        |      **---**        |      **---**    |
-+---------------------+---------------------+---------------------+-----------------+
-|      EOM-CCSD       |        YES          |      **---**        |      **---**    |
+|      EOM-CCSD       |        YES          |      **---**        |        YES      |
 +---------------------+---------------------+---------------------+-----------------+
 |      ADC(2)         |        YES          |      **---**        |      **---**    |
 +---------------------+---------------------+---------------------+-----------------+
@@ -504,11 +502,8 @@ The following methods are also available in a two-component method.
 Equation of Motion Coupled Cluster (EOM-CC)
 ==================================================
 
-EOM-CCSD
---------
-
-IP
-..
+IP-EOM-CCSD
+------------
 
 The following input format can be used to calculate ionization potential (IP) in the EOM-CCSD framework.
 
@@ -527,6 +522,27 @@ The following input format can be used to calculate ionization potential (IP) in
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+
+EE-EOM-CCSD
+------------
+
+The following input format can be used to calculate excitation energy (EE) in the EOM-CCSD framework.
+
+.. code-block:: shell 
+
+   ! EE-EOM-CCSD soc-x2camf spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   eom_convergence 1e-6
+   nroots 2
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 *******************
 Low-Cost Techniques
 *******************
@@ -535,15 +551,31 @@ Frozen Natural Spinors (FNS)
 ============================
 The following methods are available with the FNS technique in a two-component method.
 
-+---------------------+---------------------+---------------------+-----------------+
-|      Method         |        IP           |         EA          |       EE        |
-+=====================+=====================+=====================+=================+
-|    FNO-CCSD         |      **---**        |      **---**        |      **---**    |
-+---------------------+---------------------+---------------------+-----------------+
-|   FNO-EOM-CCSD      |        YES          |      **---**        |      **---**    |
-+---------------------+---------------------+---------------------+-----------------+
-|    FNO-ADC(2)       |      **---**        |      **---**        |      **---**    |
-+---------------------+---------------------+---------------------+-----------------+
+FNO-CCSD
+FNO-IP-EOM-CCSD
+FNO-EE-EOM-CCSD
+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF FNO-CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   fnothresh 1e-5
+   cc_convergence 1e-7
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+==============================================
+State-Specific Frozen Natural Spinors (SS-FNS)
+==============================================
+The following methods are available with the SS-FNS technique in a two-component method.
+
+SS-FNO-EE-EOM-CCSD
+
 .. code-block:: shell 
 
    ! SOC-X2CAMF FNO-CCSD spinor unc-ccpvdz
@@ -563,17 +595,12 @@ Cholesky Decomposition (CD)
 ============================
 The Cholesky decomposition scheme can reduce disk space and memory demands by decomposing the two-electron integrals. Use the keyword 'CD' to enable Cholesky decomposition and CD_Threshold to adjust the accuracy. By default, CD_Threshold is 1e-5.
 
-The following methods are available with the CD technique in a two-component method.
+The following methods are available with the CD technique along with their FNS/SS-FNS versions (as per the availability mentioned above) in a two-component method.
 
-+---------------------+---------------------+---------------------+-----------------+
-|      Method         |        IP           |         EA          |       EE        |
-+=====================+=====================+=====================+=================+
-|       CCSD          |      **---**        |      **---**        |      **---**    |
-+---------------------+---------------------+---------------------+-----------------+
-|     EOM-CCSD        |        YES          |      **---**        |      **---**    |
-+---------------------+---------------------+---------------------+-----------------+
-|      ADC(2)         |      **---**        |      **---**        |      **---**    |
-+---------------------+---------------------+---------------------+-----------------+
+CCSD
+IP-EOM-CCSD
+EE-EOM-CCSD
+
 .. code-block:: shell 
 
    ! SOC-X2CAMF CCSD spinor unc-ccpvdz
