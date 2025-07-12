@@ -551,9 +551,11 @@ Frozen Natural Spinors (FNS)
 ============================
 The following methods are available with the FNS technique in a two-component method.
 
-FNO-CCSD
-FNO-IP-EOM-CCSD
-FNO-EE-EOM-CCSD
+``FNO-CCSD``
+
+``FNO-IP-EOM-CCSD``
+
+``FNO-EE-EOM-CCSD``
 
 .. code-block:: shell 
 
@@ -574,13 +576,14 @@ State-Specific Frozen Natural Spinors (SS-FNS)
 ==============================================
 The following methods are available with the SS-FNS technique in a two-component method.
 
-SS-FNO-EE-EOM-CCSD
+``SS-FNO-EE-EOM-CCSD``
 
 .. code-block:: shell 
 
-   ! SOC-X2CAMF FNO-CCSD spinor unc-ccpvdz
+   ! SS-FNO-EE-EOM-CCSD soc-x2camf spinor unc-ccpvdz
 
    %cc
+   DoADC2 True
    incore 5
    fnothresh 1e-5
    cc_convergence 1e-7
@@ -597,9 +600,12 @@ The Cholesky decomposition scheme can reduce disk space and memory demands by de
 
 The following methods are available with the CD technique along with their FNS/SS-FNS versions (as per the availability mentioned above) in a two-component method.
 
-CCSD
-IP-EOM-CCSD
-EE-EOM-CCSD
+``CCSD``
+
+``IP-EOM-CCSD``
+
+``EE-EOM-CCSD``
+
 
 .. code-block:: shell 
 
