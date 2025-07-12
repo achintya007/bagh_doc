@@ -491,11 +491,11 @@ Beyond Ground State Methods
 The following methods are also available in a two-component method.
 
 +---------------------+---------------------+---------------------+-----------------+
-|      Method         |        IP           |         EA          |       EE        |
+|      Method         |        IP           |         EA          |        EE       |
 +=====================+=====================+=====================+=================+
 |      EOM-CCSD       |        YES          |      **---**        |        YES      |
 +---------------------+---------------------+---------------------+-----------------+
-|      ADC(2)         |        YES          |      **---**        |      **---**    |
+|      ADC(2)         |        YES          |      **---**        |        YES      |
 +---------------------+---------------------+---------------------+-----------------+
 
 ==================================================
@@ -542,6 +542,30 @@ The following input format can be used to calculate excitation energy (EE) in th
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+
+==================================================
+Algebraic Diagrammatic Construction (ADC)
+==================================================
+
+EE-ADC(2)
+---------
+
+.. code-block:: shell 
+   ! EE-ADC(2) soc-x2camf spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   eom_convergence 1e-6
+   nroots 2
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
 
 *******************
 Low-Cost Techniques
@@ -605,6 +629,8 @@ The following methods are available with the CD technique along with their FNS/S
 ``IP-EOM-CCSD``
 
 ``EE-EOM-CCSD``
+
+``EE-ADC(2)``
 
 
 .. code-block:: shell 
