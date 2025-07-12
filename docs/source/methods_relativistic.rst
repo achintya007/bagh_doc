@@ -326,7 +326,7 @@ Frozen Natural Spinors (FNS)
 ============================
 To truncate the virtual space, frozen natural spinors (FNS) generated out of a one-body reduced correlated density matrix can be used. There are two types of truncation criteria:
 
-1. occupation number: It uses the exact value of the occupation number to truncate the virtual space. Use the keyword fnothresh for this criterion. By default, fnothresh is zero (0), which means no truncation at all.
+1. Occupation number: It uses the exact value of the occupation number to truncate the virtual space. Use the keyword fnothresh for this criterion. By default, fnothresh is zero (0), which means no truncation at all.
 
 .. code-block:: shell 
 
