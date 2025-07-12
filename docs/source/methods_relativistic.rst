@@ -647,3 +647,16 @@ The following methods are available with the CD technique along with their FNS/S
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+
+
+**********
+Properties
+**********
+=====================
+First order property
+=====================
+
+Transition dipole moment using expectation value approach:
+----------------------------------------------------------
+Transition dipole moments and Oscillator Strengths can also be calculated using Exact Two-Component Atomic Mean Field (X2cAMF) approach with and without Cholesky decomposition. By default, this feature is on. To turn off, one can put ``tdm False`` in the ``%cc`` block. 
