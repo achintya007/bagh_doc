@@ -443,6 +443,7 @@ To use the two-component method, use the keyword 'SOC-X2CAMF'.
 *******************
 Ground State Energy
 *******************
+
 ================================
 Coupled Cluster (CC)
 ================================
@@ -502,8 +503,13 @@ The following methods are also available in a two-component method.
 ==================================================
 Equation of Motion Coupled Cluster (EOM-CC)
 ==================================================
-EOM-Coupled Cluster Singles Doubles (EOM-CCSD)
----------------------------------------------
+
+EOM-CCSD
+--------
+
+IP
+..
+
 The following input format can be used to calculate ionization potential (IP) in the EOM-CCSD framework.
 
 .. code-block:: shell 
