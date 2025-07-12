@@ -661,7 +661,8 @@ Transition dipole moment using expectation value approach:
 ----------------------------------------------------------
 EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Oscillator Strengths can also be calculated using Exact Two-Component Atomic Mean Field (X2CAMF) approach with and without Cholesky decomposition. By default, this feature is on. To turn off, one can put ``tdm False`` in the ``%cc`` block. However, ``DoLambda True`` is mandatory for the left EOM calculation. The following is a sample input file.
 
-.. code-block:: shell 
+.. code-block:: shell
+
    ! SS-FNO-EE-EOM-CCSD spinor unc-ccpvdz
    
    %cc
