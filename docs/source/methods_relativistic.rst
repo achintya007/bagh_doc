@@ -471,10 +471,11 @@ Coupled Cluster Singles Doubles (CCSD)
 Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 -------------------------------------------------------------------
 Use the keyword 'Dopertrip' to enable the perturbative triples calculations   
+
 .. code-block:: shell 
 
    ! SOC-X2CAMF CCSD spinor unc-ccpvdz
-
+   
    %cc
    incore 5
    cc_convergence 1e-7
