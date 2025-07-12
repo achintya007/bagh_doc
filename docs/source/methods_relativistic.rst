@@ -357,6 +357,33 @@ To truncate the virtual space, frozen natural spinors (FNS) generated out of a o
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+==============================================
+State-Specific Frozen Natural Spinors (SS-FNS)
+==============================================
+
+EE-ADC(2) reduced density in the virtual-virtual block can also be added to the MP2 reduced density (same block) to form State-Specific reduced density, leading to State-Specific Frozen Natural Spinors (SS-FNS).
+
+.. math::
+
+    D^{SS}_{ab} = D^{MP2}_{ab} + D^{EE-ADC(2)}_{ab}
+
+A sample input file is given below. The keyword ``DoADC2 True`` is mandatory in the ``%cc`` block for the SS-FNS calculations.
+
+.. code-block:: shell
+
+   ! SS-FNO-EE-EOM-CCSD spinor unc-ccpvdz
+   
+   %cc
+   DoADC2 True
+   incore 5
+   real_ints True
+   nroots 2
+   DoLambda True
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 
 **********
 Properties
@@ -389,6 +416,8 @@ To calculate the transition dipole moment (TDM) in the EOM-CCSD framework one ne
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+This calculation can also be done for the FNS and SS_FNS counterparts, namely ``FNO-EE-EOM-CCSD`` and ``SS-FNO-EE-EOM-CCSD`` methods, respectively.
 
 Similarly, ground state dipole moment using CCSD in a relativistic framework can be obtained using the following input:
 
@@ -664,9 +693,11 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
 
 .. code-block:: shell
 
-   ! SS-FNO-EE-EOM-CCSD spinor unc-ccpvdz
+   ! SS-FNO-EE-EOM-CCSD soc-x2camf spinor unc-ccpvdz
    
    %cc
+   cd True
+   cd_threshold 1e-3
    DoADC2 True
    incore 5
    real_ints True
