@@ -5,7 +5,7 @@ Similar to the other part of the input file in BAGH, the basis set assignment is
 
 1. Atom-specific basis set
 2. Custom basis set
-3. Universal basis set 345
+3. Universal basis set
 
 The highest priority is given to the atom-specific basis sets, and the lowest goes to the universal basis set assignment. If no basis set is assigned to an atom at all, by default, STO-3G is assigned to it.
 
