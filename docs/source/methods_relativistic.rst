@@ -437,8 +437,9 @@ The external frequency can be specified by setting ``omega`` to the desired user
 ************************
 2. Two-component Methods
 ************************
-The two-component DHF calculations are done using the X2CAMF scheme of the socutils package interfaced with the BAGH.
+The two-component DHF calculations are done using the X2CAMF scheme of the socutils package, interfaced with the BAGH.
 To use the two-component method, use the keyword 'SOC-X2CAMF'.
+
 *******************
 Ground State Energy
 *******************
