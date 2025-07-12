@@ -659,4 +659,4 @@ First-order property
 
 Transition dipole moment using expectation value approach:
 ----------------------------------------------------------
-Transition dipole moments and Oscillator Strengths can also be calculated using Exact Two-Component Atomic Mean Field (X2cAMF) approach with and without Cholesky decomposition. By default, this feature is on. To turn off, one can put ``tdm False`` in the ``%cc`` block. 
+Transition dipole moments (TDMs) and Oscillator Strengths can also be calculated using Exact Two-Component Atomic Mean Field (X2CAMF) approach with and without Cholesky decomposition. By default, this feature is on. To turn off, one can put ``tdm False`` in the ``%cc`` block. 
