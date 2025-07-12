@@ -3,7 +3,7 @@ Ways to assign basis sets
 
 Similar to the other part of the input file in BAGH, the basis set assignment is case and space-insensitive (as long as different keywords are separated) unless mentioned otherwise. There are 3 ways basis sets are assigned to different atoms in BAGH (arranged according to the priorities):
 
-1. Atom-specific basis set
+1. Atom-specific basis set 2
 2. Custom basis set
 3. Universal basis set
 
