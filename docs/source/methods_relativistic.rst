@@ -654,7 +654,7 @@ The following methods are available with the CD technique along with their FNS/S
 Properties
 **********
 =====================
-First order property
+First-order property
 =====================
 
 Transition dipole moment using expectation value approach:
