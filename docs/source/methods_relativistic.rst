@@ -115,7 +115,7 @@ Quadratic unitary Coupled Cluster Triples (qUCCSD[T])
 
 .. code-block:: shell 
 
-   ! qUCCSD spinor unc-ccpvdz
+   ! qUCCSD[T] spinor unc-ccpvdz
 
    %cc
    incore 5
