@@ -151,7 +151,7 @@ Coupled Cluster approximate Triples (CC3)
 ===================================
 Unitary Coupled Cluster (UCC)
 ===================================
-Third order unitary Coupled Cluster (UCC3)
+Third-order Unitary Coupled Cluster (UCC3)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -167,7 +167,7 @@ Third order unitary Coupled Cluster (UCC3)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-Quadratic unitary Coupled Cluster (qUCCSD)
+Quadratic Unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -183,7 +183,23 @@ Quadratic unitary Coupled Cluster (qUCCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-To calculate the ionisation potential in the UCC framework, one can write ``IP-UCC3`` in place of method in the input file.
+Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
+------------------------------------------------------
+
+.. code-block:: shell 
+
+   ! qUCCSD[T] spinorbital unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
 
 ********************
 Excited State Energy
@@ -288,6 +304,8 @@ Third order unitary Coupled Cluster (UCC3)
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+To calculate the ionisation potential in the UCC framework, one can write ``IP-UCC3`` in place of method in the input file.
 
 Quadratic unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
