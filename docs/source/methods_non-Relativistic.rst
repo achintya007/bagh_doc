@@ -199,7 +199,7 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-The Density Fitting (DF) approximation can be applied within this UCC framework by including the keyword DF True within the %cc block. The following input file can be used for this purpose.
+The "Density Fitting" (DF) approximation can be applied within this UCC framework by including the keyword "DF True" within the %CC block. The following input file can be used for this purpose.
 
 Third-order Unitary Coupled Cluster (UCC3)
 ------------------------------------------
@@ -378,7 +378,7 @@ Quadratic unitary Coupled Cluster (qUCCSD)
   H 0.0 0.0 0.0
   F 0.0 0.0 0.9168
 
-The DF approximation can also be applied to excited-state calculations. The following input file can be used for this purpose.
+The "DF" approximation can also be applied to excited-state calculations. The following input file can be used for this purpose.
 
 Third-order unitary Coupled Cluster (UCC3)
 ------------------------------------------
