@@ -621,6 +621,59 @@ Use the keyword 'Dopertrip' to enable the perturbative triples calculations
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+================================
+Unitary Coupled Cluster (UCC)
+================================
+
+Third Order Unitary Coupled Cluster(UCC3)
+----------------------------------------
+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF UCC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+Quadratic Unitary Coupled Cluster Singles Doubles (qUCCSD)
+----------------------------------------------------------
+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF qUCCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+Quadratic Unitary Coupled Cluster Singles Doubles with perturbative Triples (qUCCSD[T])
+---------------------------------------------------------------------------------------  
+
+.. code-block:: shell 
+
+   ! SOC-X2CAMF QUCCSD[T] spinor unc-ccpvdz
+   
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
 ****************************
 Beyond Ground State Methods
 ****************************
@@ -765,6 +818,16 @@ The following methods are available with the CD technique along with their FNS/S
 ``IP-EOM-CCSD``
 
 ``EE-EOM-CCSD``
+
+``UCC3``
+
+``EE-UCC3``
+
+``QUCCSD``
+
+``EE-QUCCSD``
+
+``QUCCSD[T]``
 
 ``EE-ADC(2)``
 
