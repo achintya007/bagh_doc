@@ -94,7 +94,7 @@ Third order unitary Coupled Cluster (UCC3)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-Quadratic unitary Coupled Cluster (qUCCSD)
+Quadratic Unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -110,7 +110,7 @@ Quadratic unitary Coupled Cluster (qUCCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-Quadratic unitary Coupled Cluster Triples (qUCCSD[T])
+Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
 -----------------------------------------------------
 
 .. code-block:: shell 
