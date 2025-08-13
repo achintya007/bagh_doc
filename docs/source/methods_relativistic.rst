@@ -370,6 +370,42 @@ To truncate the virtual space, frozen natural spinors (FNS) generated out of a o
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+A similar input file can also be made by using UCC
+
+1. Occupation number: It uses the exact value of the occupation number to truncate the virtual space. Use the keyword fnothresh for this criterion. By default, fnothresh is zero (0), which means no truncation at all.
+
+.. code-block:: shell 
+
+   ! FNO-UCC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   fnothresh 1e-5
+   cc_convergence 1e-7
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
+2. Percentage of virtual orbital (povo): It uses the percentage of the virtual space to keep. Use the keyword povo for this criterion.
+
+.. code-block:: shell 
+
+   ! FNO-QUCCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   povo 50
+   cc_convergence 1e-7
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
 ==============================================
 State-Specific Frozen Natural Spinors (SS-FNS)
 ==============================================
