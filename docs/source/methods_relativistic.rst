@@ -78,7 +78,7 @@ Coupled Cluster approximate Triples (CC3)
 ===================================
 Unitary Coupled Cluster (UCC)
 ===================================
-Third order unitary Coupled Cluster (UCC3)
+Third-order unitary Coupled Cluster (UCC3)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -99,7 +99,7 @@ Quadratic Unitary Coupled Cluster (qUCCSD)
 
 .. code-block:: shell 
 
-   ! qUCCSD spinor unc-ccpvdz
+   ! QUCCSD spinor unc-ccpvdz
 
    %cc
    incore 5
@@ -115,7 +115,7 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
 
 .. code-block:: shell 
 
-   ! qUCCSD[T] spinor unc-ccpvdz
+   ! QUCCSD[T] spinor unc-ccpvdz
 
    %cc
    incore 5
