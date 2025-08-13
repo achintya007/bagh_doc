@@ -405,6 +405,8 @@ A similar input file can also be made by using UCC
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+To calculate the triple correction in the unitary coupled cluster framework, replace FNO-QUCCSD with FNO-QUCCSD[T].
+
 
 ==============================================
 State-Specific Frozen Natural Spinors (SS-FNS)
@@ -449,7 +451,7 @@ The ground-to-excited state transition moment in the EOM-CCSD framework can be e
 
     {\left| {{\mu _{o \to k}}} \right|^2} = \left\langle {{\Phi _0}} \right|(1 + \hat \Lambda )\bar \mu {\hat R_k}\left| {{\Phi _0}} \right\rangle \left\langle {{\Phi _0}} \right|{\hat L_k}\bar \mu \left| {{\Phi _0}} \right\rangle
 
-To calculate the transition dipole moment (TDM) in the EOM-CCSD framework one needs to solve both right and left eigenvectors due to the non-hermitian nature of the similarity-transformed Hamiltonian. This can be performed by adding ``DoLambda True`` in the ``%cc`` block. For example the following input can be used to compute excitation energies, TDM and Oscillator strengths in a 4c-relativistic framework,
+To calculate the transition dipole moment (TDM) in the EOM-CCSD framework one needs to solve both right and left eigenvectors due to the non-Hermitian nature of the similarity-transformed Hamiltonian. This can be performed by adding ``DoLambda True`` in the ``%cc`` block. For example the following input can be used to compute excitation energies, TDM and Oscillator strengths in a 4c-relativistic framework,
 
 .. code-block:: shell 
 
@@ -468,8 +470,49 @@ To calculate the transition dipole moment (TDM) in the EOM-CCSD framework one ne
 
 This calculation can also be done for the FNS and SS_FNS counterparts, namely ``FNO-EE-EOM-CCSD`` and ``SS-FNO-EE-EOM-CCSD`` methods, respectively.
 
+The TDM and oscillator strength can also be calculated within a 4c-relativistic EE-UCC framework, where only a single eigen vector is required due to the Hermitian nature of the similarity-transformed Hamiltonian. The following input file demonstrates this calculation.
 
-Similarly, ground state dipole moment using CCSD in a relativistic framework can be obtained using the following input:
+Third-order unitary Coupled Cluster (UCC3)
+------------------------------------------
+
+.. code-block:: shell 
+
+   ! EE-UCC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   ucc_convergence 1e-6
+   nroots 10
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
+Quadratic unitary Coupled Cluster (qUCCSD)
+------------------------------------------
+
+.. code-block:: shell 
+
+   ! EE-QUCCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   ucc_convergence 1e-6
+   nroots 10
+   end
+
+ 
+
+  *xyz 0 1
+  H 0.0 0.0 0.0
+  F 0.0 0.0 0.9168
+
+
+Similarly, ground state dipole moment using CCSD and UCC in a relativistic framework can be obtained using the following input:
 
 .. code-block:: shell 
 
@@ -479,6 +522,19 @@ Similarly, ground state dipole moment using CCSD in a relativistic framework can
    incore 5
    real_ints True
    DoLambda True
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+.. code-block:: shell 
+
+   ! UCC3 spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   ucc_prop True
    End
 
    *xyz 0 1
