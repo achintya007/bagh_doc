@@ -1,7 +1,7 @@
 Keyword Reference
 ####################################
 
-The default values are given as an example below for each keyword of the ``%cc`` block. 
+The default values are given as an example below for each keyword of the ``%cc`` block. For example
 
 ***********************************************
 **Keyword descpriptions for** ``%cc`` **block**
