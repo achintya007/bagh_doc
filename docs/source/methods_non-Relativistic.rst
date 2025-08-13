@@ -172,7 +172,7 @@ Quadratic Unitary Coupled Cluster (qUCCSD)
 
 .. code-block:: shell 
 
-   ! qUCCSD spinorbital unc-ccpvdz
+   ! QUCCSD spinorbital unc-ccpvdz
 
    %cc
    incore 5
@@ -188,7 +188,7 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
 
 .. code-block:: shell 
 
-   ! qUCCSD[T] spinorbital unc-ccpvdz
+   ! QUCCSD[T] spinorbital unc-ccpvdz
 
    %cc
    incore 5
@@ -199,7 +199,7 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-The "Density Fitting" (DF) approximation can be applied within this UCC framework by including the keyword "DF True" within the %CC block. The following input file can be used for this purpose.
+The "Density Fitting" (DF) approximation can be applied within this UCC framework by including the keyword "DF True" within the %cc block. The following input file can be used for this purpose.
 
 Third-order Unitary Coupled Cluster (UCC3)
 ------------------------------------------
@@ -223,7 +223,7 @@ Quadratic Unitary Coupled Cluster (qUCCSD)
 
 .. code-block:: shell 
 
-   ! qUCCSD spinorbital unc-ccpvdz
+   ! QUCCSD spinorbital unc-ccpvdz
 
    %cc
    incore 5
@@ -240,7 +240,7 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
 
 .. code-block:: shell 
 
-   ! qUCCSD[T] spinorbital unc-ccpvdz
+   ! QUCCSD[T] spinorbital unc-ccpvdz
 
    %cc
    incore 5
