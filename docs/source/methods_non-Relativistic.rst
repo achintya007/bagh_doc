@@ -338,7 +338,7 @@ EOM-Coupled Cluster approximate Triples (EOM-CC3)
 ===========================================
 Excited state using Unitary Coupled Cluster
 ===========================================
-Third-order unitary Coupled Cluster (UCC3)
+Third-order Unitary Coupled Cluster (UCC3)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -358,7 +358,7 @@ Third-order unitary Coupled Cluster (UCC3)
 
 To calculate the ionisation potential in the UCC framework, one can write ``IP-UCC3`` in place of method in the input file.
 
-Quadratic unitary Coupled Cluster (qUCCSD)
+Quadratic Unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -380,7 +380,7 @@ Quadratic unitary Coupled Cluster (qUCCSD)
 
 The "DF" approximation can also be applied to excited-state calculations. The following input file can be used for this purpose.
 
-Third-order unitary Coupled Cluster (UCC3)
+Third-order Unitary Coupled Cluster (UCC3)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -400,7 +400,7 @@ Third-order unitary Coupled Cluster (UCC3)
    F 0.0 0.0 0.9168
 
 
-Quadratic unitary Coupled Cluster (qUCCSD)
+Quadratic Unitary Coupled Cluster (qUCCSD)
 ------------------------------------------
 
 .. code-block:: shell 
