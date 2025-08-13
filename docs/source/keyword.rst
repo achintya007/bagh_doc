@@ -711,6 +711,8 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    cav_lambda_z  None
 
+**x2c_type** 
+
 .. code-block:: shell
 
    x2c_type  x2camf
