@@ -468,6 +468,7 @@ To calculate the transition dipole moment (TDM) in the EOM-CCSD framework one ne
 
 This calculation can also be done for the FNS and SS_FNS counterparts, namely ``FNO-EE-EOM-CCSD`` and ``SS-FNO-EE-EOM-CCSD`` methods, respectively.
 
+
 Similarly, ground state dipole moment using CCSD in a relativistic framework can be obtained using the following input:
 
 .. code-block:: shell 
