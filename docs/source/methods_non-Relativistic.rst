@@ -199,7 +199,58 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+The Density Fitting (DF) approximation can be applied within this UCC framework by including the keyword DF True within the %cc block. The following input file can be used for this purpose.
 
+Third-order Unitary Coupled Cluster (UCC3)
+------------------------------------------
+
+.. code-block:: shell 
+
+   ! UCC3 spinorbital  unc-ccpvdz
+
+   %cc
+   incore 5
+   df True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+Quadratic Unitary Coupled Cluster (qUCCSD)
+------------------------------------------
+
+.. code-block:: shell 
+
+   ! qUCCSD spinorbital unc-ccpvdz
+
+   %cc
+   incore 5
+   df True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
+------------------------------------------------------
+
+.. code-block:: shell 
+
+   ! qUCCSD[T] spinorbital unc-ccpvdz
+
+   %cc
+   incore 5
+   df True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 
 ********************
 Excited State Energy
@@ -227,7 +278,7 @@ To calculate excitation energy in EOM-CCSD framework, the following input format
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-Similarly for ionization potential (IP), one needs to change the name of the method to ``IP-EOM-CCSD``, for example
+Similarly, for ionization potential (IP), one needs to change the name of the method to ``IP-EOM-CCSD``, for example
 
 .. code-block:: shell 
 
@@ -287,7 +338,7 @@ EOM-Coupled Cluster approximate Triples (EOM-CC3)
 ===========================================
 Excited state using Unitary Coupled Cluster
 ===========================================
-Third order unitary Coupled Cluster (UCC3)
+Third-order unitary Coupled Cluster (UCC3)
 ------------------------------------------
 
 .. code-block:: shell 
@@ -326,6 +377,51 @@ Quadratic unitary Coupled Cluster (qUCCSD)
   *xyz 0 1
   H 0.0 0.0 0.0
   F 0.0 0.0 0.9168
+
+The DF approximation can also be applied to excited-state calculations. The following input file can be used for this purpose.
+
+Third-order unitary Coupled Cluster (UCC3)
+------------------------------------------
+
+.. code-block:: shell 
+
+   ! EE-UCC3 spinorbital unc-ccpvdz
+
+   %cc
+   incore 5
+   df True
+   cc_convergence 1e-7
+   ucc_convergence 1e-6
+   nroots 10
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
+Quadratic unitary Coupled Cluster (qUCCSD)
+------------------------------------------
+
+.. code-block:: shell 
+
+   ! EE-QUCCSD spinorbital unc-ccpvdz
+
+   %cc
+   incore 5
+   df True
+   cc_convergence 1e-7
+   ucc_convergence 1e-6
+   nroots 10
+   end
+
+ 
+
+  *xyz 0 1
+  H 0.0 0.0 0.0
+  F 0.0 0.0 0.9168
+
+The convergence criteria for the ground and excited states can be controlled using the keywords cc_convergence and ucc_convergence, respectively.
 
 ================================================
 Algebraic Diagrammatic Construction Theory (ADC)
