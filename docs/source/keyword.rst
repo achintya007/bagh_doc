@@ -1,7 +1,7 @@
 Keyword Reference
 ####################################
 
-The default values are given as an example below for each keyword of the ``%cc`` block. For example
+The default values are given as an example below for each keyword of the ``%cc`` block.
 
 ***********************************************
 **Keyword descpriptions for** ``%cc`` **block**
@@ -711,8 +711,8 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    cav_lambda_z  None
 
+.. code-block:: shell
 
+   x2c_type  x2camf
 
-
-
-
+By default, the x2c_type is x2camf. For model potential, the keyword is ``x2c_type x2cmp``. The spin-free x2c1e and spin-orbit x2c1e can be requested via ``x2c_type sf1e`` and ``x2c_type 1e``.
