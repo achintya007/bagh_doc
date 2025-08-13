@@ -144,7 +144,7 @@ The following methods are also available in BAGH.
 +---------------------+---------------------+---------------------+-----------------+
 |    ADC(3)           |        YES          |      YES            |      YES        |
 +---------------------+---------------------+---------------------+-----------------+
-|    UCC(3)           |        YES          |     **---**         |      YES        |
+|    UCC3             |        YES          |     **---**         |      YES        |
 +---------------------+---------------------+---------------------+-----------------+
 |    qUCCSD           |       **---**       |     **---**         |      YES        |
 +---------------------+---------------------+---------------------+-----------------+
@@ -242,7 +242,6 @@ Third-order unitary Coupled Cluster (UCC3)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    ucc_convergence 1e-6
    nroots 10
@@ -263,7 +262,6 @@ Quadratic unitary Coupled Cluster (qUCCSD)
 
    %cc
    incore 5
-   real_ints True
    cc_convergence 1e-7
    ucc_convergence 1e-6
    nroots 10
