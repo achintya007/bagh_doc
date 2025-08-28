@@ -603,6 +603,59 @@ Coupled Cluster Singles Doubles (CCSD)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+
+Calculating ground state CCSD energy using model potentials
+-----------------------------------------------------------
+
+.. code-block:: shell
+   
+   ! SOC-X2CAMF CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   x2c_type x2cmp
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+For spin-free case one can use the keyword sf1e
+-----------------------------------------------
+
+.. code-block:: shell
+   
+   ! SOC-X2CAMF CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   x2c_type sf1e
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+For spin-orbit case one can use the keyword 1e
+-----------------------------------------------
+
+.. code-block:: shell
+   
+   ! SOC-X2CAMF CCSD spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   x2c_type 1e
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
 Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
 -------------------------------------------------------------------
 Use the keyword 'Dopertrip' to enable the perturbative triples calculations   
@@ -877,3 +930,7 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+
+
+
