@@ -252,6 +252,22 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+===================================
+Rank Reduced Coupled Cluster (RRCCSD)
+===================================
+.. code-block:: shell 
+
+   !  RRCCSD sto3g
+
+   %cc
+   NumProc 4
+   projector_type MP2
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 ********************
 Excited State Energy
 ********************
