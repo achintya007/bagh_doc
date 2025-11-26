@@ -176,11 +176,13 @@ A sample input file is given below for the user’s reference for a relativistic
    ! DIP-ADC(3) spinor unc-ccpvdz
 
    %cc
+   numproc 4
    incore 5
    real_ints True
    nroots 5
    rootno 0,3
-   End
+   adc_convergence 1e-06
+   end
 
    *xyz 0 1
    H 0.0 0.0 0.0
