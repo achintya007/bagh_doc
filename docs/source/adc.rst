@@ -195,18 +195,18 @@ With the above computational procedure, we obtain the following DIP energies and
    --------DIP-ADC(3) values-----------
 
 
-Root: 1 	 DIP value: 1.7795271 a.u. 	  48.423424 eV 	
-Dominant Transition
-6 7 --> 0.46234
-8 9 --> -0.47157
+	Root: 1 	 DIP value: 1.7795271 a.u. 	  48.423424 eV 	
+	Dominant Transition
+	6 7 --> 0.46234
+	8 9 --> -0.47157
 
 
-Root: 4 	 DIP value: 1.8931260 a.u. 	  51.514607 eV 	
-Dominant Transition
-4 8 --> 0.29878
-4 9 --> -0.36062
-5 8 --> 0.36061
-5 9 --> 0.29877
+	Root: 4 	 DIP value: 1.8931260 a.u. 	  51.514607 eV 	
+	Dominant Transition
+	4 8 --> 0.29878
+	4 9 --> -0.36062
+	5 8 --> 0.36061
+	5 9 --> 0.29877
 
 
 
