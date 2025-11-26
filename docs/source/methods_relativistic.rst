@@ -823,6 +823,8 @@ The following methods are available with the FNS technique in a two-component me
 
 ``FNO-EE-EOM-CCSD``
 
+``FNO-DIP-ADC(3)``
+
 .. code-block:: shell 
 
    ! SOC-X2CAMF FNO-CCSD spinor unc-ccpvdz
@@ -883,6 +885,14 @@ The following methods are available with the CD technique along with their FNS/S
 ``QUCCSD[T]``
 
 ``EE-ADC(2)``
+
+``DIP-ADC(2)``
+
+``DIP-ADC(2)-X``
+
+``DIP-ADC(3)``
+
+``FNO-DIP-ADC(3)``
 
 
 .. code-block:: shell 
