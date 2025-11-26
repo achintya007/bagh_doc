@@ -910,6 +910,24 @@ The following methods are available with the CD technique along with their FNS/S
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+A sample input file to run FNO-DIP-ADC(3) with Cholesky Decomposition:
+.. code-block:: shell 
+
+   ! FNO-DIP-ADC(3) SOC-X2CAMF spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   CD True
+   CD_Threshold 1e-4
+   nroots 10
+   rootno 0,3
+   adc_convergence 1e-06
+   fnothresh 0.00003162277
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 
 
 **********
