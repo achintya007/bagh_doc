@@ -164,6 +164,7 @@ By switching on the ``tdm`` and ``exdm`` we obtain:
 
 In the excited state dipole moment section, a change in the dipole moment due to the excitation from ground to excited is listed. To get the total dipole moment for a particular excited state, MP2 contribution needs to be included. 
 
+.. _dip-section:
 ***********************************
 Double Ionization Potential (DIP)
 ***********************************
