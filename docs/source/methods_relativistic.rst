@@ -823,7 +823,7 @@ The following methods are available with the FNS technique in a two-component me
 
 ``FNO-EE-EOM-CCSD``
 
-``FNO-DIP-ADC(3)``
+``FNO-DIP-ADC(3)``  See the :ref:`dip-section` for details on DIP calculations.
 
 .. code-block:: shell 
 
