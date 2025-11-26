@@ -1,7 +1,7 @@
 Algebraic Diagrammatic Construction (ADC)
 ########################################
 
-The Algebraic Diagrammatic Construction (ADC) is a post-Hartree Fock ab-initio Hermitian method to calculate vertical ionization potential (IP), electron-attachment energy (EA) and excitation energy (EE) in a direct-difference of energy based way. ADC is implemented using Intermediate State
+The Algebraic Diagrammatic Construction (ADC) is a post-Hartree Fock ab-initio Hermitian method to calculate vertical ionization potential (IP), electron-attachment energy (EA), excitation energy (EE), and vertical double ionization potential (DIP) in a direct-difference of energy based way. ADC is implemented using Intermediate State
 Representation (ISR) in BAGH. The ADC secular matrix is expanded in perturbation series. A truncation at nth order leads to ADC(n) method. This method incorporates correlation from its second-order (ADC(2) method). An extender version of ADC(2), namely ADC(2)-X is considered to be an ad-hoc extension up to the first order terms in doubles-doubles block (2h1p-2h1p for IP and 2p1h-2p1h for EA). In BAGH, ADC(n) is implemented up to 3rd order, i.e. ADC(3).
 
 ADC being a Hermitian method calculates transition and excitate state properties very efficiently. In
@@ -40,7 +40,7 @@ A sample input file is given below for user’s reference for a relativistic 4-c
 | ``spinor``: 4-component relativistic interface.
 | ``unc-ccpvdz``: Name of the basis set (uncontracted cc-pVDZ).
 | ``incore 5``: All the two-electron integrals are in the memory. 
-| ``nroots 10``: 4 excitation energies will be calculated.
+| ``nroots 4``: 4 excitation energies will be calculated.
 
 With the above computational procedure, we obtain the following excitation energies and the corresponding dominant transitions:
 
@@ -163,6 +163,51 @@ By switching on the ``tdm`` and ``exdm`` we obtain:
 			  10      109722.8        91.139      0.77564     2.32724     0.00000   0.00000   1.52553
 
 In the excited state dipole moment section, a change in the dipole moment due to the excitation from ground to excited is listed. To get the total dipole moment for a particular excited state, MP2 contribution needs to be included. 
+
+***********************************
+Double Ionization Potential (DIP)
+***********************************
+
+A sample input file is given below for the user’s reference for a relativistic 4-component DIP-ADC(3) calculation of the HF molecule.
+
+.. code-block:: shell 
+
+   ! DIP-ADC(3) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   real_ints True
+   nroots 5
+   rootno 0,3
+   End
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+| ``nroots 5``: 5 DIP-CIS energies will be printed.
+| ``rootno 0,3``: instructs the code to apply the DIP-ADC(3) procedure specifically to the 1st and 4th states (counting from zero) among the previously computed DIP-CIS roots.
+
+With the above computational procedure, we obtain the following DIP energies and the corresponding dominant transitions:
+
+.. code-block:: shell 
+
+   --------DIP-ADC(3) values-----------
+
+
+Root: 1 	 DIP value: 1.7795271 a.u. 	  48.423424 eV 	
+Dominant Transition
+6 7 --> 0.46234
+8 9 --> -0.47157
+
+
+Root: 4 	 DIP value: 1.8931260 a.u. 	  51.514607 eV 	
+Dominant Transition
+4 8 --> 0.29878
+4 9 --> -0.36062
+5 8 --> 0.36061
+5 9 --> 0.29877
+
 
 
 
