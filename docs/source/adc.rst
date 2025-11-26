@@ -192,7 +192,7 @@ With the above computational procedure, we obtain the following DIP energies and
 
 .. code-block:: shell 
 
-   --------DIP-ADC(3) values-----------
+	--------DIP-ADC(3) values-----------
 
 
 	Root: 1 	 DIP value: 1.7795271 a.u. 	  48.423424 eV 	
