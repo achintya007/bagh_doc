@@ -252,7 +252,7 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 ------------------------------------------------------------------------------------------------------------------------------------------------
-"If a specific auxiliary basis is needed for a calculation, it can be added manually by appending '-ri' to the name of the standard basis set.
+"If a specific 'auxiliary basis' is needed for a calculation, it can be added manually by appending '-ri' to the name of the standard basis set.
 -----------------------------------------------------------------------------------------------------------------------------------------------
 ! QUCCSD[T] spinorbital ccpvdz ccpvdz-ri
 
