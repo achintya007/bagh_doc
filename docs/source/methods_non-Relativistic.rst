@@ -251,7 +251,20 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+------------------------------------------------------------------------------------------------------------------------------------------------
+"If a specific auxiliary basis is needed for a calculation, it can be added manually by appending '-ri' to the name of the standard basis set.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+! QUCCSD[T] spinorbital ccpvdz ccpvdz-ri
 
+   %cc
+   incore 5
+   df True
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 ===================================
 Rank Reduced Coupled Cluster (RRCCSD)
 ===================================
