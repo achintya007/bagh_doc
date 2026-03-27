@@ -3,38 +3,488 @@
 Installation
 ============
 
-**Prerequisites:**
+This guide covers installing BAGH on Linux and macOS systems. BAGH is primarily
+a Python package, but it relies on compiled Fortran and Cython extensions for
+performance-critical routines.
 
-- python3 (an easy installation guide can be found at https://software.intel.com/content/www/us/en/develop/articles/how-to-install-the-python-version-of-intel-daal-in-linux.html)
-- numpy
-- scipy
-- pandas
-- geometric
-- pyberny 
-- ifort 
-- mkl libraries
-- cython
-- pyscf (can be easily installed using pip)
-- make
+System Requirements
+-------------------
+
+- **Operating System:** Linux (recommended) or macOS
+- **Python:** 3.8 or later
+- **Fortran Compiler:** Intel Fortran (``ifort``/``ifx``) recommended; ``gfortran`` may also work
+- **C Compiler:** Required by Cython (e.g., ``gcc``)
+- **CMake:** 3.0 or later
+- **Make:** GNU Make
+
+Hardware Recommendations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+- At least 8 GB RAM for small molecules; 32+ GB for larger systems
+- Multi-core CPU recommended (NumPy/MKL will use multiple threads)
+- Sufficient disk space for MO integrals stored in HDF5 format
 
 
+Prerequisites
+-------------
 
-**Installation steps**
+Python Dependencies
+^^^^^^^^^^^^^^^^^^^
+
+The following Python packages are required:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 55 20
+
+   * - Package
+     - Purpose
+     - Install
+   * - `NumPy <https://numpy.org/>`_
+     - Array operations and linear algebra
+     - ``pip install numpy``
+   * - `SciPy <https://scipy.org/>`_
+     - Sparse linear algebra and special functions
+     - ``pip install scipy``
+   * - `PySCF <https://pyscf.org/>`_
+     - Integral generation, SCF, and molecular data
+     - ``pip install pyscf``
+   * - `Cython <https://cython.org/>`_
+     - Compilation of ``.pyx`` extension modules
+     - ``pip install cython``
+   * - `h5py <https://www.h5py.org/>`_
+     - HDF5 file I/O for integrals and amplitudes
+     - ``pip install h5py``
+   * - `pandas <https://pandas.pydata.org/>`_
+     - Data handling utilities
+     - ``pip install pandas``
+
+Optional Python packages:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 55 20
+
+   * - Package
+     - Purpose
+     - Install
+   * - `geomeTRIC <https://github.com/leeping/geomeTRIC>`_
+     - Geometry optimization
+     - ``pip install geometric``
+   * - `pyberny <https://github.com/jhrmnn/pyberny>`_
+     - Alternative geometry optimizer
+     - ``pip install pyberny``
+   * - `mpi4py <https://mpi4py.readthedocs.io/>`_
+     - MPI parallelism (for parallel calculations)
+     - ``pip install mpi4py``
+
+You can install all required Python dependencies at once:
+
+.. code-block:: shell
+
+   pip install numpy scipy pyscf cython h5py pandas
+
+For optional packages:
+
+.. code-block:: shell
+
+   pip install geometric pyberny mpi4py
 
 
-.. code-block:: shell 
+Math Libraries
+^^^^^^^^^^^^^^
+
+BAGH uses MKL (Intel Math Kernel Library) for optimized linear algebra in the
+Fortran extensions. MKL is available through:
+
+- **Intel oneAPI MKL** (recommended): Install from https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html
+- **Conda:** ``conda install mkl mkl-devel``
+- **System package manager:** e.g., ``apt install libmkl-dev`` on Ubuntu
+
+.. note::
+
+   If MKL is not available, you can modify the Makefile to link against
+   an alternative BLAS/LAPACK library (e.g., OpenBLAS). See the
+   :ref:`Configuring the Fortran Makefile <configure-makefile>` section below.
+
+
+Fortran Compiler
+^^^^^^^^^^^^^^^^
+
+Intel Fortran (``ifort`` or the newer ``ifx``) is the default compiler. If
+using ``gfortran``, you will need to update the ``f90comp`` setting in the
+Makefile (see below).
+
+Verify your Fortran compiler is available:
+
+.. code-block:: shell
+
+   ifort --version    # Intel classic
+   ifx --version      # Intel oneAPI
+   gfortran --version # GNU Fortran
+
+
+Installation Steps
+------------------
+
+Step 1: Clone the Repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: shell
 
    git clone --recursive https://github.com/achintya007/bagh.git
+   cd bagh
 
-| set f90comp in the Makefile to the fortran compiler being used
-| set MKLROOT according to the path of mkl libraries in the system being used
-| set linking_opt also according to your system
+The ``--recursive`` flag is important as it also clones the ``socutils``
+submodule, which is required for spin-orbit coupling and relativistic
+calculations.
 
+If you already cloned without ``--recursive``, initialize the submodule
+manually:
+
+.. code-block:: shell
+
+   git submodule update --init --recursive
+
+
+.. _configure-makefile:
+
+Step 2: Configure the Fortran Makefile
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Edit the Makefile at ``bagh_code/fortran_lib/makefile`` to match your system:
+
+.. code-block:: shell
+
+   # Open the Makefile
+   vi bagh_code/fortran_lib/makefile
+
+You need to set three variables:
+
+1. **``f90comp``** — Fortran compiler name
+
+   .. code-block:: makefile
+
+      # For Intel Fortran (default):
+      f90comp=intelem
+
+      # For GNU Fortran:
+      f90comp=gnu95
+
+2. **``MKLROOT``** — Path to MKL libraries
+
+   .. code-block:: makefile
+
+      # Intel oneAPI (common path):
+      MKLROOT=/opt/intel/oneapi/mkl/latest/lib/intel64
+
+      # Conda environment:
+      MKLROOT=$(CONDA_PREFIX)/lib
+
+      # Check your system with:
+      #   echo $MKLROOT
+      #   python -c "import numpy; print(numpy.show_config())"
+
+3. **``linking_opt``** — Linker flags for BLAS/LAPACK
+
+   .. code-block:: makefile
+
+      # For MKL (default):
+      linking_opt=-lmkl_intel_ilp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl
+
+      # For OpenBLAS (alternative):
+      linking_opt=-lopenblas
+
+.. tip::
+
+   If you are unsure about the correct MKL linking flags for your system,
+   use the `Intel Link Line Advisor <https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl-link-line-advisor.html>`_.
+
+
+Step 3: Build
+^^^^^^^^^^^^^
+
+Run the build script from the repository root:
 
 .. code-block:: shell
 
    ./make
 
-   
+This will:
+
+1. Create a ``build/`` directory and run CMake
+2. Compile the Fortran extensions (via ``f2py``) in ``bagh_code/fortran_lib/``
+3. Compile all Cython extensions across the codebase (interfaces, integral
+   transformations, spin-orbital modules, ADC, relativistic CC, etc.)
+4. Set the ``bagh_path`` in the ``bagh`` executable script
+
+The build process compiles extensions in the following order:
+
+- Fortran library → Interfaces → Integral transformation → Spin-orbital CCSD
+  → Spin-orbital EOM → Additional Cython modules (ADC, CC3, relativistic CCSD,
+  relativistic EOM)
+
+.. note::
+
+   The full build may take several minutes depending on your system.
+   If a specific Cython module fails to compile, the remaining modules
+   will still be attempted since they are compiled sequentially.
 
 
+Step 4: Set Up the Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``bagh`` wrapper script (in the repository root) sets up the necessary
+environment variables. You can either:
+
+**Option A: Add BAGH to your PATH** (recommended)
+
+Add this to your ``~/.bashrc`` or ``~/.bash_profile``:
+
+.. code-block:: shell
+
+   export PATH=/path/to/bagh:$PATH
+
+Then you can run BAGH from anywhere:
+
+.. code-block:: shell
+
+   bagh input.inp
+
+**Option B: Use the full path**
+
+.. code-block:: shell
+
+   /path/to/bagh/bagh input.inp
+
+The wrapper script automatically sets:
+
+- ``bagh_path`` — path to the BAGH root directory
+- ``socutils_path`` — path to the SOC utilities submodule
+- ``PythonProjectorEmbedding_path`` — path to the embedding module
+- ``PYTHONPATH`` — includes all the above so Python can find the modules
+
+
+Verifying the Installation
+--------------------------
+
+Run a quick test calculation to verify everything works. Create a file
+``test_h2.inp``:
+
+.. code-block:: none
+
+   ! CCSD cc-pvdz
+
+   %cc
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   H 0.0 0.0 0.74
+   *
+
+Run it:
+
+.. code-block:: shell
+
+   bagh test_h2.inp
+
+You should see output showing:
+
+1. PySCF integral generation
+2. RHF SCF convergence
+3. Integral transformation
+4. CCSD iterations converging to the correlation energy
+
+If the calculation completes without errors, BAGH is installed correctly.
+
+You can also run the test suite included in the ``test/`` directory:
+
+.. code-block:: shell
+
+   cd test
+   python3 test.py
+
+
+.. _install-x2camf:
+
+Installing X2CAMF (Relativistic Spin-Orbit Integrals)
+------------------------------------------------------
+
+`X2CAMF <https://github.com/Warlocat/x2camf>`_ is required for relativistic
+calculations using the X2C-AMF (exact two-component with atomic mean-field)
+framework. It provides spin-orbit integrals interfaced with PySCF.
+
+Linux Installation
+^^^^^^^^^^^^^^^^^^
+
+On Linux, X2CAMF can be installed directly via pip:
+
+.. code-block:: shell
+
+   pip install git+https://github.com/warlocat/x2camf
+
+.. note::
+
+   The default stack size may not be sufficient for larger systems.
+   Use ``ulimit -s unlimited`` before running calculations.
+
+
+macOS Installation
+^^^^^^^^^^^^^^^^^^
+
+On macOS, the standard pip install does not work due to compiler compatibility
+issues with AppleClang. You must build X2CAMF from source with the following
+modifications.
+
+**1. Install system dependencies via Homebrew:**
+
+.. code-block:: shell
+
+   brew install cmake libomp eigen
+
+**2. Set up a Python environment:**
+
+.. code-block:: shell
+
+   conda create -n x2camf_env python=3.10
+   conda activate x2camf_env
+   pip install pybind11 numpy
+
+**3. Clone the repository:**
+
+.. code-block:: shell
+
+   git clone https://github.com/Warlocat/x2camf.git
+   cd x2camf
+
+**4. Apply macOS compatibility fixes:**
+
+The source code uses GCC-specific ``std::chrono`` types that are not compatible
+with AppleClang. Edit the following two files:
+
+In ``include/general.h`` and ``src/general.cpp``, replace all occurrences of:
+
+.. code-block:: cpp
+
+   std::chrono::_V2::system_clock::time_point
+
+with:
+
+.. code-block:: cpp
+
+   std::chrono::system_clock::time_point
+
+Additionally, in ``src/general.cpp``, replace:
+
+.. code-block:: cpp
+
+   timeWall = chrono::high_resolution_clock::now();
+
+with:
+
+.. code-block:: cpp
+
+   timeWall = std::chrono::system_clock::now();
+
+**5. Add pybind11 (if not already included):**
+
+.. code-block:: shell
+
+   git clone https://github.com/pybind/pybind11.git
+
+Verify the directory structure has ``pybind11/`` inside the ``x2camf/`` root.
+
+**6. Build with CMake using Clang and Homebrew OpenMP:**
+
+.. code-block:: shell
+
+   mkdir build && cd build
+
+   cmake .. \
+     -DCMAKE_C_COMPILER=clang \
+     -DCMAKE_CXX_COMPILER=clang++ \
+     -DOpenMP_C_FLAGS="-Xpreprocessor -fopenmp -I$(brew --prefix libomp)/include" \
+     -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I$(brew --prefix libomp)/include" \
+     -DOpenMP_C_LIB_NAMES="omp" \
+     -DOpenMP_CXX_LIB_NAMES="omp" \
+     -DOpenMP_omp_LIBRARY=$(brew --prefix libomp)/lib/libomp.dylib \
+     -DPYTHON_EXECUTABLE=$(which python) \
+     -DCMAKE_CXX_FLAGS="-I$(brew --prefix eigen)/include/eigen3"
+
+   make -j8
+
+**7. Set up the Python path and verify:**
+
+.. code-block:: shell
+
+   # From the x2camf root directory (not the build directory)
+   cd ..
+   export PYTHONPATH=$PWD:$PYTHONPATH
+   python -c "import libx2camf; print('x2camf loaded successfully')"
+
+Add the ``PYTHONPATH`` export to your ``~/.bashrc`` or ``~/.bash_profile``
+to make it persistent.
+
+.. note::
+
+   This procedure works on both Apple Silicon (``/opt/homebrew``) and
+   Intel Mac (``/usr/local``) systems. The ``brew --prefix`` commands
+   automatically resolve to the correct Homebrew paths for your architecture.
+
+
+Troubleshooting
+---------------
+
+**Fortran compilation fails with "compiler not found"**
+   Ensure your Fortran compiler is in your ``PATH`` and the ``f90comp``
+   variable in the Makefile matches. For ``gfortran``, set ``f90comp=gnu95``.
+
+**MKL linking errors**
+   Verify ``MKLROOT`` points to the correct directory. The path should
+   contain ``libmkl_core.so`` (Linux) or ``libmkl_core.dylib`` (macOS).
+   Try: ``ls $MKLROOT/libmkl_core*``
+
+**Cython compilation errors**
+   Ensure Cython and NumPy are installed in the same Python environment:
+   ``pip install cython numpy``. Also verify that ``python3`` in your PATH
+   is the correct version (3.8+).
+
+**PySCF import errors at runtime**
+   Install PySCF: ``pip install pyscf``. For relativistic calculations,
+   ensure you have a recent version (2.0+).
+
+**"ModuleNotFoundError: No module named 'bagh_code'"**
+   This means the ``PYTHONPATH`` is not set correctly. Make sure you are
+   running BAGH through the ``bagh`` wrapper script, not directly calling
+   ``python3 main.py``.
+
+**socutils submodule is empty**
+   Run ``git submodule update --init --recursive`` from the repository root.
+   The ``socutils`` module is required for spin-orbit and relativistic
+   calculations using the X2C-AMF framework.
+
+**HDF5 / h5py errors**
+   Install h5py: ``pip install h5py``. Some Fortran modules also use HDF5
+   directly — ensure the HDF5 C/Fortran libraries are available on your
+   system (``apt install libhdf5-dev`` on Ubuntu).
+
+**macOS-specific issues**
+   - Use Homebrew to install ``gcc`` (which includes ``gfortran``):
+     ``brew install gcc``
+   - Set ``f90comp=gnu95`` in the Makefile
+   - For MKL on macOS, Intel oneAPI or ``conda install mkl`` are recommended
+
+
+Uninstallation
+--------------
+
+BAGH is not installed system-wide. To remove it, simply delete the repository
+directory:
+
+.. code-block:: shell
+
+   rm -rf /path/to/bagh
+
+And remove any PATH additions from your shell configuration files.
