@@ -436,3 +436,80 @@ Best Practices for Developers
 9. **Keep** ``reference_data.yaml`` **under version control.** Any change
    to reference values should be reviewed in the same pull request as
    the code change that motivated it.
+
+
+Continuous Integration (CI/CD)
+------------------------------
+
+BAGH uses GitHub Actions for automated testing. Three workflows are configured:
+
+CI — Fast Tests (on every push)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**File:** ``.github/workflows/ci.yml``
+
+Triggered on every push and pull request to ``master``. Runs fast unit tests
+across Python 3.9–3.12 in about 2 minutes. No Fortran or Cython compilation
+is needed.
+
+.. code-block:: text
+
+   Trigger:  push to master, PR to master
+   Runner:   GitHub-hosted (ubuntu-latest)
+   Duration: ~2 minutes
+   Tests:    148 fast tests (parser, utilities, build checks)
+   Coverage: Generated for Python 3.11, uploaded as artifact
+
+PR — Quality Gate
+^^^^^^^^^^^^^^^^^^
+
+**File:** ``.github/workflows/pr-check.yml``
+
+Required check before merging any pull request. Verifies fast tests pass,
+core imports work, and minimum code coverage threshold is met.
+
+Nightly — Full Regression
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**File:** ``.github/workflows/nightly.yml``
+
+Runs at 02:00 UTC every night. Two jobs:
+
+1. **regression-fast** — Runs on GitHub-hosted runners. Executes regression
+   tests that need only Python (no compiled extensions).
+2. **regression-full** — Runs on a **self-hosted runner** that has BAGH fully
+   built with Fortran/Cython extensions. Generates coverage report.
+
+The nightly workflow can also be triggered manually from the GitHub Actions tab
+with optional method and category filters.
+
+Local Test Runner Script
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A convenience script ``run_tests.sh`` is provided at the project root:
+
+.. code-block:: bash
+
+   ./run_tests.sh              # Fast tests only (default)
+   ./run_tests.sh fast         # Fast tests only
+   ./run_tests.sh all          # All tests including regression
+   ./run_tests.sh regression   # Regression tests only
+   ./run_tests.sh coverage     # Fast tests with HTML coverage report
+   ./run_tests.sh method CCSD  # Specific method regression test
+
+Setting Up a Self-Hosted Runner
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For the nightly full regression suite, you need a self-hosted GitHub Actions
+runner on a machine where BAGH is fully compiled:
+
+1. Go to **Settings > Actions > Runners** in your GitHub repository
+2. Click **New self-hosted runner** and follow the setup instructions
+3. Ensure the runner machine has:
+
+   - Intel Fortran compiler (``ifort``/``ifx``) or ``gfortran``
+   - MKL or OpenBLAS
+   - PySCF, NumPy, SciPy, h5py, Numba
+   - BAGH built: ``mkdir build && cd build && cmake .. && cmake --build . --target compile_all``
+
+4. Start the runner: ``./run.sh`` (or configure as a system service)
