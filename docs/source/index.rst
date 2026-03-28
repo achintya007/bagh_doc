@@ -50,7 +50,13 @@ Contents
    bibliography
 
 .. toctree::
-   :caption: Additional Information 
+   :caption: Developer Guide
+   :maxdepth: 2
+
+   developer_testing
+
+.. toctree::
+   :caption: Additional Information
    :maxdepth: 1
 
    contact_information
