@@ -450,14 +450,19 @@ Verify the directory structure has ``pybind11/`` inside the ``x2camf/`` root.
 
    make -j8
 
-**7. Set up the Python path and verify:**
+**7. Copy the shared library into the package and verify:**
+
+The build produces ``libx2camf.cpython-*.so`` in the ``build/`` directory,
+but it must be placed inside the ``x2camf/`` package directory for Python
+to find it (otherwise you get a circular import error):
 
 .. code-block:: shell
 
    # From the x2camf root directory (not the build directory)
    cd ..
+   cp build/libx2camf.cpython-*.so x2camf/
    export PYTHONPATH=$PWD:$PYTHONPATH
-   python -c "import libx2camf; print('x2camf loaded successfully')"
+   python -c "import x2camf; print('x2camf loaded successfully')"
 
 Add the ``PYTHONPATH`` export to your ``~/.bashrc`` or ``~/.bash_profile``
 to make it persistent.
@@ -541,6 +546,14 @@ Troubleshooting
    Install h5py: ``pip install h5py``. Some Fortran modules also use HDF5
    directly — ensure the HDF5 C/Fortran libraries are available on your
    system (``apt install libhdf5-dev`` on Ubuntu).
+
+**X2CAMF circular import: "cannot import name 'libx2camf' from partially initialized module"**
+   After building X2CAMF, the shared library ``libx2camf.cpython-*.so``
+   is in the ``build/`` directory but must be inside the ``x2camf/``
+   package directory. Copy it:
+   ``cp build/libx2camf.cpython-*.so x2camf/``.
+   Also ensure that the x2camf root directory is on your ``PYTHONPATH``:
+   ``export PYTHONPATH=/path/to/x2camf:$PYTHONPATH``.
 
 **macOS-specific issues**
    - Install ``gfortran`` via Homebrew: ``brew install gcc``
