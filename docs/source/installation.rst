@@ -56,6 +56,9 @@ The following Python packages are required:
    * - `h5py <https://www.h5py.org/>`_
      - HDF5 file I/O for integrals and amplitudes
      - ``pip install h5py``
+   * - `psutil <https://github.com/giampaolo/psutil>`_
+     - System resource monitoring (memory, CPU)
+     - ``pip install psutil``
    * - `pandas <https://pandas.pydata.org/>`_
      - Data handling utilities
      - ``pip install pandas``
@@ -89,7 +92,7 @@ Or manually:
 
 .. code-block:: shell
 
-   pip install numpy scipy pyscf cython h5py pandas
+   pip install numpy scipy pyscf cython h5py psutil pandas
 
 For the f2py meson build backend (required for Python >= 3.12):
 
