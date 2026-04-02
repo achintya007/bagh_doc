@@ -12,9 +12,9 @@ System Requirements
 
 - **Operating System:** Linux (recommended) or macOS
 - **Python:** 3.8 or later
-- **Fortran Compiler:** Intel Fortran (``ifort``/``ifx``) recommended; ``gfortran`` may also work
-- **C Compiler:** Required by Cython (e.g., ``gcc``)
-- **CMake:** 3.10 or later
+- **Fortran Compiler:** ``gfortran`` (macOS) or Intel Fortran ``ifort``/``ifx`` (Linux)
+- **C Compiler:** Required by Cython (e.g., ``gcc``, ``clang``)
+- **CMake:** 3.18 or later
 - **Make:** GNU Make
 - **Meson** and **Ninja:** Required by NumPy's f2py backend for Python >= 3.12
 
@@ -116,9 +116,10 @@ Fortran extensions. MKL is available through:
 
 .. note::
 
-   If MKL is not available, you can modify the Makefile to link against
-   an alternative BLAS/LAPACK library (e.g., OpenBLAS). See the
-   :ref:`Configuring the Fortran Makefile <configure-makefile>` section below.
+   If MKL is not available, CMake will proceed without it. You can also
+   modify ``MKL_LINK`` in ``bagh_code/fortran_lib/makefile`` to link against
+   an alternative BLAS/LAPACK library (e.g., OpenBLAS).
+   See the :ref:`Configuring the Build <configure-makefile>` section below.
 
 
 Fortran Compiler
@@ -166,32 +167,36 @@ manually:
 
 .. _configure-makefile:
 
-Step 2: Configure the Fortran Makefile (Optional)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Step 2: Configure the Build (Optional)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The build system uses sensible defaults, but you may need to adjust the
-MKL path in ``bagh_code/fortran_lib/makefile`` if your MKL installation
-is in a non-standard location:
+The build system (CMake) auto-detects most settings. It will automatically find:
 
-.. code-block:: makefile
+- The correct Python interpreter (prefers conda/venv Python with NumPy)
+- f2py, Cython, and NumPy
+- The Fortran compiler (``gfortran`` on macOS, ``ifort`` on Linux)
+- MKL at common installation paths
+- OpenMP flags appropriate for your compiler
+- macOS SDK paths (for ``gfortran`` and Cython C compilation)
 
-   # Intel oneAPI (common path):
-   MKLROOT ?= /opt/intel/oneapi/mkl/latest/lib/intel64
-
-   # Conda environment:
-   MKLROOT ?= $(CONDA_PREFIX)/lib
-
-Alternatively, you can pass ``MKLROOT`` on the command line without editing
-the makefile:
+You may need to adjust the MKL path if your installation is non-standard.
+Pass it on the command line:
 
 .. code-block:: shell
 
    MKLROOT=/path/to/mkl/lib bash make
 
+Or set it in ``bagh_code/fortran_lib/makefile``:
+
+.. code-block:: makefile
+
+   MKLROOT ?= /opt/intel/oneapi/mkl/latest/lib/intel64
+
 .. note::
 
-   If MKL is not available, you can modify ``MKL_LINK`` in the makefile
-   to link against an alternative BLAS/LAPACK library (e.g., OpenBLAS):
+   If MKL is not available, CMake will proceed without it. You can also
+   modify ``MKL_LINK`` in the makefile to link against an alternative
+   BLAS/LAPACK library (e.g., OpenBLAS):
 
    .. code-block:: makefile
 
@@ -218,13 +223,16 @@ This will:
 
 1. Detect your platform and set up the compiler environment
    (``gfortran`` on macOS, ``ifort`` on Linux)
-2. On macOS, automatically configure the SDK paths needed by ``gfortran``
-3. Create a ``build/`` directory and run CMake
-4. Compile the Fortran extensions (via ``f2py`` with the meson backend) in
-   ``bagh_code/fortran_lib/``
-5. Compile all Cython extensions across the codebase (interfaces, integral
+2. On macOS, automatically configure SDK paths for ``gfortran`` and Cython
+3. Validate that stale ``CC``/``CXX``/``FC`` environment variables are cleared
+   (e.g., after a Homebrew upgrade)
+4. Create a ``build/`` directory and run CMake, which auto-detects Python,
+   NumPy, f2py, Cython, MKL, and OpenMP
+5. Compile all 18 Fortran extensions (via ``f2py`` with the meson backend)
+6. Compile all Cython extensions across the codebase (interfaces, integral
    transformations, spin-orbital modules, ADC, relativistic CC, etc.)
-6. Set the ``bagh_path`` in the ``bagh`` executable script
+7. Configure the ``bagh`` launcher script with the correct ``bagh_path``
+   and the exact Python interpreter used during the build
 
 To override the Fortran compiler:
 
@@ -232,6 +240,13 @@ To override the Fortran compiler:
 
    FC=gfortran bash make   # Use GNU Fortran
    FC=ifx bash make        # Use Intel oneAPI Fortran
+
+To clean and rebuild from scratch:
+
+.. code-block:: shell
+
+   bash make clean
+   bash make
 
 The build process compiles extensions in the following order:
 
@@ -242,8 +257,13 @@ The build process compiles extensions in the following order:
 .. note::
 
    The full build may take several minutes depending on your system.
-   If a specific Cython module fails to compile, the remaining modules
-   will still be attempted since they are compiled sequentially.
+
+.. important::
+
+   The build pins the exact Python interpreter into the ``bagh`` launcher
+   script. If you switch Python environments (e.g., activate a different
+   conda env), you should rebuild with ``bash make clean && bash make``
+   to ensure the launcher uses the correct Python with all dependencies.
 
 
 Step 4: Set Up the Environment
@@ -452,6 +472,19 @@ to make it persistent.
 Troubleshooting
 ---------------
 
+**CMake error: "Could not find the compiler specified in CC"**
+   This means your ``CC`` environment variable points to a compiler that
+   no longer exists (e.g., after a Homebrew upgrade). The ``make`` script
+   auto-detects and clears stale ``CC``/``CXX``/``FC`` variables, but you
+   can also fix it manually: ``unset CC CXX && bash make``, or update the
+   path in your ``~/.bashrc``.
+
+**CMake error: "Could NOT find Python3 (missing: NumPy)"**
+   CMake found a Python that does not have NumPy installed. The build
+   system prefers ``python`` over ``python3`` to pick up conda/venv Python.
+   Make sure your conda environment is activated, or specify explicitly:
+   ``cmake -DPython3_EXECUTABLE=$(which python) ..``
+
 **Fortran compilation fails with "compiler not found"**
    Ensure your Fortran compiler is in your ``PATH``. The build script
    auto-detects the compiler (``gfortran`` on macOS, ``ifort`` on Linux).
@@ -459,13 +492,19 @@ Troubleshooting
 
 **"Compiler gfortran/ifort cannot compile programs" (meson error)**
    On macOS, this usually means the SDK paths are not set. The ``make``
-   script handles this automatically, but if you're running the makefiles
+   script handles this automatically, but if you are running the makefiles
    directly, set: ``export SDKROOT=$(xcrun --show-sdk-path)`` and
    ``export LIBRARY_PATH=$SDKROOT/usr/lib``.
 
 **"No such file or directory: 'meson'" (Python >= 3.12)**
    NumPy's f2py requires the meson build backend for Python 3.12+.
    Install it: ``pip install meson meson-python ninja``.
+
+**"fatal error: 'assert.h' file not found" during Cython compilation (macOS)**
+   The C compiler cannot find standard headers. The ``make`` script sets
+   ``CFLAGS`` and ``CPPFLAGS`` with ``-isysroot`` automatically. If you
+   are building manually, set:
+   ``export CFLAGS="-isysroot $(xcrun --show-sdk-path)"``
 
 **MKL linking errors**
    Verify ``MKLROOT`` points to the correct directory. The path should
@@ -475,8 +514,14 @@ Troubleshooting
 
 **Cython compilation errors**
    Ensure Cython and NumPy are installed in the same Python environment:
-   ``pip install cython numpy``. Also verify that ``python3`` in your PATH
-   is the correct version (3.8+).
+   ``pip install cython numpy``. Also verify that the Python found by
+   CMake (shown in the build output) is the correct one.
+
+**"ModuleNotFoundError: No module named 'h5py'" (or other missing modules)**
+   The ``bagh`` launcher is using a different Python than the one used
+   during the build. Rebuild to update the launcher:
+   ``bash make clean && bash make``. The build pins the exact Python
+   executable path into the ``bagh`` script.
 
 **PySCF import errors at runtime**
    Install PySCF: ``pip install pyscf``. For relativistic calculations,
@@ -501,6 +546,8 @@ Troubleshooting
    - Install ``gfortran`` via Homebrew: ``brew install gcc``
    - The build script auto-detects macOS and uses ``gfortran`` by default
    - For MKL on macOS, Intel oneAPI or ``conda install mkl`` are recommended
+   - If you have multiple Python versions, ensure the conda env is activated
+     before running ``bash make``
 
 
 Uninstallation
