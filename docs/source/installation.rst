@@ -62,6 +62,9 @@ The following Python packages are required:
    * - `pandas <https://pandas.pydata.org/>`_
      - Data handling utilities
      - ``pip install pandas``
+   * - `geomeTRIC <https://github.com/leeping/geomeTRIC>`_
+     - Geometry optimization
+     - ``pip install geometric``
 
 Optional Python packages:
 
@@ -72,9 +75,6 @@ Optional Python packages:
    * - Package
      - Purpose
      - Install
-   * - `geomeTRIC <https://github.com/leeping/geomeTRIC>`_
-     - Geometry optimization
-     - ``pip install geometric``
    * - `pyberny <https://github.com/jhrmnn/pyberny>`_
      - Alternative geometry optimizer
      - ``pip install pyberny``
@@ -92,7 +92,7 @@ Or manually:
 
 .. code-block:: shell
 
-   pip install numpy scipy pyscf cython h5py psutil pandas
+   pip install numpy scipy pyscf cython h5py psutil pandas geometric
 
 For the f2py meson build backend (required for Python >= 3.12):
 
