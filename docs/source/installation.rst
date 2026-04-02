@@ -62,6 +62,9 @@ The following Python packages are required:
    * - `pandas <https://pandas.pydata.org/>`_
      - Data handling utilities
      - ``pip install pandas``
+   * - `joblib <https://joblib.readthedocs.io/>`_
+     - Parallel execution (CC3 triples)
+     - ``pip install joblib``
    * - `geomeTRIC <https://github.com/leeping/geomeTRIC>`_
      - Geometry optimization
      - ``pip install geometric``
@@ -92,7 +95,7 @@ Or manually:
 
 .. code-block:: shell
 
-   pip install numpy scipy pyscf cython h5py psutil pandas geometric
+   pip install numpy scipy pyscf cython h5py psutil pandas joblib geometric
 
 For the f2py meson build backend (required for Python >= 3.12):
 
