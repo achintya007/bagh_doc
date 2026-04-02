@@ -65,6 +65,12 @@ The following Python packages are required:
    * - `joblib <https://joblib.readthedocs.io/>`_
      - Parallel execution (CC3 triples)
      - ``pip install joblib``
+   * - `sympy <https://www.sympy.org/>`_
+     - Symbolic algebra (ADC response functions)
+     - ``pip install sympy``
+   * - `tqdm <https://tqdm.github.io/>`_
+     - Progress bars
+     - ``pip install tqdm``
    * - `geomeTRIC <https://github.com/leeping/geomeTRIC>`_
      - Geometry optimization
      - ``pip install geometric``
@@ -95,7 +101,7 @@ Or manually:
 
 .. code-block:: shell
 
-   pip install numpy scipy pyscf cython h5py psutil pandas joblib geometric
+   pip install numpy scipy pyscf cython h5py psutil pandas joblib sympy tqdm geometric
 
 For the f2py meson build backend (required for Python >= 3.12):
 
