@@ -68,6 +68,9 @@ The following Python packages are required:
    * - `sympy <https://www.sympy.org/>`_
      - Symbolic algebra (ADC response functions)
      - ``pip install sympy``
+   * - `opt_einsum <https://optimized-einsum.readthedocs.io/>`_
+     - Optimized tensor contractions
+     - ``pip install opt_einsum``
    * - `anytree <https://anytree.readthedocs.io/>`_
      - Tree data structures (ADC response functions)
      - ``pip install anytree``
@@ -104,7 +107,7 @@ Or manually:
 
 .. code-block:: shell
 
-   pip install numpy scipy pyscf cython h5py psutil pandas joblib sympy tqdm anytree geometric
+   pip install numpy scipy pyscf cython h5py psutil pandas joblib sympy tqdm opt_einsum anytree geometric
 
 For the f2py meson build backend (required for Python >= 3.12):
 
