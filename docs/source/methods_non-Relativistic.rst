@@ -270,16 +270,22 @@ Rank Reduced Coupled Cluster (RRCCSD)
 ===================================
 .. code-block:: shell 
 
-   !  RRCCSD sto3g
+! FNO-RRCCSD ccpvdz
 
-   %cc
-   NumProc 4
-   projector_type MP2
-   end
+%cc
+Incore 3
+projector_type MP3
+df True
+thc True
+thc_grid (6,14)
+thc_thresh 0
+fnothresh 0
+rr_cutoff 0
+end
 
-   *xyz 0 1
-   H 0.0 0.0 0.0
-   F 0.0 0.0 0.9168
+*xyz 0 1
+N 0 0 0.5488
+N 0 0 -0.5488
 
 ********************
 Excited State Energy
