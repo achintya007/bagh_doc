@@ -289,6 +289,7 @@ Rank Reduced Coupled Cluster (RRCCSD)
    N 0 0 0.5488
    N 0 0 -0.5488
 One can use ``MP2``/``MP3`` as projector_type. Available THC grid sizes:
+
 +-------------+  +---------------+
 | Radial Grid |  | Angular Grid  |
 +=============+  +===============+
