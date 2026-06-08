@@ -265,9 +265,11 @@ Quadratic Unitary Coupled Cluster Triples (qUCCSD[T])
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
 ===================================
 Rank Reduced Coupled Cluster (RRCCSD)
 ===================================
+
 .. code-block:: shell 
 
    ! FNO-RRCCSD ccpvdz
