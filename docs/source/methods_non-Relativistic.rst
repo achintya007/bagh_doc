@@ -115,11 +115,16 @@ functions).
 
 Because the THC factorization is an approximation, THC-SCF energies are
 accurate only to within the fit quality (typically a few mHartree with
-``thc_naux_mult`` of 10-20), not machine precision. This is a serial-only
-feature for now; MPI parallelization is planned as a follow-up and is not
-yet available. This ``thc_scf`` keyword is unrelated to the ``thc``
-keyword used by Rank-Reduced CCSD below, which applies THC to the
-post-SCF correlation integrals rather than the SCF Fock build itself.
+``thc_naux_mult`` of 10-20), not machine precision. THC-SCF is currently
+the only method with an MPI-parallel code path: the Fock build's
+O(naux^2 * nbasis) contractions, and the one-time DF-integral projection
+used to build the THC factors, are sharded across ranks when launched
+under ``bagh nprocs input.inp`` (see :ref:`running-mpi` in the
+installation guide). Without ``nprocs``, or if ``mpi4py`` is unavailable,
+it runs exactly as the original serial driver. This ``thc_scf`` keyword is
+unrelated to the ``thc`` keyword used by Rank-Reduced CCSD below, which
+applies THC to the post-SCF correlation integrals rather than the SCF
+Fock build itself.
 
 ================================
 Coupled Cluster (CC)
