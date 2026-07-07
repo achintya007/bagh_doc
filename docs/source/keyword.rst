@@ -135,6 +135,29 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    DF False
 
+**thc_scf** ``Logical``
+
+.. code-block:: shell
+
+   thc_scf False
+
+Switches the ground-state RHF Fock build from exact/DF integrals to a
+tensor-hypercontraction (THC) factorization -- see the Hartree-Fock section
+of :doc:`methods_non-Relativistic`. This is independent of, and should not
+be confused with, the ``thc`` keyword used by Rank-Reduced CCSD, which
+applies THC to the post-SCF correlation integrals instead.
+
+**thc_naux_mult** ``Integer``
+
+.. code-block:: shell
+
+   thc_naux_mult 10
+
+Controls the number of THC interpolation points used by ``thc_scf`` (the
+point count is approximately ``thc_naux_mult`` times the number of basis
+functions). Larger values improve accuracy at higher cost; 10-20 gives
+accuracy to within a few mHartree in practice.
+
 **CVSMIN** ``Integer``
 
 .. code-block:: shell

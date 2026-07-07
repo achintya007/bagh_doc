@@ -82,6 +82,46 @@ While writing input file
 Ground State Energy
 *******************
 ================================
+Hartree-Fock (HF)
+================================
+
+THC-accelerated Hartree-Fock (THC-SCF)
+---------------------------------------
+
+An experimental, opt-in serial RHF driver that builds the Fock matrix from
+a tensor-hypercontraction (THC) factorization of the two-electron
+integrals instead of the exact integrals. Interpolation points are chosen
+via a randomized-sketch pivoted-QR selection on a real-space grid, and the
+coupling tensor is fit through density-fitted (RI) integrals so it is
+positive-semidefinite by construction -- this keeps the self-consistent
+Fock build numerically stable. It is switched on with ``thc_scf True`` in
+the ``%cc`` block; the number of interpolation points scales with
+``thc_naux_mult`` (roughly ``thc_naux_mult`` times the number of basis
+functions).
+
+.. code-block:: shell
+
+   ! RHF ccpvdz
+
+   %cc
+   thc_scf True
+   thc_naux_mult 15
+   end
+
+   *xyz 0 1
+   O  0.000000000000  -0.143225816552   0.000000000000
+   H 1.638036840407   1.136548822547  -0.000000000000
+   H -1.638036840407   1.136548822547  -0.000000000000
+
+Because the THC factorization is an approximation, THC-SCF energies are
+accurate only to within the fit quality (typically a few mHartree with
+``thc_naux_mult`` of 10-20), not machine precision. This is a serial-only
+feature for now; MPI parallelization is planned as a follow-up and is not
+yet available. This ``thc_scf`` keyword is unrelated to the ``thc``
+keyword used by Rank-Reduced CCSD below, which applies THC to the
+post-SCF correlation integrals rather than the SCF Fock build itself.
+
+================================
 Coupled Cluster (CC)
 ================================
 .. math::
