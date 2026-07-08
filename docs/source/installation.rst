@@ -94,8 +94,11 @@ Optional Python packages:
      - Alternative geometry optimizer
      - ``pip install pyberny``
    * - `mpi4py <https://mpi4py.readthedocs.io/>`_
-     - MPI parallelism (currently ``thc_scf`` only, see :ref:`running-mpi`)
+     - MPI parallelism (see :doc:`parallel_execution`)
      - ``pip install mpi4py``
+   * - `threadpoolctl <https://github.com/joblib/threadpoolctl>`_
+     - BLAS thread-count control (see :doc:`parallel_execution`)
+     - ``pip install threadpoolctl``
 
 You can install all required Python dependencies at once:
 
@@ -317,27 +320,8 @@ The wrapper script automatically sets:
 - ``PythonProjectorEmbedding_path`` — path to the embedding module
 - ``PYTHONPATH`` — includes all the above so Python can find the modules
 
-.. _running-mpi:
-
-Running under MPI
-^^^^^^^^^^^^^^^^^^
-
-An optional first argument selects the number of MPI ranks:
-
-.. code-block:: shell
-
-   bagh nprocs input.inp
-
-   # e.g.
-   bagh 4 input.inp
-
-``nprocs`` currently only benefits ``thc_scf`` jobs (see
-:doc:`methods_non-Relativistic`) -- it is the only method with an
-MPI-parallel code path so far. Every other input, and ``thc_scf`` itself
-when ``nprocs`` is omitted, runs exactly as plain ``bagh input.inp``. This
-requires ``mpi4py`` and an MPI runtime (e.g. OpenMPI) in the active
-environment; if either is unavailable, omit ``nprocs`` and BAGH falls back
-to the ordinary serial driver.
+Running with multiple MPI ranks, and controlling BLAS thread count, are
+covered in :doc:`parallel_execution`.
 
 
 Verifying the Installation

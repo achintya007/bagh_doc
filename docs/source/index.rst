@@ -21,6 +21,7 @@ Contents
 
    installation
    getting_started
+   parallel_execution
    Features
 
 .. toctree::

@@ -119,12 +119,13 @@ accurate only to within the fit quality (typically a few mHartree with
 the only method with an MPI-parallel code path: the Fock build's
 O(naux^2 * nbasis) contractions, and the one-time DF-integral projection
 used to build the THC factors, are sharded across ranks when launched
-under ``bagh nprocs input.inp`` (see :ref:`running-mpi` in the
-installation guide). Without ``nprocs``, or if ``mpi4py`` is unavailable,
-it runs exactly as the original serial driver. This ``thc_scf`` keyword is
-unrelated to the ``thc`` keyword used by Rank-Reduced CCSD below, which
-applies THC to the post-SCF correlation integrals rather than the SCF
-Fock build itself.
+under ``bagh nprocs input.inp``. See :doc:`parallel_execution` for the
+launcher syntax, the ``einsum_threads`` keyword for capping BLAS threads
+per rank, and how the two interact. Without ``nprocs``, or if ``mpi4py``
+is unavailable, it runs exactly as the original serial driver. This
+``thc_scf`` keyword is unrelated to the ``thc`` keyword used by
+Rank-Reduced CCSD below, which applies THC to the post-SCF correlation
+integrals rather than the SCF Fock build itself.
 
 ================================
 Coupled Cluster (CC)
