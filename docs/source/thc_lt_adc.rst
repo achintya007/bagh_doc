@@ -100,6 +100,25 @@ The auxiliary basis for the underlying density fitting is taken from the
 every other DF-based method; if none is given it falls back to a
 default MP2-fit auxbasis.
 
+MPI parallelism
+================
+
+Both variants run under multiple MPI ranks:
+
+.. code-block:: shell
+
+   bagh nprocs input.inp
+
+See :doc:`parallel_execution` for the launcher syntax and how to combine
+``nprocs`` with ``einsum_threads`` on a single node. Every major cost
+center is sharded: the DF 3-center integrals over auxiliary shells, the
+THC grid evaluation and interpolation-point selection over grid points,
+the ``M_ij`` build over its term list, and the ``K_g`` build over
+Laplace-quadrature points -- the last of these has no data dependency
+between quadrature points at all, so it is the most cleanly scalable
+piece of the method. Without ``nprocs`` this reduces to exactly the
+serial computation.
+
 Example
 =======
 

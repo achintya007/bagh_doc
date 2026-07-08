@@ -25,10 +25,11 @@ MPI ranks:
    # e.g.
    bagh 4 input.inp
 
-``nprocs`` currently only benefits ``thc_scf`` jobs (see
-:doc:`methods_non-Relativistic`) -- it is the only method with an
-MPI-parallel code path so far. Every other input, and ``thc_scf`` itself
-when ``nprocs`` is omitted, runs exactly as plain ``bagh input.inp``. This
+``nprocs`` currently benefits ``thc_scf`` and ``THC-LT-IP-ADC(2)`` /
+``THC-LT-SOS-IP-ADC(2)`` jobs (see :doc:`methods_non-Relativistic` and
+:doc:`thc_lt_adc`) -- these are the only methods with an MPI-parallel
+code path so far. Every other input, and these methods themselves when
+``nprocs`` is omitted, run exactly as plain ``bagh input.inp``. This
 requires ``mpi4py`` and an MPI runtime (e.g. OpenMPI) in the active
 environment; if either is unavailable, omit ``nprocs`` and BAGH falls back
 to the ordinary serial driver.
@@ -38,6 +39,14 @@ of the Fock build's O(naux^2 * nbasis) contractions, and shards the
 one-time DF-integral projection used to build the THC factors -- the DF
 integrals themselves are generated once, on rank 0, and broadcast rather
 than regenerated on every rank.
+
+For THC-LT-(SOS-)IP-ADC(2), every major cost center is sharded: the DF
+3-center integrals over auxiliary shells, the THC grid evaluation and
+interpolation-point selection over grid points, the M_ij build over its
+term list, and the K_g build over Laplace-quadrature points -- the last
+of these has no data dependency between quadrature points at all, so it
+scales cleanly to as many ranks as there are points. See
+:doc:`thc_lt_adc` for the full decomposition.
 
 BLAS/einsum thread count
 -------------------------
