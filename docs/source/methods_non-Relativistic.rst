@@ -564,6 +564,13 @@ Third order ADC (ADC(3))
 
 To calculate the ionisation potential and electron affinity in the ADC framework, one can write ``IP-ADC(2)``, ``IP-ADC(2)-X``, ``IP-ADC(3)``, ``EA-ADC(2)``, ``EA-ADC(2)-X``, and ``EA-ADC(3)`` in place of method in the input file.
 
+``THC-LT-IP-ADC(2)`` and ``THC-LT-SOS-IP-ADC(2)`` solve the same
+``IP-ADC(2)`` secular equation but fold the doubles block out exactly
+and accelerate the remaining singles-space resolvent with a Laplace
+transform + THC factorization, so no doubles vector is ever formed --
+see :doc:`thc_lt_adc` for the theory, validity limits, and a worked
+example.
+
 **********
 Properties
 **********

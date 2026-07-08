@@ -32,10 +32,11 @@ Contents
    methods_non-Relativistic
 
 .. toctree::
-   :caption: Detailed documentations 
+   :caption: Detailed documentations
    :maxdepth: 2
 
    adc
+   thc_lt_adc
 
 .. toctree::
    :caption: Basis sets
