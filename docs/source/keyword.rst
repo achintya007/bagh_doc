@@ -741,3 +741,35 @@ accuracy to within a few mHartree in practice.
    x2c_type  x2camf
 
 By default, the x2c_type is x2camf. For model potential, the keyword is ``x2c_type x2cmp``. The spin-free x2c1e and spin-orbit x2c1e can be requested via ``x2c_type sf1e`` and ``x2c_type 1e``.
+
+**ncas** ``Integer``
+
+.. code-block:: shell
+
+   ncas None
+
+Number of active spinors for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Required for those methods.
+
+**nelecas** ``Integer``
+
+.. code-block:: shell
+
+   nelecas None
+
+Number of active electrons for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Required for those methods.
+
+**casscf** ``Logical``
+
+.. code-block:: shell
+
+   casscf False
+
+Selects between fixed-orbital CASCI (``False``, the default) and orbital-optimized CASSCF (``True``) for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF).
+
+**cas_nroots** ``Integer``
+
+.. code-block:: shell
+
+   cas_nroots 1
+
+Number of active-space CI roots to solve for, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF).

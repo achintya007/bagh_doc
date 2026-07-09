@@ -964,11 +964,70 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
 **********************
 Multireference Methods
 **********************
-CASCI, CASSCF, and strongly-contracted NEVPT2 are available for the two-component (spinor) X2CAMF framework through the interfaced `socutils <https://github.com/xubwa/socutils>`_ package. Unlike the single-reference methods above, these are **not** driven by an ``.inp``/``!method`` input file; they are used directly as a Python API on top of a converged two-component X2CAMF mean field. Because the reference is two-component, active-space sizes are always counted in **spinors (spin-orbitals)**: ``ncas`` active spinors holding ``nelecas`` electrons, rather than spatial orbitals and a separate spin multiplicity.
+CASCI, CASSCF, and strongly-contracted NEVPT2 are available for the two-component (spinor) X2CAMF framework, with the CASCI/CASSCF machinery itself provided by the interfaced `socutils <https://github.com/xubwa/socutils>`_ package. They are driven by the same ``.inp``/``!method`` input file interface as the single-reference methods above (``! CASSCF SOC-X2CAMF ...`` / ``! NEVPT2 SOC-X2CAMF ...``) for routine use; for finer control (custom CI solvers, multiple roots, inspecting natural orbitals, scripting over several active-space choices) they can also be driven directly as a Python API on top of a converged two-component X2CAMF mean field, exactly as the ``.inp`` interface does internally. Because the reference is two-component, active-space sizes are always counted in **spinors (spin-orbitals)**: ``ncas`` active spinors holding ``nelecas`` electrons, rather than spatial orbitals and a separate spin multiplicity.
+
+============================================
+Input File Usage
+============================================
+``! CASSCF SOC-X2CAMF spinor <basis>`` runs CASCI (or, with ``casscf True``, orbital-optimized CASSCF) and reports the total energy. ``! NEVPT2 SOC-X2CAMF spinor <basis>`` additionally runs the strongly-contracted NEVPT2 correlation energy on top of that CASCI/CASSCF reference. ``ncas`` and ``nelecas`` are mandatory; everything else in the ``%cc`` block (``x2c_type``, ``Gaunt``, ``Breit``, ``light_speed``, ...) behaves exactly as for the single-reference SOC-X2CAMF methods above.
+
+CASCI (fixed orbitals, the default):
+
+.. code-block:: shell
+
+   ! CASSCF SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Orbital-optimized CASSCF, with the ``casscf True`` keyword:
+
+.. code-block:: shell
+
+   ! CASSCF SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   casscf True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Strongly-contracted NEVPT2 on top of a CASCI reference (add ``casscf True`` for a CASSCF reference instead):
+
+.. code-block:: shell
+
+   ! NEVPT2 SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Additional ``%cc`` keywords for this method family:
+
+* ``ncas`` (``Integer``, required) -- number of active spinors;
+* ``nelecas`` (``Integer``, required) -- number of active electrons;
+* ``casscf`` (``Logical``, default ``False``) -- ``False`` runs fixed-orbital CASCI; ``True`` runs orbital-optimized CASSCF (density-fitted internally, and requires the bundled ``zquatev`` solver to be built);
+* ``cas_nroots`` (``Integer``, default ``1``) -- number of active-space CI roots to solve for in one diagonalization.
 
 ============================================
 Complete Active Space CI/SCF (CASCI/CASSCF)
 ============================================
+This is what the ``! CASSCF``/``! NEVPT2`` input file lines above drive internally; use it directly for finer control than the input file exposes.
 
 Relativistic CASCI
 -------------------
@@ -1075,6 +1134,7 @@ For larger active spaces, ``socutils.fci.zfci.SelectedCI(mol, occslst=...)`` dia
 ============================================
 Strongly-Contracted NEVPT2
 ============================================
+This is what the ``! NEVPT2`` input file line above drives internally; use it directly for finer control than the input file exposes.
 
 Theory
 ------
@@ -1131,8 +1191,8 @@ For each perturber :math:`\mu` built from an external excitation acting on one o
 
 where :math:`N_\mu` is the norm of the (un-normalized) contracted active-space vector, :math:`\hat{H}_{\mathrm{act}}` is the active-space Hamiltonian, and :math:`\Delta\varepsilon_\mu` is the sum of external (virtual) semicanonical orbital energies minus core semicanonical orbital energies entering that perturber. Class ``Sijrs(0)`` has no active-space operator at all, so its denominator reduces to the usual bare orbital-energy gap and it is evaluated in closed form.
 
-Usage
------
+Python API Usage
+------------------
 
 .. code-block:: python
 
