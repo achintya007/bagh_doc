@@ -13,6 +13,7 @@ Features
 - Frozen Natural Orbital for RHF -CCSD, RHF-IP-CCSD and Triples corrected  RHF-IP-CCSD
 - First order properties for RHF and spin orbital CCSD
 - Exact two and four component approaches for relativistic  coupled cluster method
-- Natural spinors for the relativistic calculations 
+- Natural spinors for the relativistic calculations
 - Efficient treatment for core-ionization
 - XES Spectra for closed shell molecules
+- CASCI/CASSCF and strongly-contracted NEVPT2 for two-component (X2CAMF) spinor references

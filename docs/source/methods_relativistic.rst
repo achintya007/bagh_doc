@@ -961,6 +961,215 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+**********************
+Multireference Methods
+**********************
+CASCI, CASSCF, and strongly-contracted NEVPT2 are available for the two-component (spinor) X2CAMF framework through the interfaced `socutils <https://github.com/xubwa/socutils>`_ package. Unlike the single-reference methods above, these are **not** driven by an ``.inp``/``!method`` input file; they are used directly as a Python API on top of a converged two-component X2CAMF mean field. Because the reference is two-component, active-space sizes are always counted in **spinors (spin-orbitals)**: ``ncas`` active spinors holding ``nelecas`` electrons, rather than spatial orbitals and a separate spin multiplicity.
 
+============================================
+Complete Active Space CI/SCF (CASCI/CASSCF)
+============================================
+
+Relativistic CASCI
+-------------------
+``socutils.mcscf.zcasci.CASCI(mf, ncas, nelecas, ncore=None)`` diagonalizes the full CI problem within a chosen active spinor space on top of a **fixed** converged X2CAMF mean field. ``kernel()`` returns ``(e_tot, e_cas, ci, mo_coeff, mo_energy)`` and stores the same as attributes.
+
+.. code-block:: python
+
+   from pyscf import gto
+   from socutils.scf import spinor_hf
+   from socutils.mcscf import zcasci
+
+   mol = gto.M(atom='H 0 0 0; F 0 0 0.917', basis='ccpvdz', verbose=4)
+
+   mf = spinor_hf.SCF(mol).x2camf()
+   mf.kernel()
+
+   mc = zcasci.CASCI(mf, 8, 6)   # 6 electrons in 8 active spinors
+   mc.kernel()
+   print(mc.e_tot, mc.e_cas)
+
+Useful attributes:
+
+* ``ncore`` -- number of doubly-occupied core spinors; inferred from the electron count if not given;
+* ``frozen`` -- orbitals excluded from the CI/orbital problem;
+* ``natorb`` -- transform the active space to natural spinors (eigenvectors of the active 1-RDM);
+* ``canonicalization`` -- canonicalize the core/external blocks of the Fock matrix (default ``True``);
+* ``fcisolver`` -- the active-space CI solver (see `Choosing the active-space CI solver`_ below).
+
+Relativistic CASSCF
+--------------------
+``socutils.mcscf.zmcscf.CASSCF(mf, ncas, nelecas, ncore=None, frozen=None)`` additionally optimizes the orbitals. ``kernel()`` drives a **super-CI** orbital optimizer: each macro-iteration solves the active-space CI problem, builds the orbital gradient and an approximate Hessian, and takes a Kramers-paired orbital-rotation step, repeating until the energy and orbital gradient are converged.
+
+.. code-block:: python
+
+   from pyscf import gto
+   from socutils.scf import spinor_hf
+   from socutils.mcscf import zmcscf
+
+   mol = gto.M(atom='H 0 0 0; F 0 0 0.917', basis='ccpvdz', verbose=4)
+
+   # the orbital optimizer builds its integrals from a density-fitted
+   # reference, so the mean field must be density-fitted (or use Cholesky
+   # decomposition, see the CD section above)
+   mf = spinor_hf.SCF(mol).x2camf().density_fit()
+   mf.kernel()
+
+   mc = zmcscf.CASSCF(mf, 8, 6)   # 6 electrons in 8 active spinors
+   mc.kernel()
+   print(mc.e_tot)
+
+Requirements
+~~~~~~~~~~~~
+
+* **zquatev** -- the orbital-rotation step is solved with the Kramers-paired (quaternion) eigensolver bundled with socutils; it must be built (``make`` in the socutils checkout) or ``kernel()`` raises a clear error.
+* **A density-fitted reference** -- the optimizer builds its two-electron integrals by Cholesky/DF transformation from the mean field, so ``mf`` must carry a ``with_df``: attach it with ``.density_fit()``, or enable Cholesky decomposition with the ``CD True`` keyword route described above (otherwise ``kernel()`` raises ``Either with_df or cderi must be provided``).
+
+Options
+~~~~~~~
+
+The optimization is controlled by attributes set on the ``CASSCF`` object (defaults in parentheses):
+
+* ``max_cycle_macro`` (``20``) -- maximum number of macro-iterations;
+* ``max_stepsize`` (``0.2``) -- trust radius capping each orbital-rotation step;
+* ``conv_tol`` (``1e-8``) -- energy-convergence threshold;
+* ``conv_tol_grad`` (``None`` -> ``sqrt(conv_tol)`` :math:`= 10^{-4}`) -- orbital-gradient convergence threshold;
+* ``natorb`` (``True``) -- rotate the active orbitals to natural spinors at every macro-iteration;
+* ``canonicalize_`` (``True``) -- diagonalize the core and virtual blocks of the effective Fock matrix so the inactive/virtual orbitals come out canonical;
+* ``frozen`` (``None``) -- orbitals excluded from rotation; an ``int`` freezes the lowest orbitals, a list/array freezes the listed indices;
+* ``freeze_pair`` (``None``) -- a pair of index sets whose mutual rotations are frozen, leaving the rest of the space free to optimize;
+* ``irrep`` (``None``) -- per-orbital symmetry labels; rotations are then only allowed between orbitals carrying the same label.
+
+Convergence and results
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+A macro-iteration is accepted as converged when **both** the energy change and the orbital-gradient norm fall below their thresholds (``abs(dE) < conv_tol`` and ``norm(grad) < conv_tol_grad``); otherwise the loop stops at ``max_cycle_macro``. ``kernel()`` sets:
+
+* ``mc.e_tot`` -- total CASSCF energy;
+* ``mc.e_cas`` -- active-space (CI) energy;
+* ``mc.ci`` -- the active-space CI vector;
+* ``mc.mo_coeff`` / ``mc.mo_energy`` -- optimized (canonical) orbitals and their energies;
+* ``mc.converged`` -- whether both convergence criteria were met.
+
+.. note::
+
+   For tightly-bound cases the default ``max_cycle_macro = 20`` can stop a step or two before ``abs(dE) < 1e-8``, even though the gradient is already below ``conv_tol_grad`` (so ``mc.converged`` is ``False`` while the energy is essentially converged). Raise ``mc.max_cycle_macro`` (e.g. to ``40``) to reach full convergence.
+
+Choosing the active-space CI solver
+------------------------------------
+By default, both ``CASCI`` and ``CASSCF`` diagonalize the active space with socutils' own spinor CI module, ``socutils.fci.zfci``, which builds and diagonalizes the full CI Hamiltonian matrix explicitly in the determinant basis. This avoids the Davidson convergence problems that (near-)degenerate Kramers-paired roots cause for iterative solvers, and it is a drop-in replacement for both PySCF's ``fci_dhf_slow`` and the Dice-based selected-CI interface.
+
+.. code-block:: python
+
+   from socutils.mcscf import zcasci
+   from socutils.fci import zfci
+
+   mc = zcasci.CASCI(mf, 8, 6)
+   mc.fcisolver = zfci.FCISolver(mol)   # this is also the default
+   mc.fcisolver.nroots = 4              # solve several states in one diagonalization
+   mc.kernel()
+   print(mc.fcisolver.eci)              # the individual root energies
+
+For larger active spaces, ``socutils.fci.zfci.SelectedCI(mol, occslst=...)`` diagonalizes within a chosen list of determinants instead of the full determinant space.
+
+============================================
+Strongly-Contracted NEVPT2
+============================================
+
+Theory
+------
+``bagh_code.nevpt2.NEVPT2`` computes the strongly-contracted second-order N-electron valence perturbation (SC-NEVPT2) correlation energy on top of a two-component X2CAMF CASCI/CASSCF reference. Spin-orbit coupling enters through the X2CAMF/AMFI effective one-electron Hamiltonian (built into ``mc.get_hcore()``) on exactly the same footing as the Coulomb interaction, so the method is applied unchanged whether SOC is switched on or off.
+
+The core (doubly occupied), active, and external (virtual) spinors of the CASCI/CASSCF reference partition the perturbation into a Dyall-type zeroth-order Hamiltonian. The core and external blocks of the generalized Fock operator
+
+.. math::
+
+    F_{pq} = F^{I}_{pq} + \sum_{tu} D_{tu}\left[(pq|tu) - (pu|tq)\right], \qquad
+    F^{I}_{pq} = h_{pq} + \sum_{i}\left[(pq|ii) - (pi|iq)\right]
+
+(with :math:`D_{tu} = \langle \Psi_0 | a_t^\dagger a_u | \Psi_0 \rangle` the active one-body reduced density matrix, :math:`i` running over core spinors, and :math:`t,u` over active spinors) are each diagonalized separately -- this is the **semicanonicalization** step -- while the active block is left untouched. All integrals are then rotated into this semicanonical basis, and the resulting core/external orbital energies :math:`\varepsilon_i, \varepsilon_a` define the denominators below.
+
+Following Angeli's strong-contraction scheme, the first-order interacting space splits into eight excitation classes, labelled by how many electrons they add to (:math:`+`) or remove from (:math:`-`) the active space, with core spinors :math:`i,j`, active spinors :math:`t,u,v`, and external (virtual) spinors :math:`a,b`:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 40 30
+
+   * - Class
+     - Active-space operator
+     - External indices excited
+   * - ``Sijrs(0)``
+     - none (closed form, no active excitation)
+     - :math:`i<j` (core), :math:`a<b` (virtual)
+   * - ``Srs(-2)``
+     - :math:`a_t a_u`
+     - :math:`a<b` (virtual)
+   * - ``Sij(+2)``
+     - :math:`a_t^\dagger a_u^\dagger`
+     - :math:`i<j` (core)
+   * - ``Sijr(+1)``
+     - :math:`a_t^\dagger`
+     - :math:`i<j` (core), :math:`a` (virtual)
+   * - ``Srsi(-1)``
+     - :math:`a_t`
+     - :math:`i` (core), :math:`a<b` (virtual)
+   * - ``Sir(0)``
+     - identity :math:`+\ a_t^\dagger a_u`
+     - :math:`i` (core), :math:`a` (virtual)
+   * - ``Si(+1)``
+     - :math:`a_t^\dagger\ +\ a_t^\dagger a_u^\dagger a_v`
+     - :math:`i` (core)
+   * - ``Sr(-1)``
+     - :math:`a_t\ +\ a_r^\dagger a_s a_q`
+     - :math:`a` (virtual)
+
+For each perturber :math:`\mu` built from an external excitation acting on one of these active-space operator strings applied to :math:`|\Psi_0\rangle`, the strongly-contracted energy contribution is
+
+.. math::
+
+    E_\mu = \frac{N_\mu^2}{E_{\mathrm{CAS}} - \langle \mu | \hat{H}_{\mathrm{act}} | \mu \rangle / N_\mu - \Delta\varepsilon_\mu}
+
+where :math:`N_\mu` is the norm of the (un-normalized) contracted active-space vector, :math:`\hat{H}_{\mathrm{act}}` is the active-space Hamiltonian, and :math:`\Delta\varepsilon_\mu` is the sum of external (virtual) semicanonical orbital energies minus core semicanonical orbital energies entering that perturber. Class ``Sijrs(0)`` has no active-space operator at all, so its denominator reduces to the usual bare orbital-energy gap and it is evaluated in closed form.
+
+Usage
+-----
+
+.. code-block:: python
+
+   from pyscf import gto
+   from socutils.scf import spinor_hf
+   from socutils.mcscf import zcasci
+   from bagh_code.nevpt2 import NEVPT2
+
+   mol = gto.M(atom='H 0 0 0; F 0 0 0.917', basis='ccpvdz', verbose=4)
+
+   mf = spinor_hf.SCF(mol).x2camf()
+   mf.kernel()
+
+   # CASCI: 6 electrons in 8 active spinors
+   mc = zcasci.CASCI(mf, 8, 6)
+   mc.kernel()
+
+   pt = NEVPT2(mc)
+   e_corr = pt.kernel()
+
+   print('E(NEVPT2 total) =', mc.e_tot + e_corr)
+   print('per-class:', pt.e_classes)
+
+``mc`` may be either a ``zcasci.CASCI`` or a ``zmcscf.CASSCF`` object -- ``NEVPT2`` only reads ``mc.mo_coeff``, ``mc.ci``, ``mc.ncore``, ``mc.ncas``, ``mc.nelecas``, and ``mc.get_hcore()`` off it, so a converged orbital-optimized CASSCF reference works exactly the same way. After ``pt.kernel()`` runs:
+
+* ``pt.e_corr`` -- the total NEVPT2 correlation energy (also the return value of ``kernel()``);
+* ``pt.e_classes`` -- a dictionary with the energy contribution of each of the eight excitation classes listed above.
+
+Validation
+----------
+With spin-orbit coupling switched off, the spinor strongly-contracted NEVPT2 correlation energy reproduces ``pyscf.mrpt.NEVPT2`` to machine precision for seven of the eight excitation classes; the ``Sir(0)`` class differs at the :math:`10^{-5}` level because ``pyscf`` uses a spin-adapted strong contraction (one perturber per *spatial* :math:`i \to a` transition, combining spin channels) whereas the spinor scheme keeps each Kramers channel separate -- the natural and general choice once spin-orbit coupling is switched on.
+
+Scope and practical limits
+---------------------------
+This is a reference implementation aimed at small/moderate active spaces:
+
+* it diagonalizes the active space exactly (via ``socutils.fci.zfci``) and applies explicit creation/annihilation operators to the resulting CI vector to build each perturber, rather than working through reduced density matrices of increasing rank;
+* it stores the full spinor MO two-electron integral tensor densely; ``kernel()`` raises ``MemoryError`` before building it if the estimated size exceeds 8 GB (:math:`n_{\mathrm{mo}}^4 \times 16` bytes, where :math:`n_{\mathrm{mo}}` is the total number of spinors, i.e. core + active + external), so use a smaller basis/active space, or restrict to systems where the full-space integral tensor fits comfortably in memory.
 
 
