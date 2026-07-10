@@ -37,6 +37,8 @@ Contents
 
    adc
    thc_lt_adc
+   thc_lt_adc3
+   thc_lt_sm_adc
 
 .. toctree::
    :caption: Basis sets

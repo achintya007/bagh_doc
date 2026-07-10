@@ -564,12 +564,25 @@ Third order ADC (ADC(3))
 
 To calculate the ionisation potential and electron affinity in the ADC framework, one can write ``IP-ADC(2)``, ``IP-ADC(2)-X``, ``IP-ADC(3)``, ``EA-ADC(2)``, ``EA-ADC(2)-X``, and ``EA-ADC(3)`` in place of method in the input file.
 
-``THC-LT-IP-ADC(2)`` and ``THC-LT-SOS-IP-ADC(2)`` solve the same
-``IP-ADC(2)`` secular equation but fold the doubles block out exactly
-and accelerate the remaining singles-space resolvent with a Laplace
+``THC-LT-IP-ADC(2)``, ``THC-LT-SOS-IP-ADC(2)``, ``THC-LT-EA-ADC(2)``,
+``THC-LT-SOS-EA-ADC(2)``, and ``THC-LT-EE-ADC(2)`` solve the same
+IP-/EA-/EE-ADC(2) secular equations but fold the doubles block out
+exactly (IP/EA) and accelerate the remaining resolvent with a Laplace
 transform + THC factorization, so no doubles vector is ever formed --
-see :doc:`thc_lt_adc` for the theory, validity limits, and a worked
-example.
+see :doc:`thc_lt_adc` for the theory, validity limits, and worked
+examples.
+
+``THC-LT-IP-ADC(3)`` and ``THC-LT-EA-ADC(3)`` solve the full (unfolded)
+third-order secular equation with every integral contraction THC-
+factorized and every energy denominator Laplace-transformed, so no
+dense 4-index ERI or ``o^2v^2``/``v^3`` buffer is ever formed -- see
+:doc:`thc_lt_adc3` for the theory, the optional FNO truncation, and
+worked examples.
+
+``THC-LT-SM-IP-ADC`` and ``THC-LT-SM-EA-ADC`` blend the ADC(2) and
+ADC(3) secular matrices of ``THC-LT-IP/EA-ADC(3)`` into a single
+Hermitian, size-consistent, tunable-order method -- see
+:doc:`thc_lt_sm_adc`.
 
 **********
 Properties
