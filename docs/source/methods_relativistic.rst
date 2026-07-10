@@ -1017,6 +1017,23 @@ Strongly-contracted NEVPT2 on top of a CASCI reference (add ``casscf True`` for 
    H 0.0 0.0 0.0
    F 0.0 0.0 0.917
 
+For a larger virtual space, add ``nevpt2_cd True`` to switch the NEVPT2 two-electron integrals to Cholesky-decomposed form (see `Cholesky-decomposed (CD) integrals`_ below) so the dense ``nmo^4`` MO tensor is never stored:
+
+.. code-block:: shell
+
+   ! NEVPT2 SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   nevpt2_cd True
+   nevpt2_max_error 1e-6
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
 Additional ``%cc`` keywords for this method family:
 
 * ``ncas`` (``Integer``, required) -- number of active spinors;
@@ -1032,7 +1049,9 @@ Additional ``%cc`` keywords for this method family:
 * ``cas_conv_tol`` (``Float``, default ``1e-8``, CASSCF only) -- energy-convergence threshold;
 * ``cas_conv_tol_grad`` (``Float``, default: ``sqrt(cas_conv_tol)``, CASSCF only) -- orbital-gradient convergence threshold;
 * ``cas_freeze_pair`` (two comma lists separated by ``;``, e.g. ``0,1;2,3``, default none, CASSCF only) -- freeze mutual rotations between the two listed sets of orbital indices, leaving the rest of the space free to optimize;
-* ``cas_irrep`` (comma list of labels, length = total no. of spinors, default none, CASSCF only) -- per-orbital point-group symmetry labels; orbital rotations are then only allowed between orbitals carrying the same label.
+* ``cas_irrep`` (comma list of labels, length = total no. of spinors, default none, CASSCF only) -- per-orbital point-group symmetry labels; orbital rotations are then only allowed between orbitals carrying the same label;
+* ``nevpt2_cd`` (``Logical``, default ``False``, NEVPT2 only) -- ``True`` uses Cholesky-decomposed two-electron integrals instead of the dense ``nmo^4`` tensor;
+* ``nevpt2_max_error`` (``Float``, default ``1e-6``, NEVPT2 only) -- Cholesky decomposition threshold, used when ``nevpt2_cd True``.
 
 Every CASCI/CASSCF/NEVPT2 option is settable from the input file -- none of it requires writing a Python script.
 
@@ -1237,11 +1256,22 @@ Validation
 ----------
 With spin-orbit coupling switched off, the spinor strongly-contracted NEVPT2 correlation energy reproduces ``pyscf.mrpt.NEVPT2`` to machine precision for seven of the eight excitation classes; the ``Sir(0)`` class differs at the :math:`10^{-5}` level because ``pyscf`` uses a spin-adapted strong contraction (one perturber per *spatial* :math:`i \to a` transition, combining spin channels) whereas the spinor scheme keeps each Kramers channel separate -- the natural and general choice once spin-orbit coupling is switched on.
 
+Cholesky-decomposed (CD) integrals
+------------------------------------
+By default (``kernel(cd=False)``) the two-electron integrals are the dense spinor MO tensor, exact but scaling as :math:`n_{\mathrm{mo}}^4` in memory. ``kernel(cd=True)`` instead builds Cholesky-decomposed (factored) integrals -- ``socutils.cc.chol_zccsd.DFIntegrals`` decomposes the scalar AO ERIs once (or reuses ``mc._scf.with_df``/``.cholesky()`` factors if already present) and every integral block used by the eight excitation classes is reconstructed on the fly from the ``(naux, nmo, nmo)`` factors through a lazy view, so the dense ``nmo^4`` tensor is never formed:
+
+.. code-block:: python
+
+   pt = NEVPT2(mc)
+   e_corr = pt.kernel(cd=True, max_error=1e-6)   # naux ~ a few * nao, not nmo**4
+
+``max_error`` is the Cholesky decomposition threshold; the CD result agrees with the dense-tensor result to about that threshold (typically better -- ~1e-7 energy at the default ``1e-6``). This is the only difference between the two paths: same eight excitation classes, same semicanonicalization, same accuracy otherwise.
+
 Scope and practical limits
 ---------------------------
 This is a reference implementation aimed at small/moderate active spaces:
 
 * it diagonalizes the active space exactly (via ``socutils.fci.zfci``) and applies explicit creation/annihilation operators to the resulting CI vector to build each perturber, rather than working through reduced density matrices of increasing rank;
-* it stores the full spinor MO two-electron integral tensor densely; ``kernel()`` raises ``MemoryError`` before building it if the estimated size exceeds 8 GB (:math:`n_{\mathrm{mo}}^4 \times 16` bytes, where :math:`n_{\mathrm{mo}}` is the total number of spinors, i.e. core + active + external), so use a smaller basis/active space, or restrict to systems where the full-space integral tensor fits comfortably in memory.
+* with the default dense integrals (``cd=False``), ``kernel()`` raises ``MemoryError`` before building the tensor if its estimated size exceeds 8 GB (:math:`n_{\mathrm{mo}}^4 \times 16` bytes, where :math:`n_{\mathrm{mo}}` is the total number of spinors, i.e. core + active + external); use ``cd=True`` (see `Cholesky-decomposed (CD) integrals`_ above) once the virtual space is large enough to hit this, since storage there drops to :math:`n_{\mathrm{aux}} \cdot n_{\mathrm{mo}}^2`.
 
 

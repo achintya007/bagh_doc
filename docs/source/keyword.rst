@@ -853,3 +853,19 @@ Freeze mutual rotations between two sets of orbital indices, for the orbital-opt
    cas_irrep None
 
 Per-orbital point-group symmetry labels (one per spinor, so the list length must equal the total number of spinors), for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Orbital rotations are then only allowed between orbitals carrying the same label. Example: ``cas_irrep A,A,B,B,...``.
+
+**nevpt2_cd** ``Logical``
+
+.. code-block:: shell
+
+   nevpt2_cd False
+
+For the ``NEVPT2`` method (SOC-X2CAMF): ``True`` uses Cholesky-decomposed two-electron integrals instead of the dense ``nmo^4`` tensor, so the memory scales as ``naux*nmo^2`` instead -- needed once the virtual space is large.
+
+**nevpt2_max_error** ``Float``
+
+.. code-block:: shell
+
+   nevpt2_max_error 1e-6
+
+Cholesky decomposition threshold for the ``NEVPT2`` method (SOC-X2CAMF), used when ``nevpt2_cd True``.
