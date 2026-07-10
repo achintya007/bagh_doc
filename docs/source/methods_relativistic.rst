@@ -1031,14 +1031,15 @@ Additional ``%cc`` keywords for this method family:
 * ``cas_max_stepsize`` (``Float``, default ``0.2``, CASSCF only) -- trust radius capping each orbital-rotation step;
 * ``cas_conv_tol`` (``Float``, default ``1e-8``, CASSCF only) -- energy-convergence threshold;
 * ``cas_conv_tol_grad`` (``Float``, default: ``sqrt(cas_conv_tol)``, CASSCF only) -- orbital-gradient convergence threshold;
-* ``cas_freeze_pair`` (two comma lists separated by ``;``, e.g. ``0,1;2,3``, default none, CASSCF only) -- freeze mutual rotations between the two listed sets of orbital indices, leaving the rest of the space free to optimize.
+* ``cas_freeze_pair`` (two comma lists separated by ``;``, e.g. ``0,1;2,3``, default none, CASSCF only) -- freeze mutual rotations between the two listed sets of orbital indices, leaving the rest of the space free to optimize;
+* ``cas_irrep`` (comma list of labels, length = total no. of spinors, default none, CASSCF only) -- per-orbital point-group symmetry labels; orbital rotations are then only allowed between orbitals carrying the same label.
 
-The only CASSCF option that stays Python-API-only is ``irrep`` (per-orbital point-group symmetry labels): it needs the actual symmetry label of every computed spinor, which is only known once you've inspected a converged SCF -- not something that can be typed into a flat input file blind. Everything else above is fully input-file-driven.
+Every CASCI/CASSCF/NEVPT2 option is settable from the input file -- none of it requires writing a Python script.
 
 ============================================
 Complete Active Space CI/SCF (CASCI/CASSCF)
 ============================================
-This is what the ``! CASSCF``/``! NEVPT2`` input file lines above drive internally (including every ``cas_*`` keyword listed there); use it directly only if you need ``irrep``-based symmetry restriction or want to script over several active-space choices.
+This is what the ``! CASSCF``/``! NEVPT2`` input file lines above drive internally (including every ``cas_*`` keyword listed there); use it directly only if you want to script over several active-space choices or inspect intermediate results programmatically.
 
 Relativistic CASCI
 -------------------

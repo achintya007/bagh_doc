@@ -845,3 +845,11 @@ Orbital-gradient convergence threshold, for the orbital-optimized ``CASSCF``/``N
    cas_freeze_pair None
 
 Freeze mutual rotations between two sets of orbital indices, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Format: two comma lists separated by ``;``, e.g. ``0,1;2,3``.
+
+**cas_irrep** comma list
+
+.. code-block:: shell
+
+   cas_irrep None
+
+Per-orbital point-group symmetry labels (one per spinor, so the list length must equal the total number of spinors), for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Orbital rotations are then only allowed between orbitals carrying the same label. Example: ``cas_irrep A,A,B,B,...``.
