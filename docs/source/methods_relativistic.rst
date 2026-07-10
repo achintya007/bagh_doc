@@ -1022,12 +1022,23 @@ Additional ``%cc`` keywords for this method family:
 * ``ncas`` (``Integer``, required) -- number of active spinors;
 * ``nelecas`` (``Integer``, required) -- number of active electrons;
 * ``casscf`` (``Logical``, default ``False``) -- ``False`` runs fixed-orbital CASCI; ``True`` runs orbital-optimized CASSCF (density-fitted internally, and requires the bundled ``zquatev`` solver to be built);
-* ``cas_nroots`` (``Integer``, default ``1``) -- number of active-space CI roots to solve for in one diagonalization.
+* ``cas_nroots`` (``Integer``, default ``1``) -- number of active-space CI roots to solve for in one diagonalization;
+* ``cas_ncore`` (``Integer``, default: inferred from ``nelecas``) -- override the number of doubly-occupied core spinors;
+* ``cas_frozen`` (``Integer`` or comma list, default none) -- orbitals excluded from the CI/orbital-rotation problem; a single integer freezes the lowest that many orbitals, a comma-separated list (e.g. ``0,1``) freezes those specific spinor indices;
+* ``cas_natorb`` (``Logical``, default: socutils' own default -- ``False`` for CASCI, ``True`` for CASSCF) -- rotate the active space to natural spinors;
+* ``cas_canonicalize`` (``Logical``, default: socutils' own default, ``True`` for both) -- canonicalize the core/external blocks of the Fock matrix;
+* ``cas_max_cycle_macro`` (``Integer``, default ``20``, CASSCF only) -- maximum number of super-CI macro-iterations;
+* ``cas_max_stepsize`` (``Float``, default ``0.2``, CASSCF only) -- trust radius capping each orbital-rotation step;
+* ``cas_conv_tol`` (``Float``, default ``1e-8``, CASSCF only) -- energy-convergence threshold;
+* ``cas_conv_tol_grad`` (``Float``, default: ``sqrt(cas_conv_tol)``, CASSCF only) -- orbital-gradient convergence threshold;
+* ``cas_freeze_pair`` (two comma lists separated by ``;``, e.g. ``0,1;2,3``, default none, CASSCF only) -- freeze mutual rotations between the two listed sets of orbital indices, leaving the rest of the space free to optimize.
+
+The only CASSCF option that stays Python-API-only is ``irrep`` (per-orbital point-group symmetry labels): it needs the actual symmetry label of every computed spinor, which is only known once you've inspected a converged SCF -- not something that can be typed into a flat input file blind. Everything else above is fully input-file-driven.
 
 ============================================
 Complete Active Space CI/SCF (CASCI/CASSCF)
 ============================================
-This is what the ``! CASSCF``/``! NEVPT2`` input file lines above drive internally; use it directly for finer control than the input file exposes.
+This is what the ``! CASSCF``/``! NEVPT2`` input file lines above drive internally (including every ``cas_*`` keyword listed there); use it directly only if you need ``irrep``-based symmetry restriction or want to script over several active-space choices.
 
 Relativistic CASCI
 -------------------
@@ -1134,7 +1145,7 @@ For larger active spaces, ``socutils.fci.zfci.SelectedCI(mol, occslst=...)`` dia
 ============================================
 Strongly-Contracted NEVPT2
 ============================================
-This is what the ``! NEVPT2`` input file line above drives internally; use it directly for finer control than the input file exposes.
+This is what the ``! NEVPT2`` input file line above drives internally; use it directly only for scripting (e.g. looping over several active-space choices) or inspecting ``pt.e_classes`` programmatically.
 
 Theory
 ------

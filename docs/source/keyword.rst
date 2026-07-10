@@ -773,3 +773,75 @@ Selects between fixed-orbital CASCI (``False``, the default) and orbital-optimiz
    cas_nroots 1
 
 Number of active-space CI roots to solve for, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF).
+
+**cas_ncore** ``Integer``
+
+.. code-block:: shell
+
+   cas_ncore None
+
+Override the auto-inferred number of doubly-occupied core spinors, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF).
+
+**cas_frozen** ``Integer`` or comma list
+
+.. code-block:: shell
+
+   cas_frozen None
+
+Orbitals excluded from the CI/orbital-rotation problem, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). A single integer freezes the lowest that many orbitals; a comma-separated list (e.g. ``0,1``) freezes those specific spinor indices.
+
+**cas_natorb** ``Logical``
+
+.. code-block:: shell
+
+   cas_natorb None
+
+Rotate the active space to natural spinors, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Leaving it unset keeps socutils' own default (``False`` for CASCI, ``True`` for CASSCF).
+
+**cas_canonicalize** ``Logical``
+
+.. code-block:: shell
+
+   cas_canonicalize None
+
+Canonicalize the core/external blocks of the Fock matrix, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Leaving it unset keeps socutils' own default (``True`` for both CASCI and CASSCF).
+
+**cas_max_cycle_macro** ``Integer``
+
+.. code-block:: shell
+
+   cas_max_cycle_macro 20
+
+Maximum number of super-CI macro-iterations, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``).
+
+**cas_max_stepsize** ``Float``
+
+.. code-block:: shell
+
+   cas_max_stepsize 0.2
+
+Trust radius capping each orbital-rotation step, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``).
+
+**cas_conv_tol** ``Float``
+
+.. code-block:: shell
+
+   cas_conv_tol 1e-8
+
+Energy-convergence threshold, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``).
+
+**cas_conv_tol_grad** ``Float``
+
+.. code-block:: shell
+
+   cas_conv_tol_grad None
+
+Orbital-gradient convergence threshold, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Defaults to ``sqrt(cas_conv_tol)`` when unset.
+
+**cas_freeze_pair**
+
+.. code-block:: shell
+
+   cas_freeze_pair None
+
+Freeze mutual rotations between two sets of orbital indices, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Format: two comma lists separated by ``;``, e.g. ``0,1;2,3``.
