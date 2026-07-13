@@ -1058,7 +1058,7 @@ Every CASCI/CASSCF/NEVPT2 option is settable from the input file -- none of it r
 ============================================
 Alternative Orbital Optimizer: Super-CI-PT
 ============================================
-``! CASSCF-SUPERCIPT SOC-X2CAMF spinor <basis>`` is an alternative to ``! CASSCF``'s orbital optimizer above. Instead of socutils' super-CI (approximate Newton) step, the orbital-rotation parameters come directly from an explicit second-order (Dyall-type) perturbative correction to the super-CI gradient -- the method of Guo & Dutta, "A Perturbative Super-CI Approach for orbital optimization in Two-Component relativistic CASSCF" (*J. Chem. Theory Comput.*, manuscript ct-2026-00400f). The implementation lives in ``bagh_code.casscf_supercipt`` rather than in ``socutils`` -- it does not touch or replace any socutils file, unlike the upstream reference implementation which is meant to be dropped directly into ``socutils/mcscf``. ``ncas``/``nelecas``/``cas_ncore``/``cas_nroots`` from the keyword list above are reused as-is.
+``! CASSCF-SUPERCIPT SOC-X2CAMF spinor <basis>`` is an alternative to ``! CASSCF``'s orbital optimizer above; ``! NEVPT2-SUPERCIPT SOC-X2CAMF spinor <basis>`` additionally runs strongly-contracted spinor NEVPT2 on top of the Super-CI-PT-optimized reference, exactly as ``! NEVPT2`` does on top of ``! CASSCF``. Instead of socutils' super-CI (approximate Newton) step, the orbital-rotation parameters come directly from an explicit second-order (Dyall-type) perturbative correction to the super-CI gradient -- the method of Guo & Dutta, "A Perturbative Super-CI Approach for orbital optimization in Two-Component relativistic CASSCF" (*J. Chem. Theory Comput.*, manuscript ct-2026-00400f). The implementation lives in ``bagh_code.casscf_supercipt`` rather than in ``socutils`` -- it does not touch or replace any socutils file, unlike the upstream reference implementation which is meant to be dropped directly into ``socutils/mcscf``. ``ncas``/``nelecas``/``cas_ncore``/``cas_nroots``/``nevpt2_cd``/``nevpt2_max_error`` from the keyword lists above are reused as-is.
 
 .. code-block:: shell
 
@@ -1075,6 +1075,8 @@ Alternative Orbital Optimizer: Super-CI-PT
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.917
+
+Swap the method name for ``! NEVPT2-SUPERCIPT`` (same ``%cc`` block) to run NEVPT2 on top of the Super-CI-PT reference instead of just reporting the CASSCF energy.
 
 Method-specific ``%cc`` keywords:
 
