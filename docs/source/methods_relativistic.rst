@@ -1058,15 +1058,17 @@ Every CASCI/CASSCF/NEVPT2 option is settable from the input file -- none of it r
 ============================================
 Alternative Orbital Optimizer: Super-CI-PT
 ============================================
-``! CASSCF-SUPERCIPT SOC-X2CAMF spinor <basis>`` is an alternative to ``! CASSCF``'s orbital optimizer above; ``! NEVPT2-SUPERCIPT SOC-X2CAMF spinor <basis>`` additionally runs strongly-contracted spinor NEVPT2 on top of the Super-CI-PT-optimized reference, exactly as ``! NEVPT2`` does on top of ``! CASSCF``. Instead of socutils' super-CI (approximate Newton) step, the orbital-rotation parameters come directly from an explicit second-order (Dyall-type) perturbative correction to the super-CI gradient -- the method of Guo & Dutta, "A Perturbative Super-CI Approach for orbital optimization in Two-Component relativistic CASSCF" (*J. Chem. Theory Comput.*, manuscript ct-2026-00400f). The implementation lives in ``bagh_code.casscf_supercipt`` rather than in ``socutils`` -- it does not touch or replace any socutils file, unlike the upstream reference implementation which is meant to be dropped directly into ``socutils/mcscf``. ``ncas``/``nelecas``/``cas_ncore``/``cas_nroots``/``nevpt2_cd``/``nevpt2_max_error`` from the keyword lists above are reused as-is.
+``casscf True`` above always uses socutils' own super-CI (approximate Newton) orbital optimizer. Adding ``supercipt True`` alongside it switches to a different orbital optimizer instead: the orbital-rotation parameters come directly from an explicit second-order (Dyall-type) perturbative correction to the super-CI gradient -- the method of Guo & Dutta, "A Perturbative Super-CI Approach for orbital optimization in Two-Component relativistic CASSCF" (*J. Chem. Theory Comput.*, manuscript ct-2026-00400f). The implementation lives in ``bagh_code.casscf_supercipt`` rather than in ``socutils`` -- it does not touch or replace any socutils file, unlike the upstream reference implementation which is meant to be dropped directly into ``socutils/mcscf``. This works under both ``! CASSCF`` and ``! NEVPT2`` (NEVPT2 then runs on top of the Super-CI-PT-optimized reference, exactly as it does on top of the plain super-CI one); ``ncas``/``nelecas``/``cas_ncore``/``cas_nroots``/``nevpt2_cd``/``nevpt2_max_error`` from the keyword lists above are reused as-is.
 
 .. code-block:: shell
 
-   ! CASSCF-SUPERCIPT SOC-X2CAMF spinor ccpvdz
+   ! CASSCF SOC-X2CAMF spinor ccpvdz
 
    %cc
    ncas 8
    nelecas 6
+   casscf True
+   supercipt True
    pt_max_cycle 40
    pt_use_diis True
    pt_symm_kramers True
@@ -1076,10 +1078,11 @@ Alternative Orbital Optimizer: Super-CI-PT
    H 0.0 0.0 0.0
    F 0.0 0.0 0.917
 
-Swap the method name for ``! NEVPT2-SUPERCIPT`` (same ``%cc`` block) to run NEVPT2 on top of the Super-CI-PT reference instead of just reporting the CASSCF energy.
+Swap the method name for ``! NEVPT2`` (same ``%cc`` block) to run NEVPT2 on top of the Super-CI-PT reference instead of just reporting the CASSCF energy.
 
 Method-specific ``%cc`` keywords:
 
+* ``supercipt`` (``Logical``, default ``False``, requires ``casscf True``) -- switch the orbital optimizer from socutils' super-CI to Super-CI-PT;
 * ``pt_max_cycle`` (``Integer``, default ``40``) -- maximum number of Super-CI-PT macro-iterations;
 * ``pt_conv_etol`` (``Float``, default ``1e-8``) -- energy-convergence threshold;
 * ``pt_conv_gtol`` (``Float``, default ``1e-3``) -- orbital-gradient convergence threshold;
@@ -1090,9 +1093,9 @@ Method-specific ``%cc`` keywords:
 
 .. note::
 
-   The reference implementation was designed and validated by its author for lanthanide/actinide complexes with large, near-degenerate f-shell active spaces -- its worked example is a 52-root CAS(3,14) on Nd\ :sup:`3+`\ (H\ :sub:`2`\ O)\ :sub:`8`, dyallv2z/def2-svp -- systems where getting the *right* orbitals into the active space in the first place, not just optimizing them, is the hard part; the perturbative (linear, not full-Newton) update is specifically pitched at that regime, typically starting from an active-space-aware orbital guess (e.g. rotating the correct atomic-f-character spinors into the active window) rather than the raw canonical SCF ordering. On a small, generic test case (HF/ccpvdz, CAS(6,8) from the canonical X2CAMF-HF guess, no special active-space selection), this port runs correctly and deterministically but converges to a different, higher-energy stationary point than ``! CASSCF``'s super-CI optimizer reaches from the same starting guess -- i.e. it has a narrower basin of convergence here. This is a property of the underlying algorithm as provided (the ``bagh_code.casscf_supercipt`` port is byte-for-byte identical to the upstream algorithm code apart from import wiring), not a porting bug. Use ``! CASSCF`` for routine orbital optimization; reach for ``! CASSCF-SUPERCIPT`` for the large, near-degenerate active spaces it was built for.
+   The reference implementation was designed and validated by its author for lanthanide/actinide complexes with large, near-degenerate f-shell active spaces -- its worked example is a 52-root CAS(3,14) on Nd\ :sup:`3+`\ (H\ :sub:`2`\ O)\ :sub:`8`, dyallv2z/def2-svp -- systems where getting the *right* orbitals into the active space in the first place, not just optimizing them, is the hard part; the perturbative (linear, not full-Newton) update is specifically pitched at that regime, typically starting from an active-space-aware orbital guess (e.g. rotating the correct atomic-f-character spinors into the active window) rather than the raw canonical SCF ordering. On a small, generic test case (HF/ccpvdz, CAS(6,8) from the canonical X2CAMF-HF guess, no special active-space selection), this port runs correctly and deterministically but converges to a different, higher-energy stationary point than the plain super-CI optimizer reaches from the same starting guess -- i.e. it has a narrower basin of convergence here. This is a property of the underlying algorithm as provided (the ``bagh_code.casscf_supercipt`` port is byte-for-byte identical to the upstream algorithm code apart from import wiring), not a porting bug. Leave ``supercipt`` at its default for routine orbital optimization; reach for ``supercipt True`` for the large, near-degenerate active spaces it was built for.
 
-MPI parallelism is not available for this method.
+MPI parallelism is not available for ``supercipt True``.
 
 ============================================
 Strongly-Contracted NEVPT2
