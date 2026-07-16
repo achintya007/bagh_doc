@@ -962,6 +962,30 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
    F 0.0 0.0 0.9168
 
 **********************
+================================================
+Plasma-Embedded Systems
+================================================
+Atoms and ions embedded in a plasma can be treated with Debye-Hueckel
+screening or the ion-sphere model on top of the two-component
+(``SOC-X2CAMF``) Hamiltonian, in combination with all
+Cholesky-decomposition based correlation methods. See
+:doc:`plasma` for theory, keywords, and examples.
+
+.. code-block:: shell
+
+   ! CCSD SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD True
+   cd_threshold 1e-6
+   x2c_type 1e
+   plasma debye
+   debye_length 10.0
+   end
+
+   *xyz 0 1
+   Mg 0.0 0.0 0.0
+
 Multireference Methods
 **********************
 CASCI, CASSCF, and strongly-contracted NEVPT2 are available for the two-component (spinor) X2CAMF framework, with the CASCI/CASSCF machinery itself provided by the interfaced `socutils <https://github.com/xubwa/socutils>`_ package. They are driven by the same ``.inp``/``!method`` input file interface as the single-reference methods above (``! CASSCF SOC-X2CAMF ...`` / ``! NEVPT2 SOC-X2CAMF ...``) for routine use; for finer control (custom CI solvers, multiple roots, inspecting natural orbitals, scripting over several active-space choices) they can also be driven directly as a Python API on top of a converged two-component X2CAMF mean field, exactly as the ``.inp`` interface does internally. Because the reference is two-component, active-space sizes are always counted in **spinors (spin-orbitals)**: ``ncas`` active spinors holding ``nelecas`` electrons, rather than spatial orbitals and a separate spin multiplicity.

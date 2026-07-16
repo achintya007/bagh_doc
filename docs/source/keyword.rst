@@ -742,6 +742,62 @@ accuracy to within a few mHartree in practice.
 
 By default, the x2c_type is x2camf. For model potential, the keyword is ``x2c_type x2cmp``. The spin-free x2c1e and spin-orbit x2c1e can be requested via ``x2c_type sf1e`` and ``x2c_type 1e``.
 
+**plasma**: ``String``
+
+.. code-block:: shell
+
+   plasma  None
+
+Activates a plasma-embedding model for the ``SOC-X2CAMF`` interface: ``plasma debye`` (Debye-Hueckel screening of the e-n, e-e and n-n interactions) or ``plasma ionsphere`` (ion-sphere model for a single atomic ion). See the :doc:`plasma` page. The Debye model requires ``CD True``; ``x2c_type 1e`` is recommended.
+
+**debye_length**: ``Float``
+
+.. code-block:: shell
+
+   debye_length  None
+
+Debye screening length :math:`\lambda_D` in bohr for ``plasma debye``. Either ``debye_length`` or ``debye_mu`` must be given.
+
+**debye_mu**: ``Float``
+
+.. code-block:: shell
+
+   debye_mu  None
+
+Debye screening parameter :math:`\mu = 1/\lambda_D` (inverse bohr); alternative to ``debye_length``.
+
+**is_radius**: ``Float``
+
+.. code-block:: shell
+
+   is_radius  None
+
+Ion-sphere radius :math:`R` in bohr for ``plasma ionsphere``. Required for the ion-sphere model.
+
+**plasma_grid_level**: ``Integer``
+
+.. code-block:: shell
+
+   plasma_grid_level  6
+
+DFT grid level used for the numerical part of the one-electron plasma model potential (molecules).
+
+**plasma_atom_grid**: ``String``
+
+.. code-block:: shell
+
+   plasma_atom_grid  250,590
+
+Radial and angular grid, ``n_rad,n_ang``, used for the one-electron plasma model potential of a single atom.
+
+**debye_quad_h**: ``Float``
+
+.. code-block:: shell
+
+   debye_quad_h  0.25
+
+Spacing of the erf-quadrature used to assemble the Yukawa two-electron integrals when libcint lacks F12 support (smaller = more accurate/more integral passes; 0.25 gives a maximum kernel error of about 2e-7, 0.2 about 1e-9).
+
 **ncas** ``Integer``
 
 .. code-block:: shell

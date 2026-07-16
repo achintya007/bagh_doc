@@ -39,6 +39,7 @@ Contents
    thc_lt_adc
    thc_lt_adc3
    thc_lt_sm_adc
+   plasma
 
 .. toctree::
    :caption: Basis sets
