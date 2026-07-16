@@ -978,7 +978,7 @@ Cholesky-decomposition based correlation methods. See
    %cc
    CD True
    cd_threshold 1e-6
-   x2c_type 1e
+   x2c_type x2camf
    plasma debye
    debye_length 10.0
    end

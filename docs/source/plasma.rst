@@ -10,11 +10,19 @@ with every Cholesky-decomposition based correlation method
 (MP2, CCSD, CCSD(T), EOM-CCSD, ADC, ...).
 
 The one-electron model potential enters the four-component Dirac
-Hamiltonian *before* the X2C decoupling, i.e. both the large-large
-potential block ``V`` and the small-small block
-``W = (sigma.p) V (sigma.p)`` are modified, so the screening is
-picture-change consistent. The recommended Hamiltonian is the
-one-electron X2C variant, requested with ``x2c_type 1e``.
+Hamiltonian *before* the X2C decoupling, i.e. the large-large
+potential block ``V``, the small-small block
+``W = (sigma.p) V (sigma.p)`` and the resulting decoupling (X and R)
+matrices are all screened, so the treatment is picture-change
+consistent. Every ``x2c_type`` flavor is supported: with
+``x2c_type 1e`` the screening is fully consistent, while with the
+default ``x2c_type x2camf`` (and related atomic-mean-field flavors)
+only the AMF two-electron spin-orbit correction is kept Coulombic.
+The latter is an excellent approximation, because the AMF correction
+originates from the core region where
+:math:`e^{-r/\lambda_D} \approx 1`; for an argon atom at a strong
+screening of :math:`\mu = 0.2` a.u. the AMF correction changes by
+less than :math:`10^{-7}` Hartree.
 
 Debye-Hueckel screening
 ========================
@@ -67,7 +75,7 @@ Example: Debye-screened CCSD for a magnesium atom
    %cc
    CD True
    cd_threshold 1e-6
-   x2c_type 1e
+   x2c_type x2camf
    plasma debye
    debye_length 10.0
    end
@@ -143,11 +151,10 @@ grid can be controlled with ``plasma_grid_level`` (molecules) or
 Validity and remarks
 =====================
 
-* Implemented for the ``SOC-X2CAMF`` interface. With ``x2c_type``
-  other than ``1e`` the plasma potential still enters the one-electron
-  4c Hamiltonian, but any atomic-mean-field two-electron/spin-orbit
-  picture-change correction remains unscreened; ``x2c_type 1e`` is the
-  fully consistent choice.
+* Implemented for the ``SOC-X2CAMF`` interface; all ``x2c_type``
+  flavors are supported. ``x2c_type 1e`` is fully consistent; with
+  ``x2camf`` and the other atomic-mean-field flavors the AMF
+  two-electron spin-orbit correction stays Coulombic (see above).
 * Point nuclei are assumed for the screened nuclear attraction.
 * The Debye model requires ``CD True`` (the screened two-electron
   integrals are handled through the Cholesky vectors). The ISM has no

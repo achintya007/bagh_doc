@@ -748,7 +748,7 @@ By default, the x2c_type is x2camf. For model potential, the keyword is ``x2c_ty
 
    plasma  None
 
-Activates a plasma-embedding model for the ``SOC-X2CAMF`` interface: ``plasma debye`` (Debye-Hueckel screening of the e-n, e-e and n-n interactions) or ``plasma ionsphere`` (ion-sphere model for a single atomic ion). See the :doc:`plasma` page. The Debye model requires ``CD True``; ``x2c_type 1e`` is recommended.
+Activates a plasma-embedding model for the ``SOC-X2CAMF`` interface: ``plasma debye`` (Debye-Hueckel screening of the e-n, e-e and n-n interactions) or ``plasma ionsphere`` (ion-sphere model for a single atomic ion). Works with every ``x2c_type`` flavor, including the default ``x2camf``. See the :doc:`plasma` page. The Debye model requires ``CD True``.
 
 **debye_length**: ``Float``
 
