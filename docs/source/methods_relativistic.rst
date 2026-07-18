@@ -957,6 +957,8 @@ For a closed-shell (even-electron, Aufbau-occupied) two-component reference, the
 
 Frozen-Natural-Spinor truncation (KR-FNS)
 ------------------------------------------
+The ``KU-`` variants (``KU-CCSD``, ``KU-CCSD(T)``, ``KU-FNS-CCSD``, ``KU-FNS-CCSD(T)``) run the same machinery for general open-shell or time-reversal-broken references, without the factor-2 Kramers savings and without the even-``fc_no`` restriction. Optional THC and Laplace-transform acceleration (``kr_thc``, ``kr_t_alg lt``/``lt-thc``, ``laplace_h``) reduce the particle-particle ladder to :math:`N^5` and the (T) triples to formal :math:`N^6` (:math:`N^5`-dominant with THC integrals); see :doc:`kramers_cc` for the audited scalings, accuracy limits, and examples.
+
 ``KR-FNS-CCSD`` and ``KR-FNS-CCSD(T)`` truncate the virtual space to Kramers-paired MP2 natural spinors (whole pairs are kept or dropped together, so the truncated reference stays exactly Kramers-closed) and report the usual dMP2 = E_MP2(full) - E_MP2(FNS) correction alongside the correlation energy.
 
 .. code-block:: shell
@@ -1043,33 +1045,6 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
-
-================================================
-Kramers-Restricted / Unrestricted CD-CCSD(T)
-================================================
-Kramers-symmetry-adapted Cholesky CCSD(T) (``KR-CCSD``, ``KR-CCSD(T)``,
-``KR-FNS-CCSD``, ``KR-FNS-CCSD(T)``) exploits time reversal to halve
-every rate-limiting step for closed-shell references; the ``KU-``
-variants handle open-shell (Kramers-unrestricted) references. Optional
-THC and Laplace-transform acceleration reduce the formal scaling of
-the ladder (N^6 to N^5) and of (T) (N^7 to N^6, N^5-dominant with THC
-integrals). See :doc:`kramers_cc` for theory, keywords and examples.
-
-.. code-block:: shell
-
-   ! KR-FNS-CCSD(T) SOC-X2CAMF spinor ccpvdz
-
-   %cc
-   CD True
-   cd_threshold 1e-6
-   x2c_type x2camf
-   fc True
-   fnothresh 1e-4
-   kr_t_alg lt
-   end
-
-   *xyz 0 1
-   Ar 0.0 0.0 0.0
 
 ================================================
 Plasma-Embedded Systems
