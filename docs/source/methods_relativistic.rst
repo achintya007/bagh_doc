@@ -932,6 +932,89 @@ A sample input file to run FNO-DIP-ADC(3) with Cholesky Decomposition:
    F 0.0 0.0 0.9168
 
 
+********************************************
+Kramers-Restricted Coupled Cluster (KR-CC)
+********************************************
+For a closed-shell (even-electron, Aufbau-occupied) two-component reference, the converged X2CAMF spinors can be rotated into exact Kramers pairs and every rate-limiting CCSD/(T) contraction evaluated on only the unbarred half of one free index, the barred half following from time reversal -- roughly halving the cost of the plain density-fitted CCSD(T) above. This is exposed as its own method family (``bagh_code.kramers.kr_chol_zccsd``, built on ``socutils.cc.chol_zccsd`` without modifying ``socutils``) rather than as an option on ``CCSD``/``CCSD(T)``. It always runs density-fitted (Cholesky); there is no non-CD KR-CCSD path.
+
+``KR-CCSD``
+
+``KR-CCSD(T)``
+
+.. code-block:: shell
+
+   ! KR-CCSD(T) SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD_Threshold 1e-6
+   x2c_type x2camf
+   cc_convergence 1e-8
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Frozen-Natural-Spinor truncation (KR-FNS)
+------------------------------------------
+``KR-FNS-CCSD`` and ``KR-FNS-CCSD(T)`` truncate the virtual space to Kramers-paired MP2 natural spinors (whole pairs are kept or dropped together, so the truncated reference stays exactly Kramers-closed) and report the usual dMP2 = E_MP2(full) - E_MP2(FNS) correction alongside the correlation energy.
+
+.. code-block:: shell
+
+   ! KR-FNS-CCSD(T) SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD_Threshold 1e-6
+   x2c_type x2camf
+   fc True
+   fnothresh 1e-4
+   cc_convergence 1e-8
+   end
+
+   *xyz 0 1
+   Ar 0.0 0.0 0.0
+
+Tensor Hypercontraction / Laplace acceleration
+-------------------------------------------------
+For larger systems, the O(naux . o^2 . v^3) particle-particle ladder can be replaced by an O(K^2 . o^2 . v) tensor-hypercontraction (THC) chain (``bagh_code.kramers.thc_lt``), and the (T) triples can be evaluated via Laplace-transformed factorized topologies instead of the explicit six-index W intermediate. Both combine with KR-CCSD/(T) and KR-FNS-CCSD/(T) above.
+
+.. code-block:: shell
+
+   ! KR-CCSD(T) SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD_Threshold 1e-6
+   x2c_type x2camf
+   cc_convergence 1e-8
+   kr_thc True
+   kr_thc_rank 10
+   kr_t_alg lt
+   laplace_h 0.3
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Method-specific ``%cc`` keywords:
+
+* ``fc`` (``Logical``, default ``False``) / ``fc_no`` (``Integer``, default ``-1``) -- freeze the lowest ``fc_no`` spinors, in Kramers pairs (must be even); ``fc_no -1`` freezes the default core count;
+* ``CD_Threshold`` (``Float``, default ``1e-5``) -- Cholesky decomposition threshold for the two-electron integrals;
+* ``fnothresh`` (``Float``, default ``1e-4``, KR-FNS only) -- MP2 natural-occupation threshold below which a Kramers-paired virtual pair is discarded;
+* ``nvir_act`` (``Integer``, KR-FNS only) -- keep a fixed number of virtual spinors instead of thresholding on occupation (must be even);
+* ``kr_thc`` (``Logical``, default ``False``) -- replace the particle-particle ladder by the THC chain;
+* ``kr_thc_rank`` (``Integer``, default ``8``) -- THC grid rank multiplier, ``K = kr_thc_rank * nmo``;
+* ``kr_thc_grid`` (two comma-separated integers, e.g. ``75,302``) -- override the (radial, angular) THC quadrature grid;
+* ``kr_t_alg`` (``exact`` or ``lt``, default ``exact``) -- (T) algorithm; ``lt`` uses the Laplace-transformed factorized-topology evaluation instead of the explicit six-index intermediate;
+* ``laplace_h`` (``Float``, default ``0.4``, used when ``kr_t_alg lt``) -- Laplace quadrature spacing.
+
+Combines transparently with ``plasma debye`` / ``plasma ion_sphere`` (see :doc:`plasma`): the screened Cholesky vectors are passed straight through to KR-CC, so it sees the same screened two-electron interaction as the SCF.
+
+.. note::
+
+   KR-CC requires a closed-shell (even-electron, Aufbau-occupied) reference converged in the same run (``int_restart 0``); it rotates the SCF spinors into exact Kramers pairs internally and raises an error if the reference isn't closed-shell.
+
+
 **********
 Properties
 **********
