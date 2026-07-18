@@ -798,6 +798,46 @@ Radial and angular grid, ``n_rad,n_ang``, used for the one-electron plasma model
 
 Spacing of the erf-quadrature used to assemble the Yukawa two-electron integrals when libcint lacks F12 support (smaller = more accurate/more integral passes; 0.25 gives a maximum kernel error of about 2e-7, 0.2 about 1e-9).
 
+**kr_thc**: ``Boolean``
+
+.. code-block:: shell
+
+   kr_thc  False
+
+Contract the particle-particle ladder of the KR/KU-CCSD iterations through THC factors of the ERIs (O(K^2 o^2 v) instead of O(naux o^2 v^3)). Accuracy is limited by the ERI fit, reported in the output. See :doc:`kramers_cc`.
+
+**kr_thc_rank**: ``Integer``
+
+.. code-block:: shell
+
+   kr_thc_rank  8
+
+THC rank multiplier: K = kr_thc_rank x nmo grid points are kept (pivoted-Cholesky selection, rank-adaptive).
+
+**kr_thc_grid**: ``String``
+
+.. code-block:: shell
+
+   kr_thc_grid  None
+
+Optional ``n_rad,n_ang`` override of the THC parent grid.
+
+**kr_t_alg**: ``String``
+
+.. code-block:: shell
+
+   kr_t_alg  exact
+
+(T) algorithm for the KR/KU methods: ``exact`` (O(N^7)), ``lt`` (Laplace-transformed factorized topologies, formal N^6), or ``lt-thc`` (additionally THC-expanded ovvv integrals, N^5-dominant). See :doc:`kramers_cc`.
+
+**laplace_h**: ``Float``
+
+.. code-block:: shell
+
+   laplace_h  0.4
+
+Laplace quadrature spacing for ``kr_t_alg lt``/``lt-thc`` (0.4 gives ~1e-7 relative accuracy on 1/x; smaller is tighter).
+
 **ncas** ``Integer``
 
 .. code-block:: shell

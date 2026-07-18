@@ -1044,7 +1044,33 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-**********************
+================================================
+Kramers-Restricted / Unrestricted CD-CCSD(T)
+================================================
+Kramers-symmetry-adapted Cholesky CCSD(T) (``KR-CCSD``, ``KR-CCSD(T)``,
+``KR-FNS-CCSD``, ``KR-FNS-CCSD(T)``) exploits time reversal to halve
+every rate-limiting step for closed-shell references; the ``KU-``
+variants handle open-shell (Kramers-unrestricted) references. Optional
+THC and Laplace-transform acceleration reduce the formal scaling of
+the ladder (N^6 to N^5) and of (T) (N^7 to N^6, N^5-dominant with THC
+integrals). See :doc:`kramers_cc` for theory, keywords and examples.
+
+.. code-block:: shell
+
+   ! KR-FNS-CCSD(T) SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD True
+   cd_threshold 1e-6
+   x2c_type x2camf
+   fc True
+   fnothresh 1e-4
+   kr_t_alg lt
+   end
+
+   *xyz 0 1
+   Ar 0.0 0.0 0.0
+
 ================================================
 Plasma-Embedded Systems
 ================================================
