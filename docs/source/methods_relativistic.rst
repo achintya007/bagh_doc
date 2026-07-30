@@ -51,10 +51,57 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-.. only:: comment
-    Coupled Cluster Singles Doubles Triples (CCSDT)
-    -----------------------------------------------
-    Not Implemented
+Coupled Cluster Singles Doubles Triples (CCSDT)
+-----------------------------------------------
+
+.. code-block:: shell
+
+   ! CCSDT spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+Coupled Cluster Singles Doubles Triples with perturbative Quadruples (CCSDT(Q))
+-------------------------------------------------------------------------------
+
+The ``CCSDT(Q)`` method adds a non-iterative quadruples correction on top of a
+converged relativistic CCSDT calculation. Both the ``[Q]`` and ``(Q)``
+corrections are reported; the corresponding total energies are printed as
+``CCSDT[Q]`` and ``CCSDT(Q)``. The correction is built from the perturbative
+quadruples amplitude :math:`t_4 = (M_4^{\text{conn}} + M_4^{\text{disc}})/D_4`,
+where the connected part is driven by :math:`T_3` and the disconnected part by
+:math:`T_2^2`, and the energy is the asymmetric contraction with the left
+(:math:`T_2^{\dagger}`, :math:`T_3^{\dagger}`) vectors.
+
+The eight-index :math:`(Q)` denominator :math:`D_4` is handled by a Laplace
+transform (LT), so the correction is evaluated without ever storing the
+:math:`o^4 v^4` amplitude, and the two-electron integrals entering the
+quadruples moments may be expanded in tensor-hypercontraction (THC) factors.
+This mirrors the THC+LT treatment used for the perturbative triples.
+
+.. code-block:: shell
+
+   ! CCSDT(Q) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+The implementation lives in ``bagh_code/relccsd/ccsdt_q.py`` and has been
+validated against pyscf's ``RCCSDT.ccsdt_q`` (both ``[Q]`` and ``(Q)``) to
+amplitude-convergence accuracy. The Laplace-spacing keyword defaults to
+``0.30``.
 
 .. only:: comment
    Coupled Cluster approximate Doubles (CC2)
