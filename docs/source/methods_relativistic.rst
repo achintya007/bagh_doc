@@ -67,6 +67,11 @@ Coupled Cluster Singles Doubles Triples (CCSDT)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+The triples amplitude and the DIIS history can be kept in compact (triangular)
+form by adding ``compact_t3 True`` to the ``%cc`` block, which exploits the
+antisymmetry of :math:`T_3` to cut its memory footprint by up to 36x with no
+change to the result.
+
 Coupled Cluster Singles Doubles Triples with perturbative Quadruples (CCSDT(Q))
 -------------------------------------------------------------------------------
 

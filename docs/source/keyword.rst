@@ -248,6 +248,17 @@ accuracy to within a few mHartree in practice.
 
    incore 5
 
+**compact_t3** ``Logical``
+
+Store the CCSDT triples amplitude and DIIS history in compact (triangular)
+form, exploiting the antisymmetry of ``T3`` to reduce its memory footprint by
+up to a factor of 36. The result is numerically identical to the default dense
+solver. Applies to the ``CCSDT`` and ``CCSDT(Q)`` methods.
+
+.. code-block:: shell
+
+   compact_t3 True
+
 **DoADC2** ``Logical``
 
 .. code-block:: shell
