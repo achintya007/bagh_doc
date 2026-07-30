@@ -51,10 +51,115 @@ Coupled Cluster Singles Doubles with perturbative Triples (CCSD(T))
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
-.. only:: comment
-    Coupled Cluster Singles Doubles Triples (CCSDT)
-    -----------------------------------------------
-    Not Implemented
+Coupled Cluster Singles Doubles Triples (CCSDT)
+-----------------------------------------------
+
+.. code-block:: shell
+
+   ! CCSDT spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+The triples amplitude and the DIIS history can be kept in compact (triangular)
+form by adding ``compact_t3 True`` to the ``%cc`` block, which exploits the
+antisymmetry of :math:`T_3` to cut its memory footprint by up to 36x with no
+change to the result.
+
+An optimized solver (``bagh_code.relccsd.ccsdt_opt.ccsdt_kernel_opt``) combines
+this compact storage with a THC treatment of the four-virtual integral. Both
+the doubles pp-ladder :math:`\langle ab||ef\rangle \tau` and the triples
+:math:`\langle ab||ef\rangle t_3` term (together with the :math:`H_2^{vvvv}`
+intermediate) are evaluated directly from tensor-hypercontraction factors, so
+**no** :math:`O(v^4)` **tensor is ever formed** anywhere in the CCSDT
+iteration. The four-virtual contraction can optionally be dispatched to a
+compiled C++ GEMM kernel (``bagh_code/relccsd/csrc/vvvv_t3.cpp``, keyword
+``use_cxx``), and the triples amplitude can be held out-of-core on disk (HDF5)
+and streamed one block at a time through that kernel. The same THC factors
+drive both the CCSDT iterations and the CCSDT(Q) correction, giving a fully
+THC-consistent CCSDT(Q).
+
+With the X2CAMF (``SOC-X2CAMF``) reference and ``THC`` enabled, the THC factors
+produced during integral generation (``X_O``, ``X_V``, ``Z_mo``) are consumed
+directly: the ``CCSDT`` and ``CCSDT(Q)`` methods run the :math:`v^4`-free THC
+solver on those factors, and the CCSDT(Q) correction uses the same factors, so
+the whole calculation is THC-consistent and never builds the four-virtual
+integral. A representative X2CAMF input:
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF CCSDT(Q) unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   THC True
+   compact_t3 True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+For non-X2CAMF references, enable the solver with ``thc_ccsdt True`` (the THC
+factors are then built automatically from the density-fitted ERIs):
+
+.. code-block:: shell
+
+   ! CCSDT(Q) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   thc_ccsdt True
+   compact_t3 True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+Coupled Cluster Singles Doubles Triples with perturbative Quadruples (CCSDT(Q))
+-------------------------------------------------------------------------------
+
+The ``CCSDT(Q)`` method adds a non-iterative quadruples correction on top of a
+converged relativistic CCSDT calculation. Both the ``[Q]`` and ``(Q)``
+corrections are reported; the corresponding total energies are printed as
+``CCSDT[Q]`` and ``CCSDT(Q)``. The correction is built from the perturbative
+quadruples amplitude :math:`t_4 = (M_4^{\text{conn}} + M_4^{\text{disc}})/D_4`,
+where the connected part is driven by :math:`T_3` and the disconnected part by
+:math:`T_2^2`, and the energy is the asymmetric contraction with the left
+(:math:`T_2^{\dagger}`, :math:`T_3^{\dagger}`) vectors.
+
+The eight-index :math:`(Q)` denominator :math:`D_4` is handled by a Laplace
+transform (LT), so the correction is evaluated without ever storing the
+:math:`o^4 v^4` amplitude, and the two-electron integrals entering the
+quadruples moments may be expanded in tensor-hypercontraction (THC) factors.
+This mirrors the THC+LT treatment used for the perturbative triples.
+
+.. code-block:: shell
+
+   ! CCSDT(Q) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+The implementation lives in ``bagh_code/relccsd/ccsdt_q.py`` and has been
+validated against pyscf's ``RCCSDT.ccsdt_q`` (both ``[Q]`` and ``(Q)``) to
+amplitude-convergence accuracy. The Laplace-spacing keyword defaults to
+``0.30``.
 
 .. only:: comment
    Coupled Cluster approximate Doubles (CC2)
@@ -960,6 +1065,91 @@ A sample input file to run FNO-DIP-ADC(3) with Cholesky Decomposition:
    F 0.0 0.0 0.9168
 
 
+********************************************
+Kramers-Restricted Coupled Cluster (KR-CC)
+********************************************
+For a closed-shell (even-electron, Aufbau-occupied) two-component reference, the converged X2CAMF spinors can be rotated into exact Kramers pairs and every rate-limiting CCSD/(T) contraction evaluated on only the unbarred half of one free index, the barred half following from time reversal -- roughly halving the cost of the plain density-fitted CCSD(T) above. This is exposed as its own method family (``bagh_code.kramers.kr_chol_zccsd``, built on ``socutils.cc.chol_zccsd`` without modifying ``socutils``) rather than as an option on ``CCSD``/``CCSD(T)``. It always runs density-fitted (Cholesky); there is no non-CD KR-CCSD path.
+
+``KR-CCSD``
+
+``KR-CCSD(T)``
+
+.. code-block:: shell
+
+   ! KR-CCSD(T) SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD_Threshold 1e-6
+   x2c_type x2camf
+   cc_convergence 1e-8
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Frozen-Natural-Spinor truncation (KR-FNS)
+------------------------------------------
+The ``KU-`` variants (``KU-CCSD``, ``KU-CCSD(T)``, ``KU-FNS-CCSD``, ``KU-FNS-CCSD(T)``) run the same machinery for general open-shell or time-reversal-broken references, without the factor-2 Kramers savings and without the even-``fc_no`` restriction. Optional THC and Laplace-transform acceleration (``kr_thc``, ``kr_t_alg lt``/``lt-thc``, ``laplace_h``) reduce the particle-particle ladder to :math:`N^5` and the (T) triples to formal :math:`N^6` (:math:`N^5`-dominant with THC integrals); see :doc:`kramers_cc` for the audited scalings, accuracy limits, and examples.
+
+``KR-FNS-CCSD`` and ``KR-FNS-CCSD(T)`` truncate the virtual space to Kramers-paired MP2 natural spinors (whole pairs are kept or dropped together, so the truncated reference stays exactly Kramers-closed) and report the usual dMP2 = E_MP2(full) - E_MP2(FNS) correction alongside the correlation energy.
+
+.. code-block:: shell
+
+   ! KR-FNS-CCSD(T) SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD_Threshold 1e-6
+   x2c_type x2camf
+   fc True
+   fnothresh 1e-4
+   cc_convergence 1e-8
+   end
+
+   *xyz 0 1
+   Ar 0.0 0.0 0.0
+
+Tensor Hypercontraction / Laplace acceleration
+-------------------------------------------------
+For larger systems, the O(naux . o^2 . v^3) particle-particle ladder can be replaced by an O(K^2 . o^2 . v) tensor-hypercontraction (THC) chain (``bagh_code.kramers.thc_lt``), and the (T) triples can be evaluated via Laplace-transformed factorized topologies instead of the explicit six-index W intermediate. Both combine with KR-CCSD/(T) and KR-FNS-CCSD/(T) above.
+
+.. code-block:: shell
+
+   ! KR-CCSD(T) SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD_Threshold 1e-6
+   x2c_type x2camf
+   cc_convergence 1e-8
+   kr_thc True
+   kr_thc_rank 10
+   kr_t_alg lt
+   laplace_h 0.3
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Method-specific ``%cc`` keywords:
+
+* ``fc`` (``Logical``, default ``False``) / ``fc_no`` (``Integer``, default ``-1``) -- freeze the lowest ``fc_no`` spinors, in Kramers pairs (must be even); ``fc_no -1`` freezes the default core count;
+* ``CD_Threshold`` (``Float``, default ``1e-5``) -- Cholesky decomposition threshold for the two-electron integrals;
+* ``fnothresh`` (``Float``, default ``1e-4``, KR-FNS only) -- MP2 natural-occupation threshold below which a Kramers-paired virtual pair is discarded;
+* ``nvir_act`` (``Integer``, KR-FNS only) -- keep a fixed number of virtual spinors instead of thresholding on occupation (must be even);
+* ``kr_thc`` (``Logical``, default ``False``) -- replace the particle-particle ladder by the THC chain;
+* ``kr_thc_rank`` (``Integer``, default ``8``) -- THC grid rank multiplier, ``K = kr_thc_rank * nmo``;
+* ``kr_thc_grid`` (two comma-separated integers, e.g. ``75,302``) -- override the (radial, angular) THC quadrature grid;
+* ``kr_t_alg`` (``exact`` or ``lt``, default ``exact``) -- (T) algorithm; ``lt`` uses the Laplace-transformed factorized-topology evaluation instead of the explicit six-index intermediate;
+* ``laplace_h`` (``Float``, default ``0.4``, used when ``kr_t_alg lt``) -- Laplace quadrature spacing.
+
+Combines transparently with ``plasma debye`` / ``plasma ion_sphere`` (see :doc:`plasma`): the screened Cholesky vectors are passed straight through to KR-CC, so it sees the same screened two-electron interaction as the SCF.
+
+.. note::
+
+   KR-CC requires a closed-shell (even-electron, Aufbau-occupied) reference converged in the same run (``int_restart 0``); it rotates the SCF spinors into exact Kramers pairs internally and raises an error if the reference isn't closed-shell.
+
+
 **********
 Properties
 **********
@@ -989,6 +1179,275 @@ EE-EOM-CCSD (canonical, FNS and SS-FNS) Transition dipole moments (TDMs) and Osc
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+================================================
+Plasma-Embedded Systems
+================================================
+Atoms and ions embedded in a plasma can be treated with Debye-Hueckel
+screening or the ion-sphere model on top of the two-component
+(``SOC-X2CAMF``) Hamiltonian, in combination with all
+Cholesky-decomposition based correlation methods. See
+:doc:`plasma` for theory, keywords, and examples.
 
+.. code-block:: shell
+
+   ! CCSD SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   CD True
+   cd_threshold 1e-6
+   x2c_type x2camf
+   plasma debye
+   debye_length 10.0
+   end
+
+   *xyz 0 1
+   Mg 0.0 0.0 0.0
+
+Multireference Methods
+**********************
+CASCI, CASSCF, and strongly-contracted NEVPT2 are available for the two-component (spinor) X2CAMF framework, with the CASCI/CASSCF machinery itself provided by the interfaced `socutils <https://github.com/xubwa/socutils>`_ package. They are driven by the same ``.inp``/``!method`` input file interface as the single-reference methods above (``! CASSCF SOC-X2CAMF ...`` / ``! NEVPT2 SOC-X2CAMF ...``) for routine use; for finer control (custom CI solvers, multiple roots, inspecting natural orbitals, scripting over several active-space choices) they can also be driven directly as a Python API on top of a converged two-component X2CAMF mean field, exactly as the ``.inp`` interface does internally. Because the reference is two-component, active-space sizes are always counted in **spinors (spin-orbitals)**: ``ncas`` active spinors holding ``nelecas`` electrons, rather than spatial orbitals and a separate spin multiplicity.
+
+============================================
+Input File Usage
+============================================
+``! CASSCF SOC-X2CAMF spinor <basis>`` runs CASCI (or, with ``casscf True``, orbital-optimized CASSCF) and reports the total energy. ``! NEVPT2 SOC-X2CAMF spinor <basis>`` additionally runs the strongly-contracted NEVPT2 correlation energy on top of that CASCI/CASSCF reference. ``ncas`` and ``nelecas`` are mandatory; everything else in the ``%cc`` block (``x2c_type``, ``Gaunt``, ``Breit``, ``light_speed``, ...) behaves exactly as for the single-reference SOC-X2CAMF methods above.
+
+CASCI (fixed orbitals, the default):
+
+.. code-block:: shell
+
+   ! CASSCF SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Orbital-optimized CASSCF, with the ``casscf True`` keyword:
+
+.. code-block:: shell
+
+   ! CASSCF SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   casscf True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Strongly-contracted NEVPT2 on top of a CASCI reference (add ``casscf True`` for a CASSCF reference instead):
+
+.. code-block:: shell
+
+   ! NEVPT2 SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+For a larger virtual space, add ``nevpt2_cd True`` to switch the NEVPT2 two-electron integrals to Cholesky-decomposed form (see `Cholesky-decomposed (CD) integrals`_ below) so the dense ``nmo^4`` MO tensor is never stored:
+
+.. code-block:: shell
+
+   ! NEVPT2 SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   nevpt2_cd True
+   nevpt2_max_error 1e-6
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Additional ``%cc`` keywords for this method family:
+
+* ``ncas`` (``Integer``, required) -- number of active spinors;
+* ``nelecas`` (``Integer``, required) -- number of active electrons;
+* ``casscf`` (``Logical``, default ``False``) -- ``False`` runs fixed-orbital CASCI; ``True`` runs orbital-optimized CASSCF (density-fitted internally, and requires the bundled ``zquatev`` solver to be built);
+* ``cas_nroots`` (``Integer``, default ``1``) -- number of active-space CI roots to solve for in one diagonalization;
+* ``cas_ncore`` (``Integer``, default: inferred from ``nelecas``) -- override the number of doubly-occupied core spinors;
+* ``cas_frozen`` (``Integer`` or comma list, default none) -- orbitals excluded from the CI/orbital-rotation problem; a single integer freezes the lowest that many orbitals, a comma-separated list (e.g. ``0,1``) freezes those specific spinor indices;
+* ``cas_natorb`` (``Logical``, default: socutils' own default -- ``False`` for CASCI, ``True`` for CASSCF) -- rotate the active space to natural spinors;
+* ``cas_canonicalize`` (``Logical``, default: socutils' own default, ``True`` for both) -- canonicalize the core/external blocks of the Fock matrix;
+* ``cas_max_cycle_macro`` (``Integer``, default ``20``, CASSCF only) -- maximum number of super-CI macro-iterations;
+* ``cas_max_stepsize`` (``Float``, default ``0.2``, CASSCF only) -- trust radius capping each orbital-rotation step;
+* ``cas_conv_tol`` (``Float``, default ``1e-8``, CASSCF only) -- energy-convergence threshold;
+* ``cas_conv_tol_grad`` (``Float``, default: ``sqrt(cas_conv_tol)``, CASSCF only) -- orbital-gradient convergence threshold;
+* ``cas_freeze_pair`` (two comma lists separated by ``;``, e.g. ``0,1;2,3``, default none, CASSCF only) -- freeze mutual rotations between the two listed sets of orbital indices, leaving the rest of the space free to optimize;
+* ``cas_irrep`` (comma list of labels, length = total no. of spinors, default none, CASSCF only) -- per-orbital point-group symmetry labels; orbital rotations are then only allowed between orbitals carrying the same label;
+* ``nevpt2_cd`` (``Logical``, default ``False``, NEVPT2 only) -- ``True`` uses Cholesky-decomposed two-electron integrals instead of the dense ``nmo^4`` tensor;
+* ``nevpt2_max_error`` (``Float``, default ``1e-6``, NEVPT2 only) -- Cholesky decomposition threshold, used when ``nevpt2_cd True``.
+
+Every CASCI/CASSCF/NEVPT2 option is settable from the input file -- none of it requires writing a Python script.
+
+============================================
+Alternative Orbital Optimizer: Super-CI-PT
+============================================
+``casscf True`` above always uses socutils' own super-CI (approximate Newton) orbital optimizer. Adding ``supercipt True`` alongside it switches to a different orbital optimizer instead: the orbital-rotation parameters come directly from an explicit second-order (Dyall-type) perturbative correction to the super-CI gradient -- the method of Guo & Dutta, "A Perturbative Super-CI Approach for orbital optimization in Two-Component relativistic CASSCF" (*J. Chem. Theory Comput.*, manuscript ct-2026-00400f). The implementation lives in ``bagh_code.casscf_supercipt`` rather than in ``socutils`` -- it does not touch or replace any socutils file, unlike the upstream reference implementation which is meant to be dropped directly into ``socutils/mcscf``. This works under both ``! CASSCF`` and ``! NEVPT2`` (NEVPT2 then runs on top of the Super-CI-PT-optimized reference, exactly as it does on top of the plain super-CI one); ``ncas``/``nelecas``/``cas_ncore``/``cas_nroots``/``nevpt2_cd``/``nevpt2_max_error`` from the keyword lists above are reused as-is.
+
+.. code-block:: shell
+
+   ! CASSCF SOC-X2CAMF spinor ccpvdz
+
+   %cc
+   ncas 8
+   nelecas 6
+   casscf True
+   supercipt True
+   pt_max_cycle 40
+   pt_use_diis True
+   pt_symm_kramers True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.917
+
+Swap the method name for ``! NEVPT2`` (same ``%cc`` block) to run NEVPT2 on top of the Super-CI-PT reference instead of just reporting the CASSCF energy.
+
+Method-specific ``%cc`` keywords:
+
+* ``supercipt`` (``Logical``, default ``False``, requires ``casscf True``) -- switch the orbital optimizer from socutils' super-CI to Super-CI-PT;
+* ``pt_max_cycle`` (``Integer``, default ``40``) -- maximum number of Super-CI-PT macro-iterations;
+* ``pt_conv_etol`` (``Float``, default ``1e-8``) -- energy-convergence threshold;
+* ``pt_conv_gtol`` (``Float``, default ``1e-3``) -- orbital-gradient convergence threshold;
+* ``pt_max_step`` (``Float``, default ``0.2``) -- trust radius capping each orbital-rotation step;
+* ``pt_use_diis`` (``Logical``, default ``False``) -- DIIS-extrapolate the orbital-rotation parameters across macro-iterations to speed up convergence;
+* ``pt_use_cderi`` (``Logical``, default ``False``) -- build the active-space two-electron integrals from a Cholesky decomposition instead of the dense in-core transform;
+* ``pt_symm_kramers`` (``Logical``, default ``False``) -- enforce Kramers symmetry on the orbital-rotation matrix at every step; **required** whenever ``pt_use_diis True`` is used, otherwise symmetry breaking can occur (upstream guidance from the method's author).
+
+.. note::
+
+   The reference implementation was designed and validated by its author for lanthanide/actinide complexes with large, near-degenerate f-shell active spaces -- its worked example is a 52-root CAS(3,14) on Nd\ :sup:`3+`\ (H\ :sub:`2`\ O)\ :sub:`8`, dyallv2z/def2-svp -- systems where getting the *right* orbitals into the active space in the first place, not just optimizing them, is the hard part; the perturbative (linear, not full-Newton) update is specifically pitched at that regime, typically starting from an active-space-aware orbital guess (e.g. rotating the correct atomic-f-character spinors into the active window) rather than the raw canonical SCF ordering. On a small, generic test case (HF/ccpvdz, CAS(6,8) from the canonical X2CAMF-HF guess, no special active-space selection), this port runs correctly and deterministically but converges to a different, higher-energy stationary point than the plain super-CI optimizer reaches from the same starting guess -- i.e. it has a narrower basin of convergence here. This is a property of the underlying algorithm as provided (the ``bagh_code.casscf_supercipt`` port is byte-for-byte identical to the upstream algorithm code apart from import wiring), not a porting bug. Leave ``supercipt`` at its default for routine orbital optimization; reach for ``supercipt True`` for the large, near-degenerate active spaces it was built for.
+
+MPI parallelism is not available for ``supercipt True``.
+
+============================================
+Strongly-Contracted NEVPT2
+============================================
+This is what the ``! NEVPT2`` input file line above drives internally; use it directly only for scripting (e.g. looping over several active-space choices) or inspecting ``pt.e_classes`` programmatically.
+
+Theory
+------
+``bagh_code.nevpt2.NEVPT2`` computes the strongly-contracted second-order N-electron valence perturbation (SC-NEVPT2) correlation energy on top of a two-component X2CAMF CASCI/CASSCF reference. Spin-orbit coupling enters through the X2CAMF/AMFI effective one-electron Hamiltonian (built into ``mc.get_hcore()``) on exactly the same footing as the Coulomb interaction, so the method is applied unchanged whether SOC is switched on or off.
+
+The core (doubly occupied), active, and external (virtual) spinors of the CASCI/CASSCF reference partition the perturbation into a Dyall-type zeroth-order Hamiltonian. The core and external blocks of the generalized Fock operator
+
+.. math::
+
+    F_{pq} = F^{I}_{pq} + \sum_{tu} D_{tu}\left[(pq|tu) - (pu|tq)\right], \qquad
+    F^{I}_{pq} = h_{pq} + \sum_{i}\left[(pq|ii) - (pi|iq)\right]
+
+(with :math:`D_{tu} = \langle \Psi_0 | a_t^\dagger a_u | \Psi_0 \rangle` the active one-body reduced density matrix, :math:`i` running over core spinors, and :math:`t,u` over active spinors) are each diagonalized separately -- this is the **semicanonicalization** step -- while the active block is left untouched. All integrals are then rotated into this semicanonical basis, and the resulting core/external orbital energies :math:`\varepsilon_i, \varepsilon_a` define the denominators below.
+
+Following Angeli's strong-contraction scheme, the first-order interacting space splits into eight excitation classes, labelled by how many electrons they add to (:math:`+`) or remove from (:math:`-`) the active space, with core spinors :math:`i,j`, active spinors :math:`t,u,v`, and external (virtual) spinors :math:`a,b`:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 40 30
+
+   * - Class
+     - Active-space operator
+     - External indices excited
+   * - ``Sijrs(0)``
+     - none (closed form, no active excitation)
+     - :math:`i<j` (core), :math:`a<b` (virtual)
+   * - ``Srs(-2)``
+     - :math:`a_t a_u`
+     - :math:`a<b` (virtual)
+   * - ``Sij(+2)``
+     - :math:`a_t^\dagger a_u^\dagger`
+     - :math:`i<j` (core)
+   * - ``Sijr(+1)``
+     - :math:`a_t^\dagger`
+     - :math:`i<j` (core), :math:`a` (virtual)
+   * - ``Srsi(-1)``
+     - :math:`a_t`
+     - :math:`i` (core), :math:`a<b` (virtual)
+   * - ``Sir(0)``
+     - identity :math:`+\ a_t^\dagger a_u`
+     - :math:`i` (core), :math:`a` (virtual)
+   * - ``Si(+1)``
+     - :math:`a_t^\dagger\ +\ a_t^\dagger a_u^\dagger a_v`
+     - :math:`i` (core)
+   * - ``Sr(-1)``
+     - :math:`a_t\ +\ a_r^\dagger a_s a_q`
+     - :math:`a` (virtual)
+
+For each perturber :math:`\mu` built from an external excitation acting on one of these active-space operator strings applied to :math:`|\Psi_0\rangle`, the strongly-contracted energy contribution is
+
+.. math::
+
+    E_\mu = \frac{N_\mu^2}{E_{\mathrm{CAS}} - \langle \mu | \hat{H}_{\mathrm{act}} | \mu \rangle / N_\mu - \Delta\varepsilon_\mu}
+
+where :math:`N_\mu` is the norm of the (un-normalized) contracted active-space vector, :math:`\hat{H}_{\mathrm{act}}` is the active-space Hamiltonian, and :math:`\Delta\varepsilon_\mu` is the sum of external (virtual) semicanonical orbital energies minus core semicanonical orbital energies entering that perturber. Class ``Sijrs(0)`` has no active-space operator at all, so its denominator reduces to the usual bare orbital-energy gap and it is evaluated in closed form.
+
+Python API Usage
+------------------
+
+.. code-block:: python
+
+   from pyscf import gto
+   from socutils.scf import spinor_hf
+   from socutils.mcscf import zcasci
+   from bagh_code.nevpt2 import NEVPT2
+
+   mol = gto.M(atom='H 0 0 0; F 0 0 0.917', basis='ccpvdz', verbose=4)
+
+   mf = spinor_hf.SCF(mol).x2camf()
+   mf.kernel()
+
+   # CASCI: 6 electrons in 8 active spinors
+   mc = zcasci.CASCI(mf, 8, 6)
+   mc.kernel()
+
+   pt = NEVPT2(mc)
+   e_corr = pt.kernel()
+
+   print('E(NEVPT2 total) =', mc.e_tot + e_corr)
+   print('per-class:', pt.e_classes)
+
+``mc`` may be either a ``zcasci.CASCI`` or a ``zmcscf.CASSCF`` object -- ``NEVPT2`` only reads ``mc.mo_coeff``, ``mc.ci``, ``mc.ncore``, ``mc.ncas``, ``mc.nelecas``, and ``mc.get_hcore()`` off it, so a converged orbital-optimized CASSCF reference works exactly the same way. After ``pt.kernel()`` runs:
+
+* ``pt.e_corr`` -- the total NEVPT2 correlation energy (also the return value of ``kernel()``);
+* ``pt.e_classes`` -- a dictionary with the energy contribution of each of the eight excitation classes listed above.
+
+Validation
+----------
+With spin-orbit coupling switched off, the spinor strongly-contracted NEVPT2 correlation energy reproduces ``pyscf.mrpt.NEVPT2`` to machine precision for seven of the eight excitation classes; the ``Sir(0)`` class differs at the :math:`10^{-5}` level because ``pyscf`` uses a spin-adapted strong contraction (one perturber per *spatial* :math:`i \to a` transition, combining spin channels) whereas the spinor scheme keeps each Kramers channel separate -- the natural and general choice once spin-orbit coupling is switched on.
+
+Cholesky-decomposed (CD) integrals
+------------------------------------
+By default (``kernel(cd=False)``) the two-electron integrals are the dense spinor MO tensor, exact but scaling as :math:`n_{\mathrm{mo}}^4` in memory. ``kernel(cd=True)`` instead builds Cholesky-decomposed (factored) integrals -- ``socutils.cc.chol_zccsd.DFIntegrals`` decomposes the scalar AO ERIs once (or reuses ``mc._scf.with_df``/``.cholesky()`` factors if already present) and every integral block used by the eight excitation classes is reconstructed on the fly from the ``(naux, nmo, nmo)`` factors through a lazy view, so the dense ``nmo^4`` tensor is never formed:
+
+.. code-block:: python
+
+   pt = NEVPT2(mc)
+   e_corr = pt.kernel(cd=True, max_error=1e-6)   # naux ~ a few * nao, not nmo**4
+
+``max_error`` is the Cholesky decomposition threshold; the CD result agrees with the dense-tensor result to about that threshold (typically better -- ~1e-7 energy at the default ``1e-6``). This is the only difference between the two paths: same eight excitation classes, same semicanonicalization, same accuracy otherwise.
+
+Scope and practical limits
+---------------------------
+This is a reference implementation aimed at small/moderate active spaces:
+
+* it diagonalizes the active space exactly (via ``socutils.fci.zfci``) and applies explicit creation/annihilation operators to the resulting CI vector to build each perturber, rather than working through reduced density matrices of increasing rank;
+* with the default dense integrals (``cd=False``), ``kernel()`` raises ``MemoryError`` before building the tensor if its estimated size exceeds 8 GB (:math:`n_{\mathrm{mo}}^4 \times 16` bytes, where :math:`n_{\mathrm{mo}}` is the total number of spinors, i.e. core + active + external); use ``cd=True`` (see `Cholesky-decomposed (CD) integrals`_ above) once the virtual space is large enough to hit this, since storage there drops to :math:`n_{\mathrm{aux}} \cdot n_{\mathrm{mo}}^2`.
 
 

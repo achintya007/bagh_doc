@@ -259,6 +259,50 @@ accuracy to within a few mHartree in practice.
 
    incore 5
 
+**compact_t3** ``Logical``
+
+Store the CCSDT triples amplitude and DIIS history in compact (triangular)
+form, exploiting the antisymmetry of ``T3`` to reduce its memory footprint by
+up to a factor of 36. The result is numerically identical to the default dense
+solver. Applies to the ``CCSDT`` and ``CCSDT(Q)`` methods.
+
+.. code-block:: shell
+
+   compact_t3 True
+
+**thc_ccsdt** ``Logical``
+
+Use the tensor-hypercontraction (THC) CCSDT / CCSDT(Q) solver. The
+four-virtual integral is expanded in THC factors and the doubles and triples
+residuals are evaluated without ever forming an :math:`O(v^4)` tensor; the same
+THC factors also drive the CCSDT(Q) correction (fully THC-consistent). The THC
+factors are built automatically from the density-fitted ERIs (requires a
+density-fitting reference). Combined with ``compact_t3`` this gives a
+memory-lean, out-of-core-capable CCSDT.
+
+.. code-block:: shell
+
+   thc_ccsdt True
+
+**thc_c** ``Integer``
+
+THC rank factor; the number of grid points kept is :math:`K \approx`
+``thc_c`` :math:`\times n_{\mathrm{MO}}`. Larger values are more accurate and
+more expensive. Default 8.
+
+.. code-block:: shell
+
+   thc_c 8
+
+**use_cxx** ``Logical``
+
+Dispatch the four-virtual contraction to the compiled C++ GEMM kernel
+(``bagh_code/relccsd/csrc/vvvv_t3.cpp``). Default False (pure-NumPy THC path).
+
+.. code-block:: shell
+
+   use_cxx True
+
 **DoADC2** ``Logical``
 
 .. code-block:: shell
@@ -752,3 +796,227 @@ accuracy to within a few mHartree in practice.
    x2c_type  x2camf
 
 By default, the x2c_type is x2camf. For model potential, the keyword is ``x2c_type x2cmp``. The spin-free x2c1e and spin-orbit x2c1e can be requested via ``x2c_type sf1e`` and ``x2c_type 1e``.
+
+**plasma**: ``String``
+
+.. code-block:: shell
+
+   plasma  None
+
+Activates a plasma-embedding model for the ``SOC-X2CAMF`` interface: ``plasma debye`` (Debye-Hueckel screening of the e-n, e-e and n-n interactions) or ``plasma ionsphere`` (ion-sphere model for a single atomic ion). Works with every ``x2c_type`` flavor, including the default ``x2camf``. See the :doc:`plasma` page. The Debye model requires ``CD True``.
+
+**debye_length**: ``Float``
+
+.. code-block:: shell
+
+   debye_length  None
+
+Debye screening length :math:`\lambda_D` in bohr for ``plasma debye``. Either ``debye_length`` or ``debye_mu`` must be given.
+
+**debye_mu**: ``Float``
+
+.. code-block:: shell
+
+   debye_mu  None
+
+Debye screening parameter :math:`\mu = 1/\lambda_D` (inverse bohr); alternative to ``debye_length``.
+
+**is_radius**: ``Float``
+
+.. code-block:: shell
+
+   is_radius  None
+
+Ion-sphere radius :math:`R` in bohr for ``plasma ionsphere``. Required for the ion-sphere model.
+
+**plasma_grid_level**: ``Integer``
+
+.. code-block:: shell
+
+   plasma_grid_level  6
+
+DFT grid level used for the numerical part of the one-electron plasma model potential (molecules).
+
+**plasma_atom_grid**: ``String``
+
+.. code-block:: shell
+
+   plasma_atom_grid  250,590
+
+Radial and angular grid, ``n_rad,n_ang``, used for the one-electron plasma model potential of a single atom.
+
+**debye_quad_h**: ``Float``
+
+.. code-block:: shell
+
+   debye_quad_h  0.25
+
+Spacing of the erf-quadrature used to assemble the Yukawa two-electron integrals when libcint lacks F12 support (smaller = more accurate/more integral passes; 0.25 gives a maximum kernel error of about 2e-7, 0.2 about 1e-9).
+
+**kr_thc**: ``Boolean``
+
+.. code-block:: shell
+
+   kr_thc  False
+
+Contract the particle-particle ladder of the KR/KU-CCSD iterations through THC factors of the ERIs (O(K^2 o^2 v) instead of O(naux o^2 v^3)). Accuracy is limited by the ERI fit, reported in the output. See :doc:`kramers_cc`.
+
+**kr_thc_rank**: ``Integer``
+
+.. code-block:: shell
+
+   kr_thc_rank  8
+
+THC rank multiplier: K = kr_thc_rank x nmo grid points are kept (pivoted-Cholesky selection, rank-adaptive).
+
+**kr_thc_grid**: ``String``
+
+.. code-block:: shell
+
+   kr_thc_grid  None
+
+Optional ``n_rad,n_ang`` override of the THC parent grid.
+
+**kr_t_alg**: ``String``
+
+.. code-block:: shell
+
+   kr_t_alg  exact
+
+(T) algorithm for the KR/KU methods: ``exact`` (O(N^7)), ``lt`` (Laplace-transformed factorized topologies, formal N^6), or ``lt-thc`` (additionally THC-expanded ovvv integrals, N^5-dominant). See :doc:`kramers_cc`.
+
+**laplace_h**: ``Float``
+
+.. code-block:: shell
+
+   laplace_h  0.4
+
+Laplace quadrature spacing for ``kr_t_alg lt``/``lt-thc`` (0.4 gives ~1e-7 relative accuracy on 1/x; smaller is tighter).
+
+**ncas** ``Integer``
+
+.. code-block:: shell
+
+   ncas None
+
+Number of active spinors for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Required for those methods.
+
+**nelecas** ``Integer``
+
+.. code-block:: shell
+
+   nelecas None
+
+Number of active electrons for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Required for those methods.
+
+**casscf** ``Logical``
+
+.. code-block:: shell
+
+   casscf False
+
+Selects between fixed-orbital CASCI (``False``, the default) and orbital-optimized CASSCF (``True``) for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF).
+
+**cas_nroots** ``Integer``
+
+.. code-block:: shell
+
+   cas_nroots 1
+
+Number of active-space CI roots to solve for, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF).
+
+**cas_ncore** ``Integer``
+
+.. code-block:: shell
+
+   cas_ncore None
+
+Override the auto-inferred number of doubly-occupied core spinors, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF).
+
+**cas_frozen** ``Integer`` or comma list
+
+.. code-block:: shell
+
+   cas_frozen None
+
+Orbitals excluded from the CI/orbital-rotation problem, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). A single integer freezes the lowest that many orbitals; a comma-separated list (e.g. ``0,1``) freezes those specific spinor indices.
+
+**cas_natorb** ``Logical``
+
+.. code-block:: shell
+
+   cas_natorb None
+
+Rotate the active space to natural spinors, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Leaving it unset keeps socutils' own default (``False`` for CASCI, ``True`` for CASSCF).
+
+**cas_canonicalize** ``Logical``
+
+.. code-block:: shell
+
+   cas_canonicalize None
+
+Canonicalize the core/external blocks of the Fock matrix, for the ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF). Leaving it unset keeps socutils' own default (``True`` for both CASCI and CASSCF).
+
+**cas_max_cycle_macro** ``Integer``
+
+.. code-block:: shell
+
+   cas_max_cycle_macro 20
+
+Maximum number of super-CI macro-iterations, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``).
+
+**cas_max_stepsize** ``Float``
+
+.. code-block:: shell
+
+   cas_max_stepsize 0.2
+
+Trust radius capping each orbital-rotation step, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``).
+
+**cas_conv_tol** ``Float``
+
+.. code-block:: shell
+
+   cas_conv_tol 1e-8
+
+Energy-convergence threshold, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``).
+
+**cas_conv_tol_grad** ``Float``
+
+.. code-block:: shell
+
+   cas_conv_tol_grad None
+
+Orbital-gradient convergence threshold, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Defaults to ``sqrt(cas_conv_tol)`` when unset.
+
+**cas_freeze_pair**
+
+.. code-block:: shell
+
+   cas_freeze_pair None
+
+Freeze mutual rotations between two sets of orbital indices, for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Format: two comma lists separated by ``;``, e.g. ``0,1;2,3``.
+
+**cas_irrep** comma list
+
+.. code-block:: shell
+
+   cas_irrep None
+
+Per-orbital point-group symmetry labels (one per spinor, so the list length must equal the total number of spinors), for the orbital-optimized ``CASSCF``/``NEVPT2`` methods (SOC-X2CAMF, ``casscf True``). Orbital rotations are then only allowed between orbitals carrying the same label. Example: ``cas_irrep A,A,B,B,...``.
+
+**nevpt2_cd** ``Logical``
+
+.. code-block:: shell
+
+   nevpt2_cd False
+
+For the ``NEVPT2`` method (SOC-X2CAMF): ``True`` uses Cholesky-decomposed two-electron integrals instead of the dense ``nmo^4`` tensor, so the memory scales as ``naux*nmo^2`` instead -- needed once the virtual space is large.
+
+**nevpt2_max_error** ``Float``
+
+.. code-block:: shell
+
+   nevpt2_max_error 1e-6
+
+Cholesky decomposition threshold for the ``NEVPT2`` method (SOC-X2CAMF), used when ``nevpt2_cd True``.

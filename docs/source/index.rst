@@ -38,6 +38,10 @@ Contents
    adc
    thc_lt_adc
    cd_adc2_folded
+   thc_lt_adc3
+   thc_lt_sm_adc
+   plasma
+   kramers_cc
 
 .. toctree::
    :caption: Basis sets
