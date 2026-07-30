@@ -37,6 +37,7 @@ Contents
 
    adc
    thc_lt_adc
+   cd_adc2_folded
 
 .. toctree::
    :caption: Basis sets

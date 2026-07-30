@@ -807,6 +807,32 @@ EE-ADC(2)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+CD-EE-ADC(2)-FOLDED
+-------------------
+
+A Cholesky-driven, doubles-free (exactly folded) alternative to
+``EE-ADC(2)`` above: the 2p2h amplitude is never stored in the Davidson
+trial space. Requires ``CD True``. See :doc:`cd_adc2_folded` for the
+theory, the keywords, and a full worked example.
+
+.. code-block:: shell
+
+   ! CD-EE-ADC(2)-FOLDED soc-x2camf spinor unc-ccpvdz
+
+   %cc
+   cd True
+   nroots 4
+   fc True
+   fc_no 2
+   cd_threshold 1e-4
+   occ_batch 4
+   adc_convergence 1e-06
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 
 
 *******************
@@ -885,6 +911,8 @@ The following methods are available with the CD technique along with their FNS/S
 ``QUCCSD[T]``
 
 ``EE-ADC(2)``
+
+``CD-EE-ADC(2)-FOLDED`` (doubles-free; see :doc:`cd_adc2_folded`)
 
 ``DIP-ADC(2)``
 

@@ -87,6 +87,17 @@ Controls the desired convergence criteria for CCSD correlation energy.
 
    CD_Threshold 1e-5
 
+**occ_batch** ``Integer``
+
+Number of occupied indices handled per pass when building the transient
+2p2h intermediate in ``CD-EE-ADC(2)-FOLDED`` (see :doc:`cd_adc2_folded`);
+the memory/speed dial for that method. Default is all occupied indices
+in a single pass.
+
+.. code-block:: shell
+
+   occ_batch 4
+
 **scf_guess_read** ``Logical``
 
 .. code-block:: shell
