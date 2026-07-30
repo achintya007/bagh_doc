@@ -85,8 +85,30 @@ and streamed one block at a time through that kernel. The same THC factors
 drive both the CCSDT iterations and the CCSDT(Q) correction, giving a fully
 THC-consistent CCSDT(Q).
 
-Enable it with ``thc_ccsdt True`` (the THC factors are built automatically from
-the density-fitted ERIs):
+With the X2CAMF (``SOC-X2CAMF``) reference and ``THC`` enabled, the THC factors
+produced during integral generation (``X_O``, ``X_V``, ``Z_mo``) are consumed
+directly: the ``CCSDT`` and ``CCSDT(Q)`` methods run the :math:`v^4`-free THC
+solver on those factors, and the CCSDT(Q) correction uses the same factors, so
+the whole calculation is THC-consistent and never builds the four-virtual
+integral. A representative X2CAMF input:
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF CCSDT(Q) unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   THC True
+   compact_t3 True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+For non-X2CAMF references, enable the solver with ``thc_ccsdt True`` (the THC
+factors are then built automatically from the density-fitted ERIs):
 
 .. code-block:: shell
 
