@@ -73,16 +73,35 @@ antisymmetry of :math:`T_3` to cut its memory footprint by up to 36x with no
 change to the result.
 
 An optimized solver (``bagh_code.relccsd.ccsdt_opt.ccsdt_kernel_opt``) combines
-this compact storage with a THC treatment of the four-virtual integral: the
-dominant :math:`\langle ab||ef\rangle t_3` term (and the :math:`H_2^{vvvv}`
-intermediate) is evaluated directly from tensor-hypercontraction factors, so
-no :math:`O(v^4)` tensor is ever formed.  The four-virtual contraction can
-optionally be dispatched to a compiled C++ GEMM kernel
-(``bagh_code/relccsd/csrc/vvvv_t3.cpp``), and the triples amplitude can be held
-out-of-core on disk (HDF5) and streamed one block at a time through that
-kernel.  When THC factors are supplied, the same factors drive both the CCSDT
-iterations and the CCSDT(Q) correction, giving a fully THC-consistent
-CCSDT(Q).
+this compact storage with a THC treatment of the four-virtual integral. Both
+the doubles pp-ladder :math:`\langle ab||ef\rangle \tau` and the triples
+:math:`\langle ab||ef\rangle t_3` term (together with the :math:`H_2^{vvvv}`
+intermediate) are evaluated directly from tensor-hypercontraction factors, so
+**no** :math:`O(v^4)` **tensor is ever formed** anywhere in the CCSDT
+iteration. The four-virtual contraction can optionally be dispatched to a
+compiled C++ GEMM kernel (``bagh_code/relccsd/csrc/vvvv_t3.cpp``, keyword
+``use_cxx``), and the triples amplitude can be held out-of-core on disk (HDF5)
+and streamed one block at a time through that kernel. The same THC factors
+drive both the CCSDT iterations and the CCSDT(Q) correction, giving a fully
+THC-consistent CCSDT(Q).
+
+Enable it with ``thc_ccsdt True`` (the THC factors are built automatically from
+the density-fitted ERIs):
+
+.. code-block:: shell
+
+   ! CCSDT(Q) spinor unc-ccpvdz
+
+   %cc
+   incore 5
+   cc_convergence 1e-7
+   thc_ccsdt True
+   compact_t3 True
+   end
+
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
 
 Coupled Cluster Singles Doubles Triples with perturbative Quadruples (CCSDT(Q))
 -------------------------------------------------------------------------------

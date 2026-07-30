@@ -259,6 +259,39 @@ solver. Applies to the ``CCSDT`` and ``CCSDT(Q)`` methods.
 
    compact_t3 True
 
+**thc_ccsdt** ``Logical``
+
+Use the tensor-hypercontraction (THC) CCSDT / CCSDT(Q) solver. The
+four-virtual integral is expanded in THC factors and the doubles and triples
+residuals are evaluated without ever forming an :math:`O(v^4)` tensor; the same
+THC factors also drive the CCSDT(Q) correction (fully THC-consistent). The THC
+factors are built automatically from the density-fitted ERIs (requires a
+density-fitting reference). Combined with ``compact_t3`` this gives a
+memory-lean, out-of-core-capable CCSDT.
+
+.. code-block:: shell
+
+   thc_ccsdt True
+
+**thc_c** ``Integer``
+
+THC rank factor; the number of grid points kept is :math:`K \approx`
+``thc_c`` :math:`\times n_{\mathrm{MO}}`. Larger values are more accurate and
+more expensive. Default 8.
+
+.. code-block:: shell
+
+   thc_c 8
+
+**use_cxx** ``Logical``
+
+Dispatch the four-virtual contraction to the compiled C++ GEMM kernel
+(``bagh_code/relccsd/csrc/vvvv_t3.cpp``). Default False (pure-NumPy THC path).
+
+.. code-block:: shell
+
+   use_cxx True
+
 **DoADC2** ``Logical``
 
 .. code-block:: shell
