@@ -79,13 +79,10 @@ own doubles-free fold.) A root above the lowest (CVS-restricted) 2p2h
 energy sits near a pole of the resolvent; the driver prints a warning
 rather than failing in that case.
 
-Transition properties (TDM/EXDM) are not implemented for this method: ADC(2)
-is Hermitian so they are a natural next step, but the transition-moment
-vector needs the doubles part of the excited-state vector, which the folded
-scheme discards by construction. It is recoverable on the fly (rebuild
-``R2(w) = (w-D)^-1 M_DS R1`` once per converged root) but has not been done
-here; use ``EE-ADC(2)`` (see :doc:`adc`) if TDM/EXDM are needed. Only
-two-component references are supported; 4c-DC needs BAGH's own 4c CD path.
+Transition dipole moments are supported (see
+:ref:`cd-adc2-folded-tdm` below); excited-state dipole moments (EXDM) are
+not. Only two-component references are supported; 4c-DC needs BAGH's own 4c
+CD path. IP/EA are not covered by this module (EE only).
 
 Keywords
 ========
@@ -169,6 +166,144 @@ final line reports that the ``o*v``-sized singles vector is what the
 Davidson subspace actually holds, in contrast to the ``(o*v)^2``-sized 2p2h
 vector that ``EE-ADC(2)`` would otherwise store per trial vector.
 
+.. _cd-adc2-folded-tdm:
+
+Transition Dipole Moments
+==========================
+
+Gated on the ``tdm`` keyword (default ``True``, same as ``EE-ADC(2)``; see
+:doc:`adc`). ADC(2) is Hermitian, so the transition-moment vector only needs
+the doubles part of each converged excited-state vector -- which the folded
+scheme discards by construction (see Theory above). It is recovered on the
+fly, once per converged root, instead of being kept resident:
+``R2(w) = (w-D)^-1 M_DS R1``, reusing the same doubles-building code the
+sigma routine already runs transiently every Davidson iteration. The
+resulting transition density is contracted with the dipole integrals the
+same way ``EE-ADC(2)`` does, and printed in the same house style.
+
+.. code-block:: shell
+
+   ! CD-EE-ADC(2)-FOLDED soc-x2camf spinor unc-ccpvdz
+
+   %cc
+   cd True
+   nroots 4
+   fc True
+   fc_no 2
+   DoCVS True
+   CVSMIN 0
+   CVSMAX 2
+   cd_threshold 1e-3
+   occ_batch 2
+   adc_convergence 1e-4
+   tdm True
+   end
+
+   *xyz 0 1
+   Si 0.000000 0.000000 0.000000 dyall.v2z
+   Cl 1.192288 1.192288 1.192288 augccpvdz
+   Cl -1.192288 -1.192288 1.192288 augccpvdz
+   Cl 1.192288 -1.192288 -1.192288 augccpvdz
+   Cl -1.192288 1.192288 -1.192288 augccpvdz
+
+which, after the usual ``Root:``/``Dominant Transition`` block, gives:
+
+.. code-block:: shell
+
+   ************************ Transition Dipole Moment *****************************
+
+   state         TX             TY           TZ
+                 (au)           (au)         (au)
+     1    0.01177+0.00961j   0.00342+0.00279j -0.03836-0.03131j
+     2    0.00098-0.00669j   -0.00749+0.05093j -0.00037+0.00249j
+     3    -0.04924-0.00120j   -0.00570-0.00014j -0.01562-0.00038j
+     4    -0.02504+0.04550j   0.04594-0.08349j 0.00031-0.00057j
+
+                    ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS
+
+                         State     Energy      Wavelength      fosc         T2          TX        TY         TZ
+                                   (cm-1)        (nm)                    (au**2)       (au)      (au)       (au)
+                            1    889691.7        11.240      0.00730     0.00270     0.01519     0.00441     0.04952
+                            2    889691.7        11.240      0.00730     0.00270     0.00676     0.05148     0.00251
+                            3    889691.7        11.240      0.00730     0.00270     0.04925     0.00570     0.01562
+                            4    896267.5        11.157      0.03207     0.01178     0.05194     0.09529     0.00065
+
+(This is real output from a Si core-hole (K-edge, CVS) SiCl4 calculation on
+the input above -- see ``test/sicl4_stage1_cd_ee_adc2_folded.inp`` in the
+BAGH repository.)
+
+State-Averaged Frozen Natural Spinors (SA-FNS)
+================================================
+
+Method name on the ``!`` line: ``SA-FNS-CD-EE-ADC(2)-FOLDED``. Truncates the
+virtual space before the (expensive) folded ADC(2) production solve --
+useful when the canonical virtual space is large enough that the folded
+solve above is itself the bottleneck. Mirrors the existing, non-folded
+relativistic driver (``SS-FNO-A-EE-ADC(2)``; see :doc:`methods_relativistic`)
+stage for stage, but built entirely from Cholesky vectors instead of that
+driver's dense integral blocks:
+
+1. A cheap, full-virtual-space *bare* CIS (Hartree-Fock-level, no MP2
+   self-energy correction) solve finds the lowest ``nroots`` states.
+2. For each, the ADC(2) doubles amplitude is reconstructed at the CIS
+   energy (the same reconstruction used for TDM above), standing in for a
+   perturbative CIS(D) correction. The virtual-block density
+   ``0.5*<R2*.R2> + <R1.R1*>``, averaged over these states plus the
+   ground-state MP2 density, gives one common natural-spinor virtual basis
+   for all of them.
+3. That density is diagonalized and re-canonicalized (the same construction
+   ``FNO``/``SS-FNS`` truncation uses elsewhere in BAGH) to select the
+   active virtual spinors; the Cholesky vectors are rotated into that
+   truncated basis.
+4. The **expensive** MP2/ADC(2) intermediates are built exactly once,
+   afterwards, in the truncated (small) virtual space -- never in the full
+   canonical space -- and the real folded ADC(2) production solve (and, if
+   ``tdm``, the transition dipole moments) runs there.
+
+Because step 1 is a genuinely cheap bare-CIS solve rather than a full
+diagonalization, ``rootno`` selects indices out of the lowest
+``max(rootno)+1`` states found this way, not an arbitrary index into an
+unbounded full spectrum; ``rootno_s``, if given, further restricts which of
+those states actually get the (expensive) truncated production solve, while
+the density is still averaged over the full ``rootno`` set -- matching
+``SS-FNO-A-EE-ADC(2)``'s own two-stage semantics.
+
+Reuses ``fnothresh_ex``, ``nvir_act``, ``povo_ex``, ``pct_occ_ex``,
+``plotnat``, ``rootno``, ``rootno_s`` (same keywords as
+``SS-FNO-A-EE-ADC(2)``; see :doc:`keyword`) to control the truncation.
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF SA-FNS-CD-EE-ADC(2)-FOLDED spinor
+
+   %cc
+   CD True
+   fc True
+   fc_no 44
+   adc_convergence 1e-4
+   DoCVS True
+   CVSMIN 0
+   CVSMAX 2
+   occ_batch 2
+   cd_threshold 1e-3
+   nroots 4
+   fnothresh_ex 1e-3
+   x2c_type x2cmp
+   end
+
+   *xyz 0 1
+   Si 0.000000 0.000000 0.000000 dyall.v2z
+   Cl 1.192288 1.192288 1.192288 augccpvdz
+   Cl -1.192288 -1.192288 1.192288 augccpvdz
+   Cl 1.192288 -1.192288 -1.192288 augccpvdz
+   Cl -1.192288 1.192288 -1.192288 augccpvdz
+
+On the same SiCl4 system as above, this reduces the canonical 216-virtual-spinor
+space to 92 active natural spinors (``fnothresh_ex 1e-3``), roughly halving
+the total run time relative to the untruncated ``CD-EE-ADC(2)-FOLDED``
+calculation, at the cost of a small (~0.03 a.u.) shift in the excitation
+energies from the truncation itself.
+
 Tests
 =====
 
@@ -177,5 +312,13 @@ a dependency-free correctness suite -- no SCF, no pyscf/socutils -- checking
 integral antisymmetry, exact folding against an explicit dense
 singles+doubles build, CVS against a CVS-projected dense build,
 batched-vs-unbatched sigma, and the bagh-``eris`` adapter against direct
-construction. It does not exercise the full X2CAMF/SCF/CD pipeline end to
-end; ``test/cd_ee_adc2_folded.inp`` is provided for that.
+construction. Transition-moment reconstruction (``build_r2``) is checked
+against an explicit dense eigenvector, and the ground-state/transition
+density formulas against the non-folded ``EE-ADC(2)`` driver's own formulas,
+transcribed. SA-FNS's natural-spinor truncation is checked via an exactness
+identity (no actual truncation must reproduce the untruncated eigenvalues to
+machine precision) plus a bit-for-bit check that its ``build_intermediates=
+False`` optimization changes nothing about the result. None of this
+exercises the full X2CAMF/SCF/CD pipeline end to end;
+``test/cd_ee_adc2_folded.inp``, ``test/sicl4_stage1_cd_ee_adc2_folded.inp``
+and ``test/sicl4_sa_fns_cd_ee_adc2_folded.inp`` are provided for that.

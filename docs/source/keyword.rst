@@ -489,11 +489,48 @@ Dispatch the four-virtual contraction to the compiled C++ GEMM kernel
 
    pyberny_flag 0
 
-**rootno** ``Logical``
+**rootno** ``Comma-separated integers``
+
+Selects specific state indices (e.g. out of a CIS/CIS(D) manifold) rather
+than always taking the lowest ``NRoots``. Used by ``SS-FNO-A-EE-ADC(2)``,
+``FNO-DIP-ADC(3)`` and ``SA-FNS-CD-EE-ADC(2)-FOLDED``
+(see :doc:`cd_adc2_folded`).
 
 .. code-block:: shell
 
-   rootno False
+   rootno 5,6,7,12,13
+
+**rootno_s** ``Comma-separated integers``
+
+A subset of ``rootno`` (by value, not position) for which the expensive
+production step actually runs, while any state-averaged density is still
+built from the full ``rootno`` set. Used by ``SS-FNO-A-EE-ADC(2)`` and
+``SA-FNS-CD-EE-ADC(2)-FOLDED`` (see :doc:`cd_adc2_folded`).
+
+.. code-block:: shell
+
+   rootno_s 5,12
+
+**fnothresh_ex** ``Float``
+
+Occupation-number threshold for excited-state/CIS(D)-density-based natural
+virtual truncation (``SS-FNO-A-EE-ADC(2)``, ``SA-FNS-CD-EE-ADC(2)-FOLDED``;
+see :doc:`cd_adc2_folded`) -- natural spinors with occupation below this are
+dropped. Default ``0`` (no truncation); superseded by ``nvir_act``/``povo_ex``
+if either is set.
+
+.. code-block:: shell
+
+   fnothresh_ex 1e-3
+
+**nvir_act** ``Integer``
+
+Explicit number of active (retained) virtual natural spinors to keep after
+FNO/FNS truncation, overriding ``fnothresh_ex``/``pct_occ_ex``.
+
+.. code-block:: shell
+
+   nvir_act 100
 
 **max_space** ``Integer``
 
