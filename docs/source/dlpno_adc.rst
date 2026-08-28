@@ -74,16 +74,48 @@ The pair prescreen
 
 Three steps, in the paper's order, because no single criterion does the job:
 
-**Step 1 -- the dipole estimate.** The exchange integral between two distant
-charge distributions is dominated by their dipole--dipole interaction, so the
-semicanonical pair energy can be estimated from transition dipoles alone at
-:math:`O(N)` cost. It is applied at ``TCutPre``, a hundred times more loosely
-than ``TCutPairs``, and it exists only to keep step 2's list short. It carries
-a differential-overlap guard at ``TCutDO_ij``: a multipole expansion means
-nothing between charge distributions that overlap, so pairs above that overlap
-are kept unconditionally and never estimated. On a compact molecule the guard
-keeps almost everything, which is correct -- step 1 is there for the large
-case.
+**Step 1 -- a cheap estimate, over every pair.** Two channels, because no
+single cheap quantity sees both sources of a pair energy.
+
+The *overlap channel* is the one that decides on ordinary molecules. When two
+localized orbitals share space the pair energy is driven by their exchange
+integral, which involves the product density :math:`i(r)j(r)`, so it tracks
+the square of their differential overlap:
+
+.. math::
+
+   e_{ij} \;\approx\; -\,c_{\mathrm{DOI}}\; \mathrm{DOI}(i,j)^2 .
+
+This is not a guess. Measured over every pair of a four-water chain and a
+C\ :sub:`8`\ H\ :sub:`16` chain in cc-pVDZ, :math:`|e_{ij}|/\mathrm{DOI}^2`
+lies between 0.3 and 10\ :sup:`2` across all pairs worth more than
+10\ :sup:`-6` Eh -- two orders of magnitude of scatter for pair energies
+spanning five. The smallest prefactor that would keep every pair worth more
+than ``TCutPairs`` is 0.38 on those systems; the default ``c_doi = 25`` is
+therefore about a sixty-fold safety factor, and on C\ :sub:`6`\ H\ :sub:`12`
+the discarded total comes out within 10% of the true one.
+
+The *dispersion channel* is the multipole estimate: two orbitals that do not
+overlap at all still have an :math:`R^{-6}` pair energy, and DOI is
+exponentially blind to it. It is formed only for pairs with
+:math:`\mathrm{DOI}(i,j)` below ``TCutDO_ij``, where a multipole expansion
+means something.
+
+A pair is kept if **either** channel says it matters. Neither is a veto. In
+practice the overlap channel does nearly all the work -- on the test systems
+above the dispersion channel changes one decision out of several hundred --
+but it is cheap and the case it covers is real.
+
+.. note::
+
+   An earlier version had this backwards. The dipole estimate was the only
+   criterion and DOI was used as a *guard* that kept overlapping pairs without
+   estimating them; on any compact system that guard fired for essentially
+   every pair, so step 1 decided nothing. What was actually removing pairs was
+   an upstream topological test -- "do these two domains share an atom" --
+   which has no energy attached, so everything it discarded disappeared from
+   the weak-pair sum without a trace. Step 1 now runs over every unordered
+   pair and accounts for everything it drops.
 
 **Step 2 -- the semicanonical LMP2 pair energy.** For every survivor,
 
@@ -105,11 +137,10 @@ the dipole estimate for what step 1 dropped without ever computing one) and
 reported as ``E_weak``. ``E(MP2) + E_weak`` is the method's estimate of the
 unscreened MP2 energy.
 
-On a chain of four water molecules at 3.2 Å in cc-pVDZ, with
-``TCutPairs = 1e-4``: step 1 keeps all 76 candidates (they all overlap), step 2
-keeps 40, and the correction recovers 98% of the 0.87 mEh of correlation
-energy that screening threw away -- 8.7e-4 Eh of error becomes 1.8e-5. The
-same screening costs 25 meV on the ionization potentials.
+On a chain of four water molecules at 3.2 Å in cc-pVDZ, at NORMALPNO, of the
+136 unordered pairs step 1 keeps 94 and step 2 keeps 40; the discarded totals
+are 6.9e-6 Eh and 1.2e-3 Eh respectively. Tightening to TIGHTPNO moves step 1
+to 104 kept and 4.6e-7 Eh discarded, and step 2 to 73 kept.
 
 The fitting domain
 ------------------
@@ -162,6 +193,8 @@ Neese and Izsák, *J. Chem. Phys.* **148**, 244101 (2018):
 | ``tcut_pao``      | 1e-8        | 1e-8         | 1e-8        |
 +-------------------+-------------+--------------+-------------+
 | ``tcut_mkn``      | 1e-3        | 1e-3         | 1e-3        |
++-------------------+-------------+--------------+-------------+
+| ``c_doi``         | 25          | 25           | 25          |
 +-------------------+-------------+--------------+-------------+
 
 ``TCutDO`` runs the other way from the rest: TIGHT has the *smallest* value
@@ -243,7 +276,8 @@ Keywords
   (see below).
 - ``cos_scale``: :math:`c_{os}` for that correction, default 1.3.
 - ``tcut_pno``, ``tcut_pairs``, ``tcut_do``, ``tcut_pao``, ``tcut_mkn``,
-  ``tcut_doi_occ``, ``tcut_pre``, ``tcut_doi_pair``: individual overrides.
+  ``tcut_doi_occ``, ``tcut_pre``, ``tcut_doi_pair``, ``c_doi``: individual
+  overrides.
 - ``maxcore``: in MB, as everywhere in BAGH. The memory plan uses it to
   decide what to spill; if it is too small for the data that cannot be
   spilled, the run stops with a report rather than swapping.

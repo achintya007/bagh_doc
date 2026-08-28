@@ -686,9 +686,36 @@ A pair that is classified strong carries a PNO space, an amplitude, four
 integral blocks and a slice of the ADC eigenvector; a pair that is not costs
 nothing. The classification is made in three steps.
 
-\paragraph{Step 1: multipole prescreening.}
-The exchange integral between two well-separated charge distributions is
-dominated by their dipole--dipole interaction, giving the estimate
+\paragraph{Step 1: a cheap estimate over every pair.}
+Two channels are used, because no single inexpensive quantity sees both
+sources of a pair energy.
+
+The \emph{overlap channel} is the one that decides on ordinary molecules. When
+two localized orbitals share space the pair energy is driven by their exchange
+integral, which involves the product density $\phi_i(\mathbf{r})
+\phi_j(\mathbf{r})$; the natural scaling is therefore quadratic in the
+differential overlap,
+%
+\begin{equation}
+  e_{ij} \;\approx\; -\,c_{\text{DOI}}\;\mathrm{DOI}(i,j)^2 .
+  \label{eq:doiest}
+\end{equation}
+%
+Measured over every occupied pair of a four-water chain at 3.2~\AA{} and of a
+C$_8$H$_{16}$ chain, both in cc-pVDZ, the ratio
+$|e_{ij}|/\mathrm{DOI}(i,j)^2$ lies between $0.3$ and $10^{2}$ across all
+pairs worth more than $10^{-6}$~$E_h$ --- two orders of magnitude of scatter
+for pair energies spanning five. The smallest prefactor that would retain
+every pair worth more than $\TCut{Pairs}$, at $\TCut{Pre}=\TCut{Pairs}/100$,
+is $0.38$ on those systems; we use $c_{\text{DOI}}=25$, a safety factor of
+roughly sixty, and the resulting estimate of the discarded correlation energy
+agrees with the true value to within about ten percent.
+
+The \emph{dispersion channel} covers what Eq.~(\ref{eq:doiest}) cannot see.
+Two orbitals that do not overlap at all still have an $R^{-6}$ pair energy,
+and the differential overlap is exponentially blind to it. There the exchange
+integral is dominated by the dipole--dipole interaction of the two transition
+densities, giving the semicanonical estimate
 %
 \begin{equation}
   e^{\text{dip}}_{ij} = -\frac{4}{R_{ij}^{6}}
@@ -706,14 +733,22 @@ orbital's own domain, orthogonalized and semicanonicalized, so that
 $\varepsilon_a$ is a genuine orbital energy of that domain. Both the
 transition dipoles and the centroid difference are origin-independent, the
 former because the PAO projector~(\ref{eq:pao}) makes PAOs orthogonal to all
-occupied orbitals.
+occupied orbitals. Equation~(\ref{eq:dipole}) is formed only for pairs whose
+differential overlap lies below $\TCut{DO}_{ij}$, since a multipole expansion
+between overlapping distributions is meaningless.
 
-Equation~(\ref{eq:dipole}) is meaningful only between distributions that do
-not overlap. Pairs whose occupied--occupied differential overlap exceeds
-$\TCut{DO}_{ij}$ are therefore retained unconditionally and no estimate is
-formed for them. The purpose of step 1 is not to make the strong/weak decision
-but to keep step 2 affordable; it is applied at $\TCut{Pre}$, two orders of
-magnitude looser than $\TCut{Pairs}$.
+A pair is retained if \emph{either} channel exceeds $\TCut{Pre}$ in magnitude;
+neither is a veto. In practice the overlap channel does nearly all of the
+work --- on the systems above the dispersion channel alters one decision in
+several hundred --- but it is inexpensive and the situation it covers, a pair
+of well-separated polarizable fragments, is a real one.
+
+The estimate is evaluated for every unordered pair rather than for a
+pre-filtered subset. It is $O(1)$ per pair, so there is nothing to be gained
+by filtering ahead of it, and a topological filter --- retaining only pairs
+whose domains share an atom, say --- would discard pairs without an energy
+attached to them, leaving a hole in the accounting of
+Eq.~(\ref{eq:eweak}) below.
 
 \paragraph{Step 2: semicanonical pair energies.}
 For every survivor the semicanonical local MP2 pair energy is computed in the
@@ -737,13 +772,13 @@ The pair energies of the discarded pairs are summed,
 %
 \begin{equation}
   E_{\text{weak}} = \sum_{ij\,\in\,\text{weak}} e_{ij}
-    + \sum_{ij\,\in\,\text{step 1}} e^{\text{dip}}_{ij},
+    + \sum_{ij\,\in\,\text{step 1}} e^{\text{est}}_{ij},
   \label{eq:eweak}
 \end{equation}
 %
 using the best estimate available for each: the semicanonical pair energy for
-pairs step 2 rejected, and the dipole estimate for those step 1 rejected
-without ever computing one. $E_{\text{weak}}$ is a real approximation to the
+pairs step 2 rejected, and whichever of the two step-1 channels was larger in
+magnitude for those rejected earlier. $E_{\text{weak}}$ is a real approximation to the
 correlation energy discarded and is reported alongside the local MP2 energy;
 their sum estimates the unscreened result.
 
