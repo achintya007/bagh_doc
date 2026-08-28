@@ -889,7 +889,12 @@ empirical question.
 \label{sec:implementation}
 % ===========================================================================
 
-The method is implemented in the BAGH program package. Orbital localization,
+The method is implemented in the BAGH program package. It is dispatched on the
+method name before any canonical integral transformation is performed, since
+it reads nothing from the conventional integral machinery: letting that run
+first would carry out precisely the $O(N^5)$ transformation --- including, at
+the default settings, the dense $(vv|vv)$ block --- that the local treatment
+exists to avoid. Orbital localization,
 the projected atomic orbitals, the differential-overlap and dipole matrices
 and the three-index integrals are prepared in Python on top of
 PySCF;\cite{Sun2018} everything after that --- domains, prescreening, pair

@@ -240,13 +240,14 @@ Placement in ``RHF.py``
 -----------------------
 
 ``DLPNO-IP-ADC(2)`` and ``DLPNO-IP-ADC(3)`` are dispatched by method name in
-``run_rhf``, alongside ``IP-ADC(2)`` and ``IP-ADC(3)``. They read nothing out
-of ``eris``: the module builds its own localized orbitals, PAOs, PNOs and
-density-fitted integrals directly from ``mol``/``mf``, and every integral it
-forms already carries the PNO indices of one pair. The shared ``int_tranf``
-setup that runs before the dispatch is therefore not used by these methods --
-worth knowing on a large molecule, where that transformation is the cost the
-DLPNO treatment exists to avoid.
+``run_rhf``, before the canonical integral transformation rather than after it
+with the other IP-ADC blocks. The module reads nothing out of ``eris``: it
+builds its own localized orbitals, PAOs, PNOs and density-fitted integrals
+directly from ``mol``/``mf``, and every integral it forms already carries the
+PNO indices of one pair. Letting ``int_tranf`` run first would perform exactly
+the transformation the method exists to avoid -- at the default incore level
+that materializes the dense ``(vv|vv)`` block, which on the systems DLPNO is
+for is the entire cost.
 
 Building the C++
 ----------------
