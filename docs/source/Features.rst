@@ -18,3 +18,4 @@ Features
 - Efficient treatment for core-ionization
 - XES Spectra for closed shell molecules
 - CASCI/CASSCF and strongly-contracted NEVPT2 for two-component (X2CAMF) spinor references
+- DLPNO-IP-ADC(2) and DLPNO-IP-ADC(3) for closed-shell references, in pair natural orbitals over projected-atomic-orbital domains, with a readable pure-Python implementation of the same method selectable by one keyword

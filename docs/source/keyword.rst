@@ -1009,3 +1009,106 @@ For the ``NEVPT2`` method (SOC-X2CAMF): ``True`` uses Cholesky-decomposed two-el
    nevpt2_max_error 1e-6
 
 Cholesky decomposition threshold for the ``NEVPT2`` method (SOC-X2CAMF), used when ``nevpt2_cd True``.
+
+***********************************************
+**DLPNO-IP-ADC keywords** (``%cc`` **block**)
+***********************************************
+
+See :doc:`dlpno_adc` for what these control and for the composite table they
+come from.
+
+**dlpno_thresh** ``String``
+
+.. code-block:: shell
+
+   dlpno_thresh NORMALPNO
+
+Selects a whole row of thresholds: ``LOOSEPNO``, ``NORMALPNO`` (default) or
+``TIGHTPNO``.
+
+**dlpno_python** ``Logical``
+
+.. code-block:: shell
+
+   dlpno_python False
+
+``True`` runs the readable pure-NumPy implementation of the same method
+(``bagh_code/dlpno/reference.py``) instead of the C++ one. It needs no
+compilation and gives the same answers, but stores everything densely and
+builds the ADC matrix in full -- for reading and for checking, not for
+production.
+
+**dlpno_sos** ``Logical``
+
+.. code-block:: shell
+
+   dlpno_sos False
+
+``True`` adds the folded SOS-ADC(2) truncation correction: the ADC(2)
+truncation error measured as the difference between a canonical folded
+SOS-IP-ADC(2) and the same fold in the PNO basis. Off by default because it
+removes only one of the two error channels; see :doc:`dlpno_adc`.
+
+**cos_scale** ``Float``
+
+.. code-block:: shell
+
+   cos_scale 1.3
+
+The opposite-spin scaling :math:`c_{os}` used by that correction.
+
+**tcut_pno** ``Float``
+
+.. code-block:: shell
+
+   tcut_pno 3.33e-7
+
+PNO occupation-number cut -- the dominant approximation. Overrides whatever
+``dlpno_thresh`` set.
+
+**tcut_pairs** ``Float``
+
+.. code-block:: shell
+
+   tcut_pairs 1e-4
+
+Strong/weak pair cut, in Hartree.
+
+**tcut_do** ``Float``
+
+.. code-block:: shell
+
+   tcut_do 1e-2
+
+Differential-overlap cut defining the PAO domain of each orbital. Note that
+this one runs the other way from the rest: a *smaller* value means *larger*
+domains.
+
+**tcut_pao** ``Float``
+
+.. code-block:: shell
+
+   tcut_pao 1e-8
+
+Redundancy cut when the projected atomic orbitals of a domain are
+orthonormalized.
+
+**tcut_doi_occ** ``Float``
+
+.. code-block:: shell
+
+   tcut_doi_occ 1e-2
+
+Screens the occupied labels each pair's integral blocks are generated for.
+Not from the paper and not calibrated; raise it only with a check.
+
+**tcut_pre** / **tcut_doi_pair** ``Float``
+
+.. code-block:: shell
+
+   tcut_pre      1e-6
+   tcut_doi_pair 1e-5
+
+The dipole prescreen and the differential-overlap guard on it. Both default
+to ``tcut_pairs/100`` and ``tcut_pairs/10`` respectively; there is rarely a
+reason to set them.
