@@ -1093,6 +1093,19 @@ domains.
 Redundancy cut when the projected atomic orbitals of a domain are
 orthonormalized.
 
+**tcut_mkn** ``Float``
+
+.. code-block:: shell
+
+   tcut_mkn 1e-3
+
+Fitting-domain criterion. For each localized occupied orbital, atoms are taken
+in decreasing Loewdin population until the population left behind falls below
+this value; the pair's fitting domain is the union of its two orbitals'. Like
+the other cuts, smaller means more accurate -- here, more auxiliary functions.
+``tcut_mkn 0`` disables it and fits each pair in the auxiliary functions on
+its PAO-domain atoms instead.
+
 **tcut_doi_occ** ``Float``
 
 .. code-block:: shell

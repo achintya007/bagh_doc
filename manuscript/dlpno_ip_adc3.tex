@@ -1,0 +1,994 @@
+% ---------------------------------------------------------------------------
+% DLPNO-IP-ADC(3): manuscript draft (theory and implementation only).
+%
+% Written for REVTeX 4-2 (AIP/JCP). If revtex4-2.cls is not installed the
+% preamble falls back to `article' so that the file still compiles; the
+% typeset result is then unbranded but complete.
+% ---------------------------------------------------------------------------
+\IfFileExists{revtex4-2.cls}{%
+  \documentclass[aip,jcp,amsmath,amssymb,preprint,superscriptaddress]{revtex4-2}%
+  \newcommand{\FALLBACK}{0}%
+}{%
+  \documentclass[11pt]{article}%
+  \newcommand{\FALLBACK}{1}%
+}
+\if 1\FALLBACK
+  \usepackage[margin=1in]{geometry}
+  \usepackage{amsmath,amssymb,graphicx}
+  % REVTeX-only markup, harmlessly absorbed so the file still typesets.
+  \newcommand{\affiliation}[1]{}
+  \newcommand{\email}[1]{}
+\fi
+
+\usepackage{bm}
+\usepackage{booktabs}
+
+% ------------------------------------------------------------- shorthands --
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\tps}{\tilde}
+\newcommand{\pao}[1]{\tilde{#1}}
+\newcommand{\Mss}{\mathbf{M}^{\text{ss}}}
+\newcommand{\Msd}{\mathbf{M}^{\text{sd}}}
+\newcommand{\Mds}{\mathbf{M}^{\text{ds}}}
+\newcommand{\Mdd}{\mathbf{M}^{\text{dd}}}
+\newcommand{\TCut}[1]{\textsc{TCut#1}}
+
+\begin{document}
+
+\title{A domain-based local pair natural orbital formulation of third-order
+       algebraic diagrammatic construction theory for ionization potentials}
+
+\author{}
+\affiliation{Department of Chemistry, Indian Institute of Technology Bombay,
+             Powai, Mumbai 400076, India}
+
+\date{\today}
+
+\begin{abstract}
+We present a domain-based local pair natural orbital (DLPNO) formulation of
+the algebraic diagrammatic construction scheme for the one-particle Green's
+function through third order, DLPNO-IP-ADC(3), for closed-shell reference
+determinants. The 2h1p space is spanned by pair natural orbitals constructed
+over projected-atomic-orbital domains of localized occupied orbitals, so that
+each occupied pair carries its own compact virtual space and no quantity is
+ever expressed in the canonical virtual basis.
+
+The central difficulty of a local ADC(3), which does not arise at second
+order, is that the third-order self-energy and the first-order 2h1p--2h1p
+block contain contractions in which a virtual index is summed between a
+two-electron integral and an amplitude belonging to a \emph{different} occupied
+pair. We show that such an index must be carried in a pair space that owns it
+--- one containing the occupied label the virtual belongs to --- and that the
+otherwise natural choice of projecting the amplitude into the target pair
+introduces an error that does not vanish as the pair natural orbital threshold
+is tightened. Every term of the ADC(3) matrix is classified accordingly, and
+the routing that follows is given explicitly.
+
+We further describe the three-step pair prescreening used to select strong
+pairs, the population-based criterion used to build local fitting domains, the
+metric that renders the spin-adapted secular problem symmetric, and a
+composite correction that measures the truncation error of the doubles space
+by folding a second-order, scaled-opposite-spin variant of the same equations
+both canonically and locally. Two independent implementations are described:
+a production code in C++ and an implementation of the same equations in dense
+linear algebra, retained as a check on the working equations rather than on
+their programming.
+\end{abstract}
+
+\maketitle
+
+% ===========================================================================
+\section{Introduction}
+% ===========================================================================
+
+The algebraic diagrammatic construction (ADC) scheme for the one-particle
+Green's function provides a systematic, size-consistent and Hermitian
+hierarchy of approximations to vertical ionization
+potentials.\cite{Schirmer1982,Schirmer1983,Trofimov2005,Dreuw2015} Its
+non-Dyson formulation replaces the frequency-dependent self-energy by a static
+Hermitian secular matrix, so that ionization energies are obtained as
+eigenvalues rather than as roots of a nonlinear equation, and a Davidson
+procedure suffices. At second order, IP-ADC(2), the method is comparable in
+cost to second-order M{\o}ller--Plesset theory and in accuracy to it; at third
+order, IP-ADC(3), it approaches the accuracy of equation-of-motion coupled
+cluster theory for the principal ionization
+peaks,\cite{Trofimov2005,Dreuw2015} at an $O(N^6)$ cost that confines it to
+small molecules.
+
+The cost of any such method is dominated by the delocalization of the
+canonical molecular orbitals. Local correlation
+methods\cite{Pulay1983,Saebo1993} exploit the fact that the correlation energy
+is a sum of essentially local contributions once the occupied orbitals are
+localized: the correlation of a given occupied pair involves only virtual
+functions in its neighbourhood, and pairs of distant occupied orbitals
+contribute negligibly. Pair natural orbitals (PNOs) push this further by
+compressing the virtual space of each pair to the eigenvectors of its own
+first-order density,\cite{Neese2009} and the domain-based local pair natural
+orbital (DLPNO) family combines the two: PNOs are constructed within
+projected-atomic-orbital (PAO) domains chosen by orbital overlap, giving
+methods whose cost grows linearly with system size while reproducing the
+canonical result to within a controlled and systematically improvable
+error.\cite{Riplinger2013a,Riplinger2013b,Pinski2015,Riplinger2016}
+
+DLPNO ideas have been carried into excited- and ionized-state theory,
+including the equation-of-motion coupled cluster treatment of ionization
+potentials,\cite{Dutta2018} where the target quantity is an eigenvalue of an
+effective Hamiltonian rather than an energy expectation value. The present
+work applies them to IP-ADC. The second-order case is close to the
+DLPNO-MP2 situation: the static self-energy is a contraction of first-order
+amplitudes with exchange integrals, and both belong to the same pair.
+Third order is qualitatively different. The third-order static self-energy
+$\mathbf{M}^{\text{ss},(3)}$ contains fourteen distinct contractions, the coupling blocks
+acquire third-order contributions, and the 2h1p--2h1p block acquires a
+first-order coupling between different pairs. Several of these terms sum a
+virtual index between a two-electron integral and an amplitude that belongs to
+a different occupied pair, and it is precisely there that a naive
+localization fails.
+
+The failure is worth stating plainly, because it is silent. Every virtual
+index in these expressions belongs to a definite occupied label: in
+$t^{ij}_{ab}$ the index $a$ belongs to $i$ and $b$ to $j$, and the same is
+true of $(ia|jb)$. The PNO space of a pair spans the virtual functions of its
+own two occupied orbitals, and nothing else. Projecting an amplitude wholesale
+into a third pair --- which is what a direct transcription of the canonical
+expressions into the local basis amounts to --- therefore truncates the summed
+index in a space that has no reason to span it. The resulting error is not a
+PNO truncation error: it does not decrease when the PNO threshold is
+tightened. Section~\ref{sec:routing} states the rule that avoids it,
+classifies every term of the ADC(3) matrix by it, and gives the resulting
+evaluation scheme.
+
+The remainder of the paper is organized as follows.
+Section~\ref{sec:adc} collects the working equations of IP-ADC($n$) for a
+closed-shell reference in the spin-adapted form used here.
+Section~\ref{sec:local} constructs the local orbital spaces: localized
+occupied orbitals, projected atomic orbitals, differential-overlap domains,
+pair natural orbitals and the overlaps that connect them.
+Section~\ref{sec:routing} develops the routing rule and applies it term by
+term. Section~\ref{sec:amplitudes} treats the first- and second-order
+amplitudes, whose local equations are coupled rather than diagonal.
+Section~\ref{sec:screening} describes the three-step pair prescreening and the
+weak-pair correction, and Section~\ref{sec:fitting} the local density fitting
+and the criterion that sets its domains. Section~\ref{sec:solving} gives the
+metric and the eigensolver, and Section~\ref{sec:correction} a composite
+correction for the truncation of the doubles space.
+Section~\ref{sec:implementation} describes the implementation.
+
+% ===========================================================================
+\section{IP-ADC for a closed-shell reference}
+\label{sec:adc}
+% ===========================================================================
+
+We use $i,j,k,l,m,n$ for occupied and $a,b,c,d,e,f$ for virtual spatial
+orbitals, and $\pao{\mu},\pao{\nu}$ for projected atomic orbitals. Two-electron
+integrals are in chemists' notation, $(ia|jb)=\int
+\phi_i(1)\phi_a(1)r_{12}^{-1}\phi_j(2)\phi_b(2)\,d1\,d2$. The Fock matrix in
+the occupied block is $F_{ij}$; it is not diagonal once the occupied orbitals
+are localized, and this is responsible for much of what follows.
+
+The non-Dyson IP-ADC secular matrix is expressed in the basis of one-hole
+(1h) configurations $\ket{i}$ and two-hole--one-particle (2h1p)
+configurations $\ket{jka}$,
+%
+\begin{equation}
+  \mathbf{M} =
+  \begin{pmatrix} \Mss & \Msd \\[2pt] \Mds & \Mdd \end{pmatrix},
+  \qquad
+  \mathbf{M}\,\mathbf{X} = -\,\mathbf{X}\,\bm{\Omega},
+  \label{eq:secular}
+\end{equation}
+%
+with ionization potentials $\Omega$. In the spin-adapted closed-shell form
+the doubles configurations are not orthonormal in the sense required for a
+symmetric problem; the appropriate metric is
+%
+\begin{equation}
+  N_{jka,\,lmb} =
+    \left(2\,\delta_{jl}\delta_{km} - \delta_{jm}\delta_{kl}\right)\delta_{ab},
+  \label{eq:metric}
+\end{equation}
+%
+and the two coupling blocks are related by $\Msd = \mathbf{N}\,\Mds$, so that
+only one of them need be constructed. We return to the consequences in
+Section~\ref{sec:solving}.
+
+\subsection{The blocks order by order}
+
+Through first order the singles--singles block is the occupied Fock matrix,
+%
+\begin{equation}
+  M^{\text{ss},(0)+(1)}_{ij} = F_{ij},
+\end{equation}
+%
+which in a localized basis is not diagonal. The second-order contribution is
+the static part of the self-energy,
+%
+\begin{align}
+  M^{\text{ss},(2)}_{ij} =
+    &\sum_{lde}\left(\varepsilon_d + \varepsilon_e - \varepsilon_l\right)
+       t^{il}_{de}\,\tilde{t}^{jl}_{de} \nonumber\\
+    &+ \left[\,\sum_{lde} K^{il}_{de}\tilde{t}^{jl}_{de}
+       - \tfrac12 \varepsilon_i \sum_{lde} t^{il}_{de}\tilde{t}^{jl}_{de}
+       + (i \leftrightarrow j)\right],
+  \label{eq:mss2}
+\end{align}
+%
+where $K^{ij}_{ab}=(ia|jb)$, $t^{ij}_{ab}$ is the first-order (MP1) amplitude
+and $\tilde{t}^{ij}_{ab} = 2t^{ij}_{ab}-t^{ij}_{ba}$. In a localized basis the
+orbital energies $\varepsilon_i$, $\varepsilon_l$ appearing in
+Eq.~(\ref{eq:mss2}) are replaced by contractions with the occupied Fock
+matrix,
+%
+\begin{equation}
+  \varepsilon_i\, t^{il}_{de} \;\longrightarrow\; \sum_k F_{ik}\, t^{kl}_{de},
+  \label{eq:eps_sub}
+\end{equation}
+%
+which couples each pair to its neighbours; $\varepsilon_d+\varepsilon_e$
+remains diagonal because the virtual functions of each pair are
+semicanonicalized within that pair (Section~\ref{sec:local}).
+
+The third-order contribution $M^{\text{ss},(3)}_{ij}$ consists of fourteen
+distinct contractions. Written compactly, and with $\hat{t}$ denoting the
+second-order amplitude and $t^{(1)\text{v}}$ the particle-ladder contraction
+of the first-order amplitude,
+%
+\begin{align}
+  M^{\text{ss},(3)}_{ij} =\;
+  &2\sum_{ld} \hat{t}^{(1)}_{ld}\left[2(l\pao{d}|ji)-(j\pao{d}|li)\right]
+  \tag{T1}\\
+  &+2\sum_{lde}\tilde{\hat{t}}^{\,il}_{de}\,(j\pao{d}|l\pao{e})
+  \tag{T2}\\
+  &+2\sum_{lde} t^{il}_{de}
+     \left(\varepsilon_d+\varepsilon_e-\varepsilon_j-\varepsilon_l\right)
+     \tilde{\hat{t}}^{\,jl}_{de}
+  \tag{T3}\\
+  &+2\sum_{lm}\sum_{def}
+     \tilde{t}^{lm}_{de}\,\tilde{t}^{lj}_{df}\,(m\pao{e}|i\pao{f})
+  \tag{T4}\\
+  &+\sum_{lm}\sum_{def}
+     \tilde{t}^{il}_{de}\,(l\pao{e}|m\pao{f})\,\tilde{t}^{jm}_{df}
+  \tag{T5}\\
+  &-2\sum_{ef} \Theta^{mj}_{ef}\,(mi|\pao{f}\pao{e})
+  \tag{T6}\\
+  &-\sum_{mef} t^{im}_{fe}
+     \Big[\textstyle\sum_{ld}\tilde{t}^{jl}_{fd}(ml|\pao{d}\pao{e})\Big]
+  \tag{T7}\\
+  &-\sum_{mef} t^{mi}_{fe}
+     \Big[\textstyle\sum_{ld}\tilde{t}^{lj}_{fd}(ml|\pao{d}\pao{e})\Big]
+  \tag{T8}\\
+  &+2\sum_{fe} G^{lm}_{fe}\,(ji|\pao{e}\pao{f})
+   \;-\;\sum_{fe} G^{lm}_{fe}\,(j\pao{f}|i\pao{e})
+  \tag{T9,T10}\\
+  &-2\sum_{mn}\Lambda_{mn}(ji|nm)
+   \;+\;\sum_{mn}\Lambda_{mn}(jm|ni)
+  \tag{T11,T12}\\
+  &+2\sum_{lnm}\Big[\textstyle\sum_{de}t^{in}_{de}\tilde{t}^{lm}_{de}\Big](jl|nm)
+  \tag{T13}\\
+  &+\sum_{lde}\tilde{t}^{il}_{de}\,t^{(1)\text{v},jl}_{de},
+  \tag{T14}
+\end{align}
+%
+with the intermediates
+%
+\begin{align}
+  \Theta^{mj}_{ef} &= \sum_{ld}\left[\,t^{lm}_{de}\tilde{t}^{lj}_{df}
+                     + t^{lm}_{ed}\tilde{t}^{jl}_{df}\right], \\
+  G^{lm}_{fe}      &= \sum_{d} t^{lm}_{df}\,\tilde{t}^{lm}_{de}, \\
+  \Lambda_{mn}     &= \sum_{lde} t^{ln}_{de}\,\tilde{t}^{lm}_{de},\\
+  t^{(1)\text{v},ij}_{cd} &= \sum_{ab}(ca|db)\,t^{ij}_{ab}.
+\end{align}
+%
+The occupied indices $l,m,n$ are summed and, together with $i$ and $j$, label
+different pairs; it is this structure that Section~\ref{sec:routing} has to
+deal with.
+
+The coupling blocks are, through first order,
+%
+\begin{equation}
+  M^{\text{ds},(1)}_{jka,\,i} = (j\pao{a}|ki),
+  \qquad
+  M^{\text{sd},(1)}_{i,\,jka} = 2(j\pao{a}|ki) - (k\pao{a}|ji),
+  \label{eq:mds1}
+\end{equation}
+%
+and acquire at third order
+%
+\begin{align}
+  M^{\text{ds},(3)}_{jka,\,i} =\;
+    &\sum_{bc} (i\pao{c}|\pao{a}\pao{b})\, t^{kj}_{cb}
+    \tag{D}\\
+    &+\sum_{lb} \tilde{t}^{lj}_{ba}\,(l\pao{b}|ik)
+    \tag{A}\\
+    &-\sum_{lb} t^{lj}_{ba}\,(i\pao{b}|lk)
+    \tag{B}\\
+    &-\sum_{lb} t^{kl}_{ba}\,(i\pao{b}|lj).
+    \tag{C}
+\end{align}
+%
+The doubles--doubles block is diagonal at zeroth order,
+%
+\begin{equation}
+  M^{\text{dd},(0)}_{jka,\,lmb} =
+    \left(\varepsilon_j+\varepsilon_k-\varepsilon_a\right)
+    \delta_{jl}\delta_{km}\delta_{ab},
+  \label{eq:dd0}
+\end{equation}
+%
+--- again with $\varepsilon_j+\varepsilon_k$ replaced by contractions with
+$F$ in a localized basis --- and acquires at first order, which is what
+distinguishes ADC(3) from ADC(2) in this block,
+%
+\begin{align}
+  \left(\mathbf{M}^{\text{dd},(1)}\mathbf{r}\right)_{jka} =\;
+    &-\tfrac12\sum_{il}(ki|jl)\,r_{lia}
+      -\tfrac12\sum_{il}(kl|ji)\,r_{ila} \nonumber\\
+    &-\sum_{lb}(j\pao{a}|l\pao{b})
+       \left[2r_{lkb}-r_{klb}\right] \nonumber\\
+    &+\sum_{lb}(jl|\pao{b}\pao{a})\,r_{lkb}
+      +\sum_{lb}(kl|\pao{b}\pao{a})\,r_{jlb}.
+  \label{eq:dd1}
+\end{align}
+%
+The two contributions on the first line are the same contraction written twice
+over complementary index ranges and are evaluated together.
+
+% ===========================================================================
+\section{Local orbital spaces}
+\label{sec:local}
+% ===========================================================================
+
+\subsection{Occupied and virtual bases}
+
+The occupied orbitals are localized by the Pipek--Mezey
+criterion.\cite{PipekMezey1989} Frozen core orbitals are excluded from the
+localization and from the correlation treatment. The virtual space is spanned
+by projected atomic orbitals,
+%
+\begin{equation}
+  \ket{\pao{\mu}} = \Big(1 - \sum_{i}^{\text{all occ}}\ket{i}\bra{i}\Big)\ket{\mu},
+  \label{eq:pao}
+\end{equation}
+%
+where the projector runs over \emph{all} occupied orbitals including the
+frozen core; projecting only the correlated occupied space would leave core
+density in the virtual space and inflate every domain. PAOs are non-orthogonal
+and linearly dependent, with overlap $S^{\pao{\mu}\pao{\nu}}$.
+
+\subsection{Domains}
+
+Locality is measured by the differential overlap
+integral\cite{Pinski2015}
+%
+\begin{equation}
+  \mathrm{DOI}(i,\pao{\mu}) =
+    \left[\int \left|\phi_i(\mathbf{r})\right|^2
+                \left|\phi_{\pao{\mu}}(\mathbf{r})\right|^2
+          d\mathbf{r}\right]^{1/2},
+  \label{eq:doi}
+\end{equation}
+%
+evaluated on a numerical grid. An atom $A$ belongs to the domain of $i$ if any
+PAO centred on $A$ satisfies $\mathrm{DOI}(i,\pao{\mu}) > \TCut{DO}$, and the
+domain $[i]$ consists of all PAOs on the atoms so selected. Domains are
+atom-granular by construction: a domain that cut through an atom's basis set
+would not be invariant to rotations of that basis. The domain of a pair is the
+union $[ij] = [i]\cup[j]$.
+
+Within a pair domain the PAOs are made orthonormal and semicanonical in two
+steps. The domain overlap is diagonalized and eigenvectors with eigenvalues
+below $\TCut{PAO}$ are discarded, removing the linear dependence; the Fock
+matrix is then diagonalized in the surviving space. We call the result the
+\emph{non-redundant semicanonical domain basis} of the pair, of dimension
+$n^{ij}_{\text{nr}}$, and denote its transformation matrix $\mathbf{d}^{ij}_{\text{nr}}$.
+It is the largest space the pair can represent, and it will be needed in
+Section~\ref{sec:amplitudes}.
+
+\subsection{Pair natural orbitals}
+
+In that basis the semicanonical first-order amplitude is
+%
+\begin{equation}
+  \bar{t}^{ij}_{ab} = \frac{-K^{ij}_{ab}}
+    {\varepsilon_a + \varepsilon_b - F_{ii} - F_{jj}},
+  \label{eq:tsc}
+\end{equation}
+%
+and the pair density is
+%
+\begin{equation}
+  \mathbf{D}^{ij} = \frac{2}{1+\delta_{ij}}
+    \left[ \tilde{\bar{\mathbf{t}}}^{\,\dagger}\bar{\mathbf{t}}
+         + \tilde{\bar{\mathbf{t}}}\,\bar{\mathbf{t}}^{\dagger}\right].
+  \label{eq:paird}
+\end{equation}
+%
+Its eigenvectors with occupation numbers above $\TCut{PNO}$ are retained as
+the pair natural orbitals of $(i,j)$; the Fock matrix is diagonalized once more
+within the retained space so that $\varepsilon_a$ remains a genuine orbital
+energy there. Writing $\mathbf{v}^{ij}$ for the retained eigenvectors, the PNO
+coefficients in the domain are
+%
+\begin{equation}
+  \mathbf{d}^{ij} = \mathbf{d}^{ij}_{\text{nr}}\,\mathbf{v}^{ij},
+  \label{eq:dpno}
+\end{equation}
+%
+a factorization we use repeatedly: $\mathbf{d}^{ij}_{\text{nr}}$ spans the
+whole domain, $\mathbf{d}^{ij}$ only the part of it the pair correlates into.
+The unordered pair $\{i,j\}$ carries one PNO space, shared by the two ordered
+labels $(i,j)$ and $(j,i)$, since the density~(\ref{eq:paird}) is symmetric
+under the exchange even though the amplitude is not.
+
+\subsection{Cross-pair overlaps}
+
+Quantities belonging to different pairs are related by the overlap of their
+PNO spaces,
+%
+\begin{equation}
+  S^{PQ}_{ab} = \big\langle a_P \big| b_Q \big\rangle
+    = \big[(\mathbf{d}^{P})^{\dagger}\,\mathbf{S}^{\text{PAO}}\,
+           \mathbf{d}^{Q}\big]_{ab},
+  \label{eq:spq}
+\end{equation}
+%
+where $\mathbf{S}^{\text{PAO}}$ is restricted to the union of the two domains.
+A matrix $\mathbf{X}$ living in pair $Q$ is expressed in pair $P$ as
+$\mathbf{S}^{PQ}\mathbf{X}(\mathbf{S}^{PQ})^{\dagger}$. This transformation is
+exact if and only if $\mathbf{X}$ has no support outside the space
+$\mathbf{d}^{P}$ spans --- a condition that is the subject of the next section.
+
+% ===========================================================================
+\section{Evaluating the ADC matrix in the local basis}
+\label{sec:routing}
+% ===========================================================================
+
+\subsection{The rule}
+
+Consider a contraction of the generic form
+%
+\begin{equation}
+  X = \sum_{c} g_{\ldots c \ldots}\; A^{Q}_{\ldots c \ldots},
+  \label{eq:generic}
+\end{equation}
+%
+in which a virtual index $c$ is summed between a two-electron integral $g$ and
+an amplitude $A$ belonging to pair $Q$, and the result $X$ is required in the
+space of some other pair $P$. Two evaluations suggest themselves. One may
+transform $A$ into $P$ first and contract there, which requires the integral
+only in $P$'s space; or one may contract in $Q$, where $A$ is exact, and
+transform the result.
+
+The two are not equivalent, and the choice is not a matter of taste. Every
+virtual index in Section~\ref{sec:adc} is associated with a definite occupied
+label --- $a$ with $i$ and $b$ with $j$ in both $t^{ij}_{ab}$ and $(ia|jb)$ ---
+and the PNO space of a pair is constructed, through
+Eqs.~(\ref{eq:tsc})--(\ref{eq:paird}), to span the virtual functions its own
+two occupied orbitals correlate into. It has no claim on the virtual functions
+of a third orbital. We therefore adopt the following rule.
+
+\medskip
+\noindent\textbf{Rule.} \emph{A virtual index summed between a two-electron
+integral and an amplitude must be carried in a pair space that owns it, i.e.\
+one whose occupied labels include the occupied label the index belongs to.}
+\medskip
+
+Two classes of contraction are exempt, and it is useful to name them.
+
+\emph{(i) Amplitude--amplitude contractions.} If the summed index connects two
+amplitudes with no integral between them, both factors decay with the index,
+and the projection $\mathbf{S}^{PQ}\mathbf{X}(\mathbf{S}^{PQ})^{\dagger}$ into
+either pair is accurate to the PNO truncation of the amplitudes themselves.
+Terms T11--T13 and the $\Lambda_{mn}$, $G^{lm}$ intermediates are of this kind.
+
+\emph{(ii) Coulomb-type integrals.} If the two virtual indices of an integral
+sit on the same electron, as in $(xy|\pao{a}\pao{b})$, the integral does not
+assign them to separate occupied labels and both must in any case share a
+space. The choice is then determined by the surrounding amplitudes rather than
+by the integral.
+
+Everything else falls under the rule, and violating it has a characteristic
+signature: because the neglected part of the summand is not the tail of a
+converging PNO expansion but a piece of a different pair's space, the error
+does \emph{not} decrease as $\TCut{PNO}$ is tightened. This is what makes the
+mistake easy to miss --- the calculation looks converged.
+
+\subsection{Term-by-term classification}
+
+We now apply the rule to each block. Throughout, $P$ denotes the target pair
+and $\rightarrow$ a transformation by $\mathbf{S}^{PQ}$.
+
+\paragraph{Terms native to one pair.}
+T2 contracts $\tilde{\hat{t}}^{\,il}$ with $(j\pao{d}|l\pao{e})$, which is the
+$ovov$ block of the pair $(i,l)$ itself; T9 and T10 contract two amplitudes of
+the same pair $(l,m)$ with integrals of that pair; the particle ladder in
+$t^{(1)\text{v}}$ never leaves the pair it belongs to. These are evaluated in
+place, with no transformation at all.
+
+\paragraph{Terms of class (i).}
+T3 contracts $t^{il}$ with a function of $\tilde{\hat{t}}^{\,jl}$; both carry
+the index $l$, and the transformation $(j,l)\rightarrow(i,l)$ is exact in the
+sense of (i). T11--T13 likewise. The occupied-Fock substitutions of
+Eq.~(\ref{eq:eps_sub}) are of the same character.
+
+\paragraph{T4 and T6: intermediates whose indices live in different pairs.}
+In T4 the index $d$ is summed between $\tilde{t}^{lm}$ and $\tilde{t}^{lj}$
+and belongs to $l$; $e$ belongs to $m$ and $f$ to $j$, while the integral
+$(m\pao{e}|i\pao{f})$ belongs to the pair $(m,i)$. Building the intermediate
+in $(m,j)$ --- the choice suggested by its occupied labels, and the one that
+would allow the $l$ sum to be accumulated once and reused for every $i$ ---
+places both $d$ and $f$ in a pair that owns neither. Instead we form
+%
+\begin{equation}
+  \mathcal{G}^{(l,m),(l,j)}_{ef} = \sum_{d}
+    \tilde{t}^{lm}_{de}\left[\mathbf{S}^{(lm)(lj)}\tilde{\mathbf{t}}^{lj}\right]_{df},
+  \label{eq:t4}
+\end{equation}
+%
+whose two indices lie in \emph{different} pairs, each of which owns its index,
+and only then map it into the integral's pair,
+$\mathcal{G} \rightarrow \mathbf{S}^{(mi)(lm)}\,\mathcal{G}\,
+(\mathbf{S}^{(mi)(lj)})^{\dagger}$. The price is that the $l$ summation can no
+longer be pre-accumulated and the loop is one factor of $n_{\text{occ}}$
+deeper; the benefit is that the term converges. T6 is treated identically,
+with the second half of $\Theta^{mj}$ carrying $e$ in $(l,m)$ and $f$ in
+$(j,l)$.
+
+\paragraph{T5: a contested index contracted directly.}
+Here $e$ belongs to $l$ and $f$ to $m$, so both may be brought to the
+integral's pair $(l,m)$, which owns them. The index $d$, however, belongs to
+$i$ in one amplitude and to $j$ in the other, and $(l,m)$ owns neither. It is
+therefore never represented there: with
+%
+\begin{align}
+  \mathcal{A}^{i}_{df} &= \left[\tilde{\mathbf{t}}^{il}\,
+     \mathbf{S}^{(il)(lm)}\,\mathbf{K}^{lm}\right]_{df}, \\
+  \mathcal{B}^{j}_{df} &= \left[\tilde{\mathbf{t}}^{jm}\,
+     \mathbf{S}^{(jm)(lm)}\right]_{df},
+\end{align}
+%
+in which only the index the integral owns has been mapped, the term is
+%
+\begin{equation}
+  \text{T5} = \sum_{lm}
+    \Big\langle \mathcal{A}^{i}(\mathcal{B}^{j})^{\dagger},\;
+                \mathbf{S}^{(il)(jm)}\Big\rangle,
+  \label{eq:t5}
+\end{equation}
+%
+the contested index being contracted directly between the two amplitudes'
+own spaces.
+
+\paragraph{T7 and T8: choosing the integral's home.}
+The integral $(ml|\pao{d}\pao{e})$ is of class (ii), but the amplitudes around
+it still tie $d$ to $l$ and $e$ to $m$. The pair that owns both is $(l,m)$,
+and that is where it is read: it is that pair's own $oovv$ block, indexed by
+its own two occupied labels, so it always exists and requires no screening of
+occupied lists. From there $d$ moves to $(j,l)$ to meet $\tilde{t}^{jl}$ and
+$e$ to $(i,m)$ to meet $t^{im}$, each sharing an occupied label with its
+destination. The remaining index $f$ is genuinely contested --- it belongs to
+$j$ in the amplitude and to $i$ in the target --- and is mapped once; that
+mapping is unavoidable and is what makes the term small when $i$ and $j$ are
+far apart.
+
+\paragraph{$\mathbf{M}^{\text{ds},(3)}$.}
+Term D keeps every index in the target pair $(j,k)$, which owns them all. In
+terms A, B and C the summed index $b$ belongs to $l$ (A, B) or to $k$ (C), and
+the target has no claim on it: the contraction over $b$ is therefore performed
+in the \emph{amplitude's} pair, reading the $ooov$ integral out of that pair's
+block, and only the surviving index $a$ --- which both pairs own, since they
+share an occupied label --- is carried across with $\mathbf{S}^{PQ}$.
+
+\paragraph{The first-order doubles block.}
+In Eq.~(\ref{eq:dd1}) the two $oooo$ contractions involve no integral over
+virtual indices, so transformation into the target pair is exact in the sense
+of (i). The remaining three do: in $(j\pao{a}|l\pao{b})$ the index $b$ belongs
+to $l$ and is summed against $r_{lkb}$, and the target $(j,k)$ has no claim on
+it. Each is therefore evaluated in the pair that owns $b$ --- $(j,l)$ for the
+exchange and the first Coulomb line, $(k,l)$ for the second --- and mapped
+back afterwards. Two transformations replace one, but both are between pairs
+sharing an occupied index with the index being moved.
+
+\paragraph{Screening.} The routing determines the screening rather than the
+other way round. In T4, for example, $l$ contributes only if $(l,m)$ and
+$(l,j)$ are both strong pairs, and $i$ only if $(m,i)$ is one; no pair
+$(i,j)$ is ever required, so $M^{\text{ss}}_{ij}$ survives for $i,j$ that do
+not themselves form a strong pair, as it must.
+
+% ===========================================================================
+\section{Amplitudes in the local basis}
+\label{sec:amplitudes}
+% ===========================================================================
+
+\subsection{First-order amplitudes}
+
+Because $F_{ij}$ is not diagonal, the first-order amplitudes satisfy a coupled
+system rather than a division,
+%
+\begin{align}
+  R^{ij}_{ab} = K^{ij}_{ab}
+    &- \left(F_{ii}+F_{jj}-\varepsilon_a-\varepsilon_b\right) t^{ij}_{ab}
+      \nonumber\\
+    &- \sum_{k \ne i} F_{ik}
+        \left[\mathbf{S}\,\mathbf{t}^{kj}\mathbf{S}^{\dagger}\right]_{ab}
+      - \sum_{k \ne j} F_{jk}
+        \left[\mathbf{S}\,\mathbf{t}^{ik}\mathbf{S}^{\dagger}\right]_{ab},
+  \label{eq:lmp2}
+\end{align}
+%
+solved iteratively with the semicanonical denominator as preconditioner. The
+coupling is of class (i) and the transformations are exact.
+
+\subsection{Second-order amplitudes}
+
+The second-order amplitude obeys the same coupled system with a different
+right-hand side,
+%
+\begin{align}
+  \mathcal{D}^{ij}_{ab} =\;
+    &\sum_{cd}(ca|db)\,t^{ij}_{cd}
+     + \sum_{kl}(ki|lj)\,t^{kl}_{ab} \nonumber\\
+    &+ 2\sum_{kc}(kc|bj)\,t^{ki}_{ca}
+     - \sum_{kc}(kc|bj)\,t^{ik}_{ca} \nonumber\\
+    &- \sum_{kc}(kj|bc)\,t^{ik}_{ac}
+     - \sum_{kc}(ki|bc)\,t^{kj}_{ac}
+     - \sum_{kc}(kj|ac)\,t^{ik}_{cb} \nonumber\\
+    &+ 2\sum_{kc}(kc|ai)\,t^{kj}_{cb}
+     - \sum_{kc}(kc|ai)\,t^{jk}_{cb}
+     - \sum_{kc}(ki|ac)\,t^{kj}_{cb}.
+  \label{eq:t2}
+\end{align}
+%
+Solving Eq.~(\ref{eq:t2}) by division, as the canonical expression permits,
+discards the inter-pair Fock coupling and is a measurable error; the coupled
+system is solved instead.
+
+The routing question here is different from that of
+Section~\ref{sec:routing}, because the target indices $a,b$ are being
+\emph{constructed} rather than met: there is no third pair that owns the
+summed index $c$. The first two terms are safe --- the particle ladder never
+leaves the pair, and the $oooo$ term sums no virtual against an integral --- and
+are evaluated in the pair's PNO space. In the remaining eight, $c$ belongs to
+the summed occupied label $k$ and the amplitude comes from a neighbouring
+pair. These are assembled in the pair's non-redundant semicanonical domain
+basis $\mathbf{d}^{ij}_{\text{nr}}$ of Eq.~(\ref{eq:dpno}), which spans the
+whole domain and therefore truncates nothing the neighbour brings, and
+projected into the PNO space only once, at the end:
+%
+\begin{equation}
+  \mathcal{D}^{ij} \;\mathrel{+}=\;
+    (\mathbf{v}^{ij})^{\dagger}\,\mathcal{D}^{ij}_{\text{nr}}\,\mathbf{v}^{ij}.
+  \label{eq:proj_nr}
+\end{equation}
+
+\subsection{Second-order singles}
+
+Term T1 of $M^{\text{ss},(3)}$ requires the second-order singles amplitude,
+whose driver is
+%
+\begin{equation}
+  \mathcal{D}^{(1)}_{ia} = \sum_{kcd}\tilde{t}^{ik}_{cd}\,(k\pao{d}|\pao{a}\pao{c})
+    - \sum_{ick}(i\pao{c}|kj)\,\tilde{t}^{ik}_{cd}\Big|_{jd},
+  \label{eq:t1drv}
+\end{equation}
+%
+and which is represented in the PNO space of the diagonal pair $(i,i)$. As
+with Eq.~(\ref{eq:lmp2}) the equation couples different $i$ through $F$ and is
+solved as a linear system.
+
+% ===========================================================================
+\section{Pair prescreening and the weak-pair correction}
+\label{sec:screening}
+% ===========================================================================
+
+A pair that is classified strong carries a PNO space, an amplitude, four
+integral blocks and a slice of the ADC eigenvector; a pair that is not costs
+nothing. The classification is made in three steps.
+
+\paragraph{Step 1: multipole prescreening.}
+The exchange integral between two well-separated charge distributions is
+dominated by their dipole--dipole interaction, giving the estimate
+%
+\begin{equation}
+  e^{\text{dip}}_{ij} = -\frac{4}{R_{ij}^{6}}
+    \sum_{a\in[i]}\sum_{b\in[j]}
+    \frac{\left[\bm{\mu}_{ia}\!\cdot\!\bm{\mu}_{jb}
+      - 3(\bm{\mu}_{ia}\!\cdot\!\hat{\mathbf{R}})
+         (\bm{\mu}_{jb}\!\cdot\!\hat{\mathbf{R}})\right]^{2}}
+    {\varepsilon_a+\varepsilon_b-F_{ii}-F_{jj}},
+  \label{eq:dipole}
+\end{equation}
+%
+with $\bm{\mu}_{ia}=\bra{i}\mathbf{r}\ket{\pao{a}}$ and $\mathbf{R}_{ij}$ the
+vector between the centroids of $i$ and $j$; $a$ and $b$ run over each
+orbital's own domain, orthogonalized and semicanonicalized, so that
+$\varepsilon_a$ is a genuine orbital energy of that domain. Both the
+transition dipoles and the centroid difference are origin-independent, the
+former because the PAO projector~(\ref{eq:pao}) makes PAOs orthogonal to all
+occupied orbitals.
+
+Equation~(\ref{eq:dipole}) is meaningful only between distributions that do
+not overlap. Pairs whose occupied--occupied differential overlap exceeds
+$\TCut{DO}_{ij}$ are therefore retained unconditionally and no estimate is
+formed for them. The purpose of step 1 is not to make the strong/weak decision
+but to keep step 2 affordable; it is applied at $\TCut{Pre}$, two orders of
+magnitude looser than $\TCut{Pairs}$.
+
+\paragraph{Step 2: semicanonical pair energies.}
+For every survivor the semicanonical local MP2 pair energy is computed in the
+pair's own domain,
+%
+\begin{equation}
+  e_{ij} = (2-\delta_{ij})\sum_{ab} K^{ij}_{ab}
+    \left(2\bar{t}^{ij}_{ab}-\bar{t}^{ij}_{ba}\right),
+  \label{eq:pairE}
+\end{equation}
+%
+with $\bar{t}$ from Eq.~(\ref{eq:tsc}). This is the quantity $\TCut{Pairs}$ is
+applied to. It costs one domain orthogonalization, one local fit and one
+division per candidate --- the same work as the first steps of the PNO
+construction, without the PNOs --- and it is a far better criterion than
+Eq.~(\ref{eq:dipole}), which is blind to overlap-driven pair energies by
+construction.
+
+\paragraph{Step 3: the weak-pair correction.}
+The pair energies of the discarded pairs are summed,
+%
+\begin{equation}
+  E_{\text{weak}} = \sum_{ij\,\in\,\text{weak}} e_{ij}
+    + \sum_{ij\,\in\,\text{step 1}} e^{\text{dip}}_{ij},
+  \label{eq:eweak}
+\end{equation}
+%
+using the best estimate available for each: the semicanonical pair energy for
+pairs step 2 rejected, and the dipole estimate for those step 1 rejected
+without ever computing one. $E_{\text{weak}}$ is a real approximation to the
+correlation energy discarded and is reported alongside the local MP2 energy;
+their sum estimates the unscreened result.
+
+% ===========================================================================
+\section{Local density fitting}
+\label{sec:fitting}
+% ===========================================================================
+
+All two-electron integrals are obtained from a density-fitting
+approximation,\cite{Whitten1973,Vahtras1993}
+%
+\begin{equation}
+  (pq|rs) \approx \sum_{KL} (pq|K)\,[\mathbf{J}^{-1}]_{KL}\,(L|rs),
+\end{equation}
+%
+in which the auxiliary index is restricted to a fitting domain that depends
+on the pair. The functions a pair's fit must represent are the products
+$\phi_i(\mathbf{r})\phi_{\pao{\mu}}(\mathbf{r})$, whose extent is governed by
+the \emph{occupied} orbital; the PAO domain answers a different question and is
+not the right criterion. We therefore select fitting atoms from the orbital's
+own atomic populations, in the spirit of Mata and
+Werner:\cite{MataWerner2006} for each localized occupied orbital the atoms are
+ordered by decreasing L\"owdin population of $|\phi_i|^2$ and taken in that
+order until the population left behind falls below $\TCut{MKN}$; the fitting
+domain of a pair is the union of its two orbitals' atom sets, and the
+auxiliary functions on them. A L\"owdin rather than a Mulliken partition is
+used because it is positive, so that ``the population left behind'' is a
+quantity a threshold can meaningfully be applied to. Smaller $\TCut{MKN}$
+retains more atoms, in the same direction as every other threshold in the
+method.
+
+A local fitting domain is a subset of an auxiliary basis that was never
+designed to be complete on its own, so the restricted Coulomb metric is
+routinely ill-conditioned. Its inverse is therefore formed as a pseudo-inverse
+from the eigendecomposition, with directions below a relative cutoff
+discarded; a Cholesky or LU factorization does not fail on such a matrix but
+returns a fit that is wrong in the tails.
+
+% ===========================================================================
+\section{The metric and the eigensolver}
+\label{sec:solving}
+% ===========================================================================
+
+The metric~(\ref{eq:metric}) is block diagonal over unordered pairs in the PNO
+basis, each block acting on the pair of ordered labels $(j,k)$ and $(k,j)$ as
+$2\mathbf{1}-\mathbf{P}$ with $\mathbf{P}$ the exchange of the two. Its
+eigenvalues are therefore $1$ on the symmetric combination and $3$ on the
+antisymmetric one, and $\mathbf{N}^{\pm1/2}$ is available in closed form. The
+similarity transformation
+%
+\begin{equation}
+  \mathbf{N}^{-1/2}\,\mathbf{M}\,\mathbf{N}^{-1/2}\,\mathbf{y}
+    = -\Omega\,\mathbf{y},
+  \qquad \mathbf{y} = \mathbf{N}^{1/2}\mathbf{x},
+\end{equation}
+%
+renders the problem symmetric at no cost, and a symmetric Davidson
+procedure\cite{Davidson1975} is used, with the diagonal of $\Mdd$ as
+preconditioner --- which remains diagonal precisely because the PNOs of each
+pair are semicanonicalized.
+
+One caveat is worth recording. The third-order static self-energy as
+conventionally written is not symmetric, although the exact self-energy is
+Hermitian; the asymmetry is an omission in the working equations rather than
+physics. It is small --- it moves the roots by well under 1~meV --- but it
+breaks the self-adjointness the symmetric Davidson relies on, so that the
+residual cannot fall below the asymmetry and the iteration stalls short of its
+tolerance. $\mathbf{M}^{\text{ss},(3)}$ is therefore symmetrized before diagonalization.
+
+% ===========================================================================
+\section{A composite correction for the doubles space}
+\label{sec:correction}
+% ===========================================================================
+
+The dominant approximation of the method is the truncation of the 2h1p space
+to the PNOs of each pair. At strict second order this error can be measured
+rather than estimated. The 2h1p--2h1p block of IP-ADC(2) is
+Eq.~(\ref{eq:dd0}) alone, so L\"owdin partitioning of
+Eq.~(\ref{eq:secular}) is an identity, not an approximation:\cite{Mester2023}
+%
+\begin{equation}
+  \left[\Mss + \mathbf{F}(\omega)\right]\mathbf{c} = \omega\,\mathbf{c},
+  \qquad
+  \mathbf{F}(\omega) = \Msd\left(\omega-\Mdd\right)^{-1}\Mds ,
+  \label{eq:fold}
+\end{equation}
+%
+with $\Omega=-\omega$ and no doubles vector ever formed. Canonically
+$(\omega-\Mdd)^{-1}$ is a scalar division; in the PNO basis only the
+$\varepsilon_a$ part is diagonal and the two occupied indices become Fock
+couplings to neighbouring pairs, so Eq.~(\ref{eq:fold}) becomes a shifted
+linear system in the doubles space, which is solved rather than approximated
+--- dropping the coupling would contaminate the difference we are trying to
+measure.
+
+Running the fold canonically, before localization, and again in the PNO basis
+gives the second-order truncation error directly. We use the
+scaled-opposite-spin variant of the second-order self-energy for this purpose,
+in which the eight terms of Eq.~(\ref{eq:mss2}) collapse to two scaled by
+$c_{\text{os}}$, the coupling blocks and $\Mdd$ being untouched. The
+difference is added to the third-order result as a composite correction. It
+removes the doubles-space channel exactly; it cannot touch the third-order
+amplitude channel, and whether the composite is an improvement is therefore an
+empirical question.
+
+% ===========================================================================
+\section{Implementation}
+\label{sec:implementation}
+% ===========================================================================
+
+The method is implemented in the BAGH program package. Orbital localization,
+the projected atomic orbitals, the differential-overlap and dipole matrices
+and the three-index integrals are prepared in Python on top of
+PySCF;\cite{Sun2018} everything after that --- domains, prescreening, pair
+natural orbitals, the integral store, the amplitude equations, the
+intermediates and the Davidson procedure --- is carried out in C++ behind a
+pybind11 interface, parallelized with OpenMP. No trial vector, sigma vector or
+amplitude crosses the language boundary.
+
+Sparsity is represented throughout by sparse maps in the sense of Pinski
+\emph{et al.}\cite{Pinski2015} All two-electron integrals are generated once,
+after the PNO spaces are complete, directly in the PNO basis of the pair that
+owns them; nothing is generated on the fly and no integral is ever stored in a
+canonical or PAO basis. For each unordered pair $U$ the store holds
+$(x\pao{a}|y\pao{b})$, $(xy|\pao{a}\pao{b})$, $(x\pao{a}|yz)$ and
+$(x\pao{a}|\pao{b}\pao{c})$, the occupied labels $x,y,z$ running over a list
+comprising the pair's own two labels together with those whose differential
+overlap with the pair's domain exceeds a threshold.
+
+Because the largest of these classes can exceed available memory while the
+smallest cannot, residency is planned rather than left to the operating
+system. Before any integral is formed, the size of each class is computed from
+the PNO dimensions and compared against the user's memory limit; classes are
+assigned to memory or to a memory-mapped file in order of access frequency,
+with the pair data, the Davidson subspace and the $oooo$ block never spilled.
+A calculation whose unspillable data exceeds the limit stops with a report
+rather than paging.
+
+A second, independent implementation of the same equations is maintained
+alongside the first. It is written in dense linear algebra with no sparse
+maps, no memory management and no Davidson procedure: every quantity is a
+dense array, each contraction is a single tensor contraction, and the full
+ADC matrix is formed and diagonalized directly. It shares no code with the
+production implementation, and reproduces it to $10^{-3}$~meV in the
+ionization potentials and $10^{-12}$~$E_h$ in the second- and third-order
+energies at every threshold tested. Its purpose is to check the working
+equations rather than their programming, and it was in fact the means by which
+two of the routing choices of Section~\ref{sec:routing} were found to be
+suboptimal in the production code.
+
+% ===========================================================================
+\section*{Author declarations}
+The authors have no conflicts to disclose.
+
+\section*{Data availability}
+The data that support the findings of this study are available from the
+corresponding author upon reasonable request.
+
+\begin{thebibliography}{99}
+
+\bibitem{Schirmer1982} J. Schirmer,
+  \emph{Beyond the random-phase approximation: A new approximation scheme for
+  the polarization propagator}, Phys. Rev. A \textbf{26}, 2395 (1982).
+
+\bibitem{Schirmer1983} J. Schirmer, L. S. Cederbaum and O. Walter,
+  \emph{New approach to the one-particle Green's function for finite Fermi
+  systems}, Phys. Rev. A \textbf{28}, 1237 (1983).
+
+\bibitem{Trofimov2005} A. B. Trofimov and J. Schirmer,
+  \emph{Molecular ionization energies and ground- and ionic-state properties
+  using a non-Dyson electron propagator approach},
+  J. Chem. Phys. \textbf{123}, 144115 (2005).
+
+\bibitem{Dreuw2015} A. Dreuw and M. Wormit,
+  \emph{The algebraic diagrammatic construction scheme for the polarization
+  propagator for the calculation of excited states},
+  WIREs Comput. Mol. Sci. \textbf{5}, 82 (2015).
+
+\bibitem{Pulay1983} P. Pulay,
+  \emph{Localizability of dynamic electron correlation},
+  Chem. Phys. Lett. \textbf{100}, 151 (1983).
+
+\bibitem{Saebo1993} S. Saeb{\o} and P. Pulay,
+  \emph{Local treatment of electron correlation},
+  Annu. Rev. Phys. Chem. \textbf{44}, 213 (1993).
+
+\bibitem{Neese2009} F. Neese, F. Wennmohs and A. Hansen,
+  \emph{Efficient and accurate local approximations to coupled-electron pair
+  approaches}, J. Chem. Phys. \textbf{130}, 114108 (2009).
+
+\bibitem{Riplinger2013a} C. Riplinger and F. Neese,
+  \emph{An efficient and near linear scaling pair natural orbital based local
+  coupled cluster method}, J. Chem. Phys. \textbf{138}, 034106 (2013).
+
+\bibitem{Riplinger2013b} C. Riplinger, B. Sandhoefer, A. Hansen and F. Neese,
+  \emph{Natural triple excitations in local coupled cluster calculations with
+  pair natural orbitals}, J. Chem. Phys. \textbf{139}, 134101 (2013).
+
+\bibitem{Pinski2015} P. Pinski, C. Riplinger, E. F. Valeev and F. Neese,
+  \emph{Sparse maps --- A systematic infrastructure for reduced-scaling
+  electronic structure methods. I. An efficient and simple linear scaling
+  local MP2 method}, J. Chem. Phys. \textbf{143}, 034108 (2015).
+
+\bibitem{Riplinger2016} C. Riplinger, P. Pinski, U. Becker, E. F. Valeev and
+  F. Neese, \emph{Sparse maps --- A systematic infrastructure for
+  reduced-scaling electronic structure methods. II. Linear scaling domain
+  based pair natural orbital coupled cluster theory},
+  J. Chem. Phys. \textbf{144}, 024109 (2016).
+
+\bibitem{Dutta2018} A. K. Dutta, M. Saitow, C. Riplinger, F. Neese and
+  R. Izs\'ak, \emph{A near-linear scaling equation of motion coupled cluster
+  method for ionized states},
+  J. Chem. Phys. \textbf{148}, 244101 (2018).
+
+\bibitem{PipekMezey1989} J. Pipek and P. G. Mezey,
+  \emph{A fast intrinsic localization procedure applicable for ab initio and
+  semiempirical linear combination of atomic orbital wave functions},
+  J. Chem. Phys. \textbf{90}, 4916 (1989).
+
+\bibitem{MataWerner2006} R. A. Mata and H.-J. Werner,
+  \emph{Calculation of smooth potential energy surfaces using local electron
+  correlation methods}, J. Chem. Phys. \textbf{125}, 184110 (2006).
+
+\bibitem{Whitten1973} J. L. Whitten,
+  \emph{Coulombic potential energy integrals and approximations},
+  J. Chem. Phys. \textbf{58}, 4496 (1973).
+
+\bibitem{Vahtras1993} O. Vahtras, J. Alml\"of and M. W. Feyereisen,
+  \emph{Integral approximations for LCAO-SCF calculations},
+  Chem. Phys. Lett. \textbf{213}, 514 (1993).
+
+\bibitem{Davidson1975} E. R. Davidson,
+  \emph{The iterative calculation of a few of the lowest eigenvalues and
+  corresponding eigenvectors of large real-symmetric matrices},
+  J. Comput. Phys. \textbf{17}, 87 (1975).
+
+\bibitem{Mester2023} D. Mester and M. K\'allay,
+  \emph{Vertical ionization potentials and electron affinities at the
+  double-hybrid density functional level},
+  J. Chem. Theory Comput. \textbf{19}, 3982 (2023).
+
+\bibitem{Sun2018} Q. Sun \emph{et al.},
+  \emph{PySCF: the Python-based simulations of chemistry framework},
+  WIREs Comput. Mol. Sci. \textbf{8}, e1340 (2018).
+
+\end{thebibliography}
+
+\end{document}

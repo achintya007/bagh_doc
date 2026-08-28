@@ -66,17 +66,81 @@ Approximations
 * **PAO domains** (``TCutDO``) -- each pair's virtual space is restricted to
   the projected atomic orbitals on nearby atoms, chosen by differential
   overlap.
-* **Local density fitting** -- each pair is fitted in the auxiliary functions
-  of its own domain.
+* **Local density fitting** (``TCutMKN``) -- each pair is fitted in the
+  auxiliary functions of its own fitting domain.
 
-Not implemented: ``TCutMKN`` (a separate criterion for the fitting domain;
-here the fitting domain is simply the auxiliary functions on the pair's domain
-atoms), and steps 2--3 of the paper's three-step prescreen (the semicanonical
-LMP2 pair energies that make the final strong/weak call, and the weak-pair
-correction). What is implemented is step 1, a dipole estimate applied a
-hundred times more loosely than ``TCutPairs``, with a differential-overlap
-guard so that no pair close enough to invalidate the multipole expansion is
-ever discarded on the strength of it.
+The pair prescreen
+------------------
+
+Three steps, in the paper's order, because no single criterion does the job:
+
+**Step 1 -- the dipole estimate.** The exchange integral between two distant
+charge distributions is dominated by their dipole--dipole interaction, so the
+semicanonical pair energy can be estimated from transition dipoles alone at
+:math:`O(N)` cost. It is applied at ``TCutPre``, a hundred times more loosely
+than ``TCutPairs``, and it exists only to keep step 2's list short. It carries
+a differential-overlap guard at ``TCutDO_ij``: a multipole expansion means
+nothing between charge distributions that overlap, so pairs above that overlap
+are kept unconditionally and never estimated. On a compact molecule the guard
+keeps almost everything, which is correct -- step 1 is there for the large
+case.
+
+**Step 2 -- the semicanonical LMP2 pair energy.** For every survivor,
+
+.. math::
+
+   e_{ij} = (2 - \delta_{ij}) \sum_{ab} K^{ij}_{ab}
+            \left( 2 t^{ij}_{ab} - t^{ij}_{ba} \right), \qquad
+   t^{ij}_{ab} = \frac{-K^{ij}_{ab}}
+                      {\epsilon_a + \epsilon_b - F_{ii} - F_{jj}}
+
+computed in the pair's own PAO domain with the local fit. **This** is what
+``TCutPairs`` is applied to. It costs one domain orthogonalization, one local
+fit and one division per candidate -- the same work as the first four steps of
+the PNO construction, and no PNOs.
+
+**Step 3 -- the weak-pair correction.** Everything discarded is summed at the
+best estimate available for it (the step-2 pair energy for what step 2 dropped,
+the dipole estimate for what step 1 dropped without ever computing one) and
+reported as ``E_weak``. ``E(MP2) + E_weak`` is the method's estimate of the
+unscreened MP2 energy.
+
+On a chain of four water molecules at 3.2 Å in cc-pVDZ, with
+``TCutPairs = 1e-4``: step 1 keeps all 76 candidates (they all overlap), step 2
+keeps 40, and the correction recovers 98% of the 0.87 mEh of correlation
+energy that screening threw away -- 8.7e-4 Eh of error becomes 1.8e-5. The
+same screening costs 25 meV on the ionization potentials.
+
+The fitting domain
+------------------
+
+The auxiliary functions a pair is fitted in have to represent the products
+:math:`i(r)\,\tilde\mu(r)`, and how far those reach is a question about the
+*occupied* orbital -- the PAO domain answers a different question. ``TCutMKN``
+asks the orbital directly: sort the atoms by that orbital's Löwdin population,
+take them in that order until the population left behind falls below the
+threshold. The pair's fitting domain is the union of the two orbitals'.
+
+Smaller ``TCutMKN`` leaves less behind and therefore keeps *more* atoms, in the
+same direction as every other ``TCut*``. On the same water chain, with every
+other threshold switched off, measured against a global fit:
+
++--------------+------------------+-------------------+
+| ``TCutMKN``  | aux per pair     | error in E(LMP2)  |
++==============+==================+===================+
+| 1e-1         | 185              | 3.0e-4 Eh         |
++--------------+------------------+-------------------+
+| 1e-2         | 203              | 2.1e-5 Eh         |
++--------------+------------------+-------------------+
+| **1e-3**     | **227**          | **1.3e-5 Eh**     |
++--------------+------------------+-------------------+
+| 1e-4         | 267              | 5.2e-6 Eh         |
++--------------+------------------+-------------------+
+
+The default is 1e-3, as in ORCA, and is not one of the numbers the composite
+levels vary. ``tcut_mkn 0`` disables the criterion and falls back to fitting
+each pair in the auxiliary functions on its PAO-domain atoms, which is what
+the code did before ``TCutMKN`` existed and is what the exactness gates use.
 
 Thresholds
 ==========
@@ -96,6 +160,8 @@ Neese and Izsák, *J. Chem. Phys.* **148**, 244101 (2018):
 | ``tcut_doi_occ``  | 1e-2        | 1e-2         | 1e-3        |
 +-------------------+-------------+--------------+-------------+
 | ``tcut_pao``      | 1e-8        | 1e-8         | 1e-8        |
++-------------------+-------------+--------------+-------------+
+| ``tcut_mkn``      | 1e-3        | 1e-3         | 1e-3        |
 +-------------------+-------------+--------------+-------------+
 
 ``TCutDO`` runs the other way from the rest: TIGHT has the *smallest* value
@@ -176,8 +242,8 @@ Keywords
 - ``dlpno_sos``: ``true`` adds the folded SOS-ADC(2) truncation correction
   (see below).
 - ``cos_scale``: :math:`c_{os}` for that correction, default 1.3.
-- ``tcut_pno``, ``tcut_pairs``, ``tcut_do``, ``tcut_pao``, ``tcut_doi_occ``,
-  ``tcut_pre``, ``tcut_doi_pair``: individual overrides.
+- ``tcut_pno``, ``tcut_pairs``, ``tcut_do``, ``tcut_pao``, ``tcut_mkn``,
+  ``tcut_doi_occ``, ``tcut_pre``, ``tcut_doi_pair``: individual overrides.
 - ``maxcore``: in MB, as everywhere in BAGH. The memory plan uses it to
   decide what to spill; if it is too small for the data that cannot be
   spilled, the run stops with a report rather than swapping.
@@ -280,7 +346,12 @@ which prints:
    ========================================================================
      DLPNO-IP-ADC(3)   TIGHTPNO
    ========================================================================
-     pairs: 21 strong, 0 weak of 21 candidates
+     prescreen: TCutPre = 1.0e-07, TCutDO_ij = 1.0e-06, TCutMKN = 1.0e-03
+     step 1 (dipole):        21 candidates -> 21 (21 kept by the DOI guard),
+                             E_weak = 0.000000000 Eh
+     step 2 (semicanonical): 21 -> 21 strong, 0 weak, E_weak = 0.000000000 Eh
+     step 3 (correction):    E_weak(total) = 0.000000000 Eh
+     fitting domain: 320 of 320 auxiliary functions on average
      mean n_PNO = 35.1, PNO truncation error 0.000068 Eh
      E(LMP2) = -0.3328052
      E(MP3)  = -0.0076891
@@ -293,6 +364,18 @@ which prints:
 
 To read the algorithm instead of running it, add ``dlpno_python true`` and
 open ``bagh_code/dlpno/reference.py`` alongside the output.
+
+Still not implemented
+=====================
+
+The pure-Python implementation fits globally and does not screen occupied
+lists, so ``tcut_mkn``, ``tcut_pre``, ``tcut_doi_pair`` and ``tcut_doi_occ``
+have no meaning there; asking for them with ``dlpno_python true`` prints a
+note rather than accepting them silently.
+
+``tcut_doi_occ`` -- which decides, for each pair, the occupied labels its
+integral blocks are generated for -- is not from the paper and has not been
+calibrated. It is the one threshold here with no provenance.
 
 Validity
 ========
