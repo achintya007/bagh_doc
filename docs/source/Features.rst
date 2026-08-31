@@ -14,6 +14,7 @@ Features
 - First order properties for RHF and spin orbital CCSD
 - Exact two and four component approaches for relativistic  coupled cluster method
 - Relativistic CCSDT and CCSDT(Q) with a Laplace-transform / THC treatment of the perturbative quadruples correction
+- Low-memory relativistic MP2 (THC-LT-MP2) on the X2CAMF interface: the direct diagram via tensor hypercontraction and a Laplace transform, the exchange diagram via the resolution of the identity with exact denominators, with in-core and out-of-core paths and SCS/SOS scaling
 - Natural spinors for the relativistic calculations
 - Efficient treatment for core-ionization
 - XES Spectra for closed shell molecules

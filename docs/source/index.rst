@@ -42,6 +42,7 @@ Contents
    dlpno_adc
    plasma
    kramers_cc
+   thc_lt_mp2
 
 .. toctree::
    :caption: Basis sets

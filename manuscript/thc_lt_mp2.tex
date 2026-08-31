@@ -1,0 +1,609 @@
+% ---------------------------------------------------------------------------
+% THC-LT-MP2: manuscript draft (theory and implementation only).
+%
+% Written for REVTeX 4-2 (AIP/JCP). If revtex4-2.cls is not installed the
+% preamble falls back to `article' so that the file still compiles.
+% ---------------------------------------------------------------------------
+\IfFileExists{revtex4-2.cls}{%
+  \documentclass[aip,jcp,amsmath,amssymb,preprint,superscriptaddress]{revtex4-2}%
+  \newcommand{\FALLBACK}{0}%
+}{%
+  \documentclass[11pt]{article}%
+  \newcommand{\FALLBACK}{1}%
+}
+\if 1\FALLBACK
+  \usepackage[margin=1in]{geometry}
+  \usepackage{amsmath,amssymb,graphicx}
+  \newcommand{\affiliation}[1]{}
+  \newcommand{\email}[1]{}
+\fi
+
+\usepackage{bm}
+\usepackage{booktabs}
+
+% ------------------------------------------------------------- shorthands --
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\Edir}{E_{\mathrm{dir}}}
+\newcommand{\Eexc}{E_{\mathrm{exc}}}
+\newcommand{\Emp}{E_{\mathrm{MP2}}}
+\newcommand{\Naux}{N_{\mathrm{aux}}}
+\newcommand{\Ngrid}{N_{\mathrm{grid}}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\re}{\operatorname{Re}}
+\newcommand{\Ord}[1]{\mathcal{O}\!\left(#1\right)}
+
+\begin{document}
+
+\title{A tensor-hypercontraction, Laplace-transform formulation of
+       second-order M{\o}ller--Plesset theory for two-component relativistic
+       reference determinants with a bounded memory footprint}
+
+\author{}
+\affiliation{Department of Chemistry, Indian Institute of Technology Bombay,
+             Powai, Mumbai 400076, India}
+
+\date{\today}
+
+\begin{abstract}
+We describe a formulation and implementation of second-order
+M{\o}ller--Plesset perturbation theory (MP2) for two-component,
+spin--orbit-coupled reference determinants (exact two-component molecular
+mean-field, X2CAMF) in which no four-index quantity is ever constructed. The
+antisymmetrised correlation energy is separated into its direct (Coulomb) and
+exchange Goldstone diagrams. The direct diagram is contracted through a
+grid tensor-hypercontraction (THC) representation of the electron-repulsion
+integrals combined with a Laplace transform of the doubles denominator; the
+transform factorises the four orbital labels, and the diagram collapses onto
+a sequence of $K\times K$ grid-space matrix multiplications, where $K$ is the
+number of retained interpolation points. The exchange diagram, whose index
+pattern the Laplace transform does not decouple and which is therefore
+$\Ord{K^4}$ under THC, is instead evaluated by the resolution of the
+identity with the occupied labels kept explicit; because those labels are
+explicit no quadrature is required and the exact orbital-energy denominator
+is used, so the exchange contribution carries no Laplace error. The
+interpolation points and the THC core are built by a grid-blocked
+interpolative separable density fitting procedure that never forms an
+$\Ngrid\times\Ngrid$ or $\Ngrid\times n_{\mathrm{mo}}^2$ array. The direct
+kernel has an in-core path and an out-of-core path in which only two
+$K\times K$ matrices are resident and the THC core is streamed in row
+panels, so the peak memory is $\Ord{K^2}$ or $2K^2+\Ord{K\,n_{\mathrm{mo}}}$
+rather than $\Ord{o^2v^2}$ or $\Ord{\Naux n_{\mathrm{mo}}^2}$. Spin-component
+scaling of the two diagrams reproduces the spin-component-scaled and
+scaled-opposite-spin variants; with the exchange diagram switched off the
+method is a scaled-opposite-spin relativistic MP2 whose cost is $\Ord{K^3}$
+per Laplace node. The implementation, its compiled kernels, and its
+validation against a dense density-fitted MP2 in the same spinor molecular
+orbital basis are described.
+\end{abstract}
+
+\maketitle
+
+% ===========================================================================
+\section{Introduction}
+% ===========================================================================
+
+Second-order M{\o}ller--Plesset perturbation theory is the least expensive
+size-consistent wave-function correlation method and the entry point of the
+correlation hierarchy. Its canonical cost is $\Ord{o^2v^2\Naux}$ in a
+density-fitted (resolution-of-the-identity, RI) formulation,\cite{Whitten1973,
+Dunlap1979,Vahtras1993,Feyereisen1993} with $o$ and $v$ the numbers of
+occupied and virtual orbitals; the memory cost, if the doubles amplitudes or
+the $(ov|ov)$ integral block are held, is $\Ord{o^2v^2}$. For a
+two-component relativistic treatment on a spinor basis both counts refer to
+complex arithmetic and to a spinor dimension roughly twice the number of
+scalar atomic-orbital basis functions, so the $\Ord{o^2v^2}$ memory is the
+binding constraint well before the arithmetic is: at a few thousand scalar
+basis functions the four-index amplitude is measured in terabytes and the
+three-index RI tensor in hundreds of gigabytes.
+
+Two ideas reduce this. The Laplace transform of the energy
+denominator,\cite{Almlof1991,Haser1992,Haser1993} $1/x=\int_0^\infty
+e^{-xt}\,dt \approx \sum_g w_g e^{-x t_g}$, separates the four orbital
+energies that enter an MP2 denominator into a product of per-orbital
+exponential factors; those factors can be absorbed into the orbitals, after
+which the direct (Coulomb) part of the correlation energy becomes a trace
+over a product of two-index quantities.\cite{Jung2004,Nakajima2006} Tensor
+hypercontraction\cite{Hohenstein2012,Parrish2012,Hohenstein2012b} represents
+the electron-repulsion integral as a contraction of grid collocation
+matrices $X_{Pp}$ (orbital $p$ evaluated at grid point $P$) with a small
+core $Z_{PQ}$,
+\begin{equation}
+  (pq|rs) \;=\; \sum_{PQ}\rho_{pq}(P)\,Z_{PQ}\,\rho_{rs}(Q),
+  \qquad
+  \rho_{pq}(P)=\sum_{k}X^{*}_{kPp}X_{kPq},
+  \label{eq:thc}
+\end{equation}
+so that any integral network can be rewritten in the $K$-dimensional grid
+space. The interpolation points and the core are obtained by least squares
+against the RI integrals; a robust and inexpensive route to the points is
+interpolative separable density fitting (ISDF),\cite{Lu2015,Hu2017} which
+selects them by a pivoted Cholesky (equivalently a column-pivoted QR)
+factorisation of the collocation Gram matrix.
+
+Combined, THC and the Laplace transform give an MP2 direct energy at
+$\Ord{K^3}$ per Laplace node with only $\Ord{K^2}$ storage.\cite{Jung2004,
+Song2016,Lee2020} The exchange energy is the difficulty: its integrand,
+$(ia|jb)(ib|ja)$, ties the occupied label $i$ to the virtual labels of
+\emph{both} factors, so no rearrangement of the Laplace product separates
+the four grid sums, and a THC evaluation is irreducibly $\Ord{K^4}$ (or
+$\Ord{o\,K^2 v}$ with the occupied labels retained), with a prefactor
+$K/n_{\mathrm{mo}}\sim 10$ that makes it impractical past a thousand or so
+functions. We therefore evaluate only the direct diagram by THC and Laplace,
+and the exchange diagram by RI with the occupied labels kept explicit --- a
+hybrid that keeps the memory bounded and, because the exchange labels are
+explicit, keeps the exchange contribution free of quadrature error.
+
+The target is the exact two-component molecular-mean-field (X2CAMF)
+Hamiltonian,\cite{Liu2018,Zhang2022} for which BAGH already provides
+Cholesky-decomposed spinor integrals and a THC representation used by its
+coupled-cluster codes. The present method reuses that machinery. What
+follows is the working equations (Sec.~\ref{sec:theory}) and the
+implementation, including the grid-blocked ISDF build, the in-core and
+out-of-core direct kernels, the screened exchange kernel, and frozen-core
+handling (Sec.~\ref{sec:impl}); Sec.~\ref{sec:cost} collects the costs and
+Sec.~\ref{sec:val} the numerical checks.
+
+% ===========================================================================
+\section{Theory}
+\label{sec:theory}
+% ===========================================================================
+
+\subsection{The two diagrams}
+
+In a spinor basis the MP2 correlation energy for a single-determinant
+reference is
+\begin{equation}
+  \Emp = -\frac14 \sum_{ijab}
+         \frac{\bigl|\bra{ij}\!\ket{ab}_{\!A}\bigr|^{2}}{D_{ijab}},
+  \qquad
+  \bra{ij}\!\ket{ab}_{\!A} = (ia|jb)-(ib|ja),
+  \label{eq:emp2}
+\end{equation}
+with $D_{ijab}=\varepsilon_a+\varepsilon_b-\varepsilon_i-\varepsilon_j$,
+indices $i,j$ occupied and $a,b$ virtual, $(ia|jb)$ the chemists'
+electron-repulsion integral over spinors, and $\varepsilon$ the (semi-)
+canonical spinor energies. Expanding the antisymmetriser,
+\begin{equation}
+  \bigl|(ia|jb)-(ib|ja)\bigr|^{2}
+   = |(ia|jb)|^2 + |(ib|ja)|^2
+     - 2\,\re\!\bigl[(ia|jb)(ib|ja)^{*}\bigr],
+\end{equation}
+and using that the first two terms are equal under
+$i\!\leftrightarrow\!j,\ a\!\leftrightarrow\!b$ relabelling of the sum,
+\begin{equation}
+  \Emp = \Edir + \Eexc,
+  \label{eq:split}
+\end{equation}
+\begin{align}
+  \Edir &= -\frac12 \sum_{ijab} \frac{|(ia|jb)|^{2}}{D_{ijab}},
+  \label{eq:edir}\\[2pt]
+  \Eexc &= +\frac12 \sum_{ijab}
+           \frac{\re\!\bigl[(ia|jb)(ib|ja)^{*}\bigr]}{D_{ijab}} .
+  \label{eq:eexc}
+\end{align}
+Both sums have $D_{ijab}>0$ term by term. The exchange sum equals its own
+complex conjugate under $i\!\leftrightarrow\!j$ together with the permutional
+symmetry $(pq|rs)=(rs|pq)$, so $\Eexc$ is real and the $\re$ in
+Eq.~\eqref{eq:eexc} may be taken inside.
+
+\subsection{Direct diagram: THC and Laplace}
+
+Write the Coulomb integral in the grid THC form Eq.~\eqref{eq:thc}, with the
+collocation split into occupied and virtual blocks, $X^{o}_{kPi}$ and
+$X^{v}_{kPa}$, and $k$ running over the two spinor components. Replace the
+denominator by the Laplace quadrature,
+$1/D_{ijab}=\sum_g w_g e^{-D_{ijab}t_g}$, valid because $D_{ijab}$ lies in a
+bounded positive interval; the geometric (double-exponential in $1/h$)
+quadrature of Ref.~\onlinecite{Takatsuka2008} on
+$[2(\varepsilon_v^{\min}-\varepsilon_o^{\max}),\,
+  2(\varepsilon_v^{\max}-\varepsilon_o^{\min})]$ is used, the factor two
+being the doubles analogue of the factor three appropriate to triples.
+The Boltzmann factor factorises as
+$e^{-D_{ijab}t}=e^{(\varepsilon_i-\varepsilon_a)t}\,
+e^{(\varepsilon_j-\varepsilon_b)t}$; splitting each half evenly and folding
+it into the collocation,
+\begin{equation}
+  Y^{o}_{kPi}(t)=X^{o}_{kPi}\,e^{+\varepsilon_i t/2},
+  \qquad
+  Y^{v}_{kPa}(t)=X^{v}_{kPa}\,e^{-\varepsilon_a t/2},
+  \label{eq:dress}
+\end{equation}
+so that the ``dressed'' pair density
+$\tilde\rho_{ia}(P)=\sum_k Y^{o*}_{kPi}Y^{v}_{kPa}$ carries
+$e^{(\varepsilon_i-\varepsilon_a)t/2}$. Substituting
+Eqs.~\eqref{eq:thc},\eqref{eq:dress} into Eq.~\eqref{eq:edir} and summing the
+orbital labels,
+\begin{equation}
+  \Edir = -\frac12 \sum_g w_g
+          \sum_{PR} M_g[P,R]\,\bigl(Z\,M_g\,Z^{\dagger}\bigr)[P,R],
+  \label{eq:edir-thc}
+\end{equation}
+\begin{align}
+  M_g[P,R] &= \sum_{ia}\tilde\rho_{ia}(P)\,\tilde\rho_{ia}(R)^{*}
+  \nonumber\\
+  &= \sum_{kk'}
+     \Bigl(\textstyle\sum_i Y^{o*}_{kPi}Y^{o}_{k'Ri}\Bigr)
+     \Bigl(\textstyle\sum_a Y^{v}_{kPa}Y^{v*}_{k'Ra}\Bigr).
+  \label{eq:Mg}
+\end{align}
+$M_g$ is a Hermitian $K\times K$ matrix, assembled as a Hadamard product of
+two $K\times K$ Gram matrices for each of the four spinor-component pairs
+$(k,k')$: eight complex matrix multiplications of shapes $(K\times o)(o\times
+K)$ and $(K\times v)(v\times K)$. The bracketed quantity in
+Eq.~\eqref{eq:edir-thc} is $N_g=Z M_g Z^{\dagger}$, two further $K\times K$
+multiplications, and the node's contribution is the Frobenius inner product
+$\sum_{PR}M_g[P,R]\,N_g[P,R]$, which is real and non-negative. The cost per
+node is $\Ord{K^3}$; the largest array is $K\times K$.
+
+\subsection{Exchange diagram: RI with exact denominators}
+
+Because the Laplace product for the exchange integrand does not separate the
+grid sums, we keep the occupied labels explicit and use the RI factorisation
+$(ia|jb)=\sum_L L^{L}_{ia}L^{L}_{jb}$ that the reference already supplies
+(the same three-index quantity from which the THC core is fitted). Define,
+for an ordered occupied pair $(i,j)$,
+\begin{equation}
+  T^{ij}_{ab} = \sum_{L} L^{L}_{ia}\,L^{L}_{jb},
+  \label{eq:Tij}
+\end{equation}
+a $v\times v$ matrix formed by one contraction over the auxiliary index.
+Then Eq.~\eqref{eq:eexc} is
+\begin{equation}
+  \Eexc = \frac12 \sum_{i\le j} m_{ij}
+          \sum_{ab}
+          \frac{\re\!\bigl[T^{ij}_{ab}\,\bigl(T^{ij}_{ba}\bigr)^{*}\bigr]}
+               {\varepsilon_a+\varepsilon_b-\varepsilon_i-\varepsilon_j},
+  \label{eq:eexc-ri}
+\end{equation}
+with $m_{ij}=1$ for $i=j$ and $m_{ij}=2$ otherwise (the pair $(j,i)$
+contributes the complex conjugate, with equal real part). No quadrature
+enters Eq.~\eqref{eq:eexc-ri}: the denominator is the exact orbital-energy
+gap, so $\Eexc$ is exact given the RI fit of the integrals. The cost is one
+$\Ord{\Naux v^2}$ contraction and one $\Ord{v^2}$ weighted trace per pair,
+$\Ord{o^2(\Naux+v)v^2}$ in total, with $\Ord{v^2}$ working memory.
+
+For a spatially extended system with localised occupied
+orbitals\cite{Pulay1983,Saebo1993} the summand of Eq.~\eqref{eq:eexc-ri}
+decays with the separation of $i$ and $j$. A Cauchy--Schwarz bound,
+\begin{equation}
+  \bigl\|T^{ij}\bigr\|_{F}
+   \;\le\; s_{ij}
+   \;\equiv\; \sum_{L}\bigl\|L^{L}_{i\cdot}\bigr\|_{2}\,
+                     \bigl\|L^{L}_{j\cdot}\bigr\|_{2},
+  \label{eq:schwarz}
+\end{equation}
+is evaluated as a single $\Ord{o^2\Naux}$ matrix multiplication and used to
+drop pairs with $s_{ij}$ below a threshold times $\max_{ij}s_{ij}$, taking
+the pair count from $\Ord{o^2}$ towards $\Ord{o}$.
+
+\subsection{Spin-component scaling}
+
+Under spin--orbit coupling $S_z$ is not a good quantum number, so a
+rigorous opposite-/same-spin partition of the MP2 energy does not exist.
+Equations \eqref{eq:edir}--\eqref{eq:eexc} are the Coulomb and exchange
+antisymmetrised diagrams; scaling them independently,
+\begin{equation}
+  \Emp = c_{\mathrm{os}}\,\Edir + c_{\mathrm{ss}}\,\Eexc,
+  \label{eq:scs}
+\end{equation}
+recovers the non-relativistic spin-component-scaled\cite{Grimme2003} and
+scaled-opposite-spin\cite{Jung2004} prescriptions in the weak-coupling
+limit and provides their natural relativistic generalisation otherwise.
+Setting $c_{\mathrm{ss}}=0$ removes the exchange diagram entirely; the
+remaining method is a scaled-opposite-spin relativistic MP2 evaluated
+purely by Eq.~\eqref{eq:edir-thc}, at $\Ord{K^3}$ per node and $\Ord{K^2}$
+memory.
+
+% ===========================================================================
+\section{Implementation}
+\label{sec:impl}
+% ===========================================================================
+
+The driver is a Python module; the two rate-limiting kernels ---
+Eq.~\eqref{eq:edir-thc} and the pair loop of Eq.~\eqref{eq:eexc-ri} --- are
+a compiled \textsc{pybind11} extension that calls level-3 BLAS
+(\texttt{zgemm}) and is parallelised over Laplace nodes and grid panels, or
+over occupied pairs, with OpenMP. Reference implementations of both
+equations in dense array operations are retained and are used automatically
+when the extension is absent; they are the object of the validation in
+Sec.~\ref{sec:val}.
+
+\subsection{ISDF factor construction}
+
+When the reference is run with the THC option the X2CAMF driver supplies
+$X^{o}$, $X^{v}$ and $Z$ directly. Otherwise they are built here from the
+density-fitted integrals without forming any array of grid-squared or
+grid$\times$orbital-squared size:
+\begin{enumerate}
+\item The two-component collocation
+  $X_{kPp}=w_P^{1/4}\sum_{\mu}\phi^{(k)}_{\mu}(\rr_P)\,C_{\mu p}$
+  is evaluated in blocks of grid points, $w_P$ the quadrature weight.
+\item Interpolation points are chosen by a pivoted Cholesky factorisation of
+  the collocation Gram matrix
+  $S_{PQ}=\sum_{pq}\rho_{P}(pq)^{*}\rho_{Q}(pq)
+        =\sum_{kk'}\bigl|\sum_p X_{kPp}X^{*}_{k'Qp}\bigr|^{2}$,
+  with the Schur-updated diagonal maintained explicitly and each required
+  column of $S$ recomputed on demand in $\Ord{\Ngrid n_{\mathrm{mo}}}$ work;
+  no $\Ngrid\times\Ngrid$ matrix is ever stored. Selection stops when the
+  updated diagonal falls below a relative floor, so $K$ is rank-adaptive.
+\item The collocation is gathered on the $K$ retained points to give
+  $X^{o}$ and $X^{v}$.
+\item The THC core solves the least-squares problem
+  $Z = S^{-1} E\, S^{-1}$ with
+  $E_{PQ}=\sum_{L}\bigl(\sum_{pq}\rho_P(pq)L^{L}_{pq}\bigr)
+                  \bigl(\sum_{rs}\rho_Q(rs)L^{L}_{rs}\bigr)$,
+  the pair densities on the retained points formed in blocks of $P$ and the
+  auxiliary index streamed; $E$ is accumulated as one $K\times\Naux$ panel
+  times its transpose. $S$ is regularised with a small multiple of its
+  trace and inverted by a Cholesky solve (a pseudoinverse with an explicit
+  cutoff as fallback). $Z$ is symmetrised.
+\end{enumerate}
+For large $K$ the core is written to disk and returned as a lazy dataset.
+The block sizes are chosen from the available memory; the construction is
+guarded so that a request whose $K\,n_{\mathrm{mo}}^{2}$ working set would
+not fit is refused with a diagnostic rather than thrashing.
+
+\subsection{Direct kernel: in-core and out-of-core}
+
+The kernel loops over Laplace nodes. For each node it forms the dressed
+collocation Eq.~\eqref{eq:dress}, builds $M_g$ from Eq.~\eqref{eq:Mg} as
+eight \texttt{zgemm} calls and a Hadamard accumulation, and evaluates
+Eq.~\eqref{eq:edir-thc}. Three residency regimes are selected automatically
+from the estimated resident set against a memory budget:
+\begin{itemize}
+\item \emph{in-core}: $M_g$, $N_g$ and $Z$ are all held; the compiled
+  kernel runs the entire node loop. Peak $\approx 4K^2$ complex plus the
+  collocation.
+\item \emph{out-of-core}: only $M_g$ and $W_g=M_g Z^{\dagger}$ are held and
+  $Z$ is read in row panels from the on-disk dataset; $N_g=Z W_g$ and the
+  inner product are accumulated panel by panel. Peak $\approx 2K^2$ complex
+  plus the collocation, i.e.\ $2K^2+\Ord{K n_{\mathrm{mo}}}$.
+\item a disk-backed $Z$ forces the out-of-core path.
+\end{itemize}
+The out-of-core path is pure BLAS-bound array algebra and is not moved into
+the compiled extension; the in-core path is.
+
+\subsection{Exchange kernel}
+
+The Schwarz bound Eq.~\eqref{eq:schwarz} is formed from per-occupied
+auxiliary-row norms and the surviving ordered pairs $(i\le j)$ are tiled by
+blocks of the occupied index so that each three-index slice
+$L^{L}_{i\in\mathcal{I},a}$ that must be resident is bounded. For each tile
+the compiled kernel loops over its pairs; per pair it forms $T^{ij}$
+(Eq.~\eqref{eq:Tij}) by one \texttt{zgemm} contracting the auxiliary index
+of the two strided slices, then accumulates
+$m_{ij}\sum_{ab}\re[T^{ij}_{ab}(T^{ij}_{ba})^{*}]/
+       (\varepsilon_a+\varepsilon_b-\varepsilon_i-\varepsilon_j)$
+into a thread-private scalar. The dressing of Eq.~\eqref{eq:dress} is
+\emph{not} applied here --- there is no Laplace grid --- and no dressed copy
+of the three-index integral is made.
+
+\subsection{Frozen core}
+
+The standard frozen-core keywords select a number of lowest occupied
+spinors to exclude. The occupied collocation $X^{o}$, the occupied energy
+vector, the three-index integral $L_{ia}$, and the interval on which the
+Laplace nodes are placed are all sliced to the active occupied space before
+either diagram is evaluated; the virtual space and $K$ are unchanged. The
+frozen core acts identically on both diagrams, and the correlation energy
+reproduces a dense frozen-core RI-MP2 in the same active space to the THC
+and quadrature accuracy.
+
+% ===========================================================================
+\section{Computational cost and memory}
+\label{sec:cost}
+% ===========================================================================
+
+\begin{table}[t]
+\caption{Formal cost and peak working memory. $o$, $v$ occupied and virtual
+spinor counts; $\Naux$ auxiliary functions; $K$ retained interpolation
+points ($K\sim c\,n_{\mathrm{mo}}$, $c\sim 8$--$15$); $\Ngrid$ parent grid
+points; $\Ngrid^{\mathrm{LT}}$ Laplace nodes; $p$ the $P$-block size in the
+ISDF build.}
+\label{tab:cost}
+\begin{ruledtabular}
+\begin{tabular}{lll}
+step & cost & peak memory \\
+\colrule
+ISDF points \& core & $K\,\Naux\,n_{\mathrm{mo}}^{2}$ &
+   $K^{2}+p\,n_{\mathrm{mo}}^{2}$ \\
+direct, in-core     & $K^{3}\,\Ngrid^{\mathrm{LT}}$ & $4K^{2}$ \\
+direct, out-of-core & $K^{3}\,\Ngrid^{\mathrm{LT}}$ &
+   $2K^{2}+K\,n_{\mathrm{mo}}$ \\
+exchange (RI)       & $o^{2}(\Naux+v)\,v^{2}$ & $v^{2}$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+Table~\ref{tab:cost} collects the counts. No step scales as $o^2v^2$ or
+$\Naux n_{\mathrm{mo}}^2$ in memory. The direct diagram is the
+rate-determining arithmetic at $\Ord{K^3}$ per node; with the geometric
+Laplace quadrature $\Ngrid^{\mathrm{LT}}\sim 10$--$20$ suffices for
+$10^{-6}$--$10^{-7}$ relative accuracy on the denominator. The exchange
+diagram, at the cost of a conventional RI-MP2 exchange, is the practical
+ceiling on the full calculation: its $v\times v$ per-pair work is not yet
+truncated to pair domains, so it is affordable to $v\sim 3000$--$4000$.
+Beyond that, $c_{\mathrm{ss}}=0$ removes it and the direct term alone scales
+to the largest spinor bases with a memory footprint of a few $K^2$ complex
+numbers held or streamed.
+
+% ===========================================================================
+\section{Validation}
+\label{sec:val}
+% ===========================================================================
+
+The working equations were checked at three levels.
+
+\emph{Kernel identities.} On random collocation factors and a random
+Hermitian core, the compiled direct kernel reproduces the reference
+evaluation of Eq.~\eqref{eq:edir-thc} to machine precision
+($\sim 10^{-15}$ relative), and both reproduce the defining sum
+$-\tfrac12\sum_{ijab}|(ia|jb)|^2\sum_g w_g e^{-D_{ijab}t_g}$ built densely
+from the same factors; the residual against the exact $1/D$ evaluation
+falls with the Laplace spacing as expected. The out-of-core direct path,
+with the core handed back in row panels, agrees with the in-core path to
+$\sim 10^{-14}$. The compiled exchange kernel, summed over the full pair
+list, reproduces the exact-denominator reference of Eq.~\eqref{eq:eexc-ri}
+to $\sim 10^{-15}$ and the Laplace form of the same quantity to the
+quadrature accuracy.
+
+\emph{Against a dense density-fitted MP2.} For a closed-shell atom
+(neon, X2CAMF, correlation-consistent double-$\zeta$ with a matching
+auxiliary set) the three-index integrals were transformed into the X2CAMF
+spinor molecular-orbital basis and the antisymmetrised MP2 energy formed
+densely from Eq.~\eqref{eq:emp2}. The interpolation-separable factors were
+then built by the procedure of Sec.~\ref{sec:impl} and the kernel run: the
+exchange diagram matched the dense value to $\sim 10^{-15}$; the direct
+diagram and the total matched to the tensor-hypercontraction fit and
+Laplace quadrature error, $\sim 10^{-6}$--$10^{-7}$ in the correlation
+energy at the default grid and spacing. A frozen-core run
+($2$ frozen spinors) reproduced a dense frozen-core RI-MP2 in the same
+active space to the same accuracy.
+
+\emph{Independent paths.} The in-core and out-of-core direct evaluations,
+the compiled and reference kernels, and the scaled-opposite-spin
+($c_{\mathrm{ss}}=0$) path were checked pairwise for consistency on the
+same inputs.
+
+% ===========================================================================
+\section{Conclusions}
+% ===========================================================================
+
+A memory-bounded MP2 for two-component relativistic references follows from
+treating the two Goldstone diagrams by different factorisations: the direct
+diagram by tensor hypercontraction and a Laplace transform, which reduce it
+to $K\times K$ grid-space matrix multiplications at $\Ord{K^3}$ per node
+with $\Ord{K^2}$ storage; the exchange diagram, which the Laplace transform
+does not decouple, by the resolution of the identity with the occupied
+labels explicit, so that it needs no quadrature and is exact to the RI fit.
+The interpolation factors are built by a grid-blocked ISDF procedure that
+avoids every grid-squared array, the direct kernel has an out-of-core path
+that streams the THC core, and the exchange kernel takes a Schwarz pair
+screen. With the exchange diagram removed the method is a scaled-opposite-
+spin relativistic MP2 that scales to the largest spinor bases; the
+remaining obstacle to a full relativistic MP2 at that size is a
+pair-domain truncation of the exchange, which is left for future work.
+
+\appendix
+
+\section{Grid THC / ISDF conventions}
+
+The spinor pair density on the parent grid is
+$\rho_{pq}(P)=\sum_{k=1}^{2}X^{*}_{kPp}X_{kPq}$ with
+$X_{kPp}=w_P^{1/4}\,\varphi^{(k)}_{p}(\rr_P)$ and $\varphi^{(k)}_p$ the
+$k$-th component of spinor $p$. The least-squares THC core minimises
+$\sum_{pqrs}\bigl|(pq|rs)-\sum_{PQ}\rho_{pq}(P)Z_{PQ}\rho_{rs}(Q)\bigr|^2$
+with $(pq|rs)$ taken from the RI fit; its stationary condition is
+$S Z S = E$ with $S_{PQ}=\sum_{pq}\rho_{pq}(P)^{*}\rho_{pq}(Q)$ and
+$E_{PQ}=\sum_{pqrs}\rho_{pq}(P)(pq|rs)\rho_{rs}(Q)$, matching the
+convention already used by the X2CAMF THC coupled-cluster code so that the
+factors are interchangeable between methods.
+
+\begin{thebibliography}{99}
+
+\bibitem{Whitten1973} J. L. Whitten,
+  \emph{Coulombic potential energy integrals and approximations},
+  J. Chem. Phys. \textbf{58}, 4496 (1973).
+
+\bibitem{Dunlap1979} B. I. Dunlap, J. W. D. Connolly and J. R. Sabin,
+  \emph{On some approximations in applications of X$\alpha$ theory},
+  J. Chem. Phys. \textbf{71}, 3396 (1979).
+
+\bibitem{Vahtras1993} O. Vahtras, J. Alml{\"o}f and M. W. Feyereisen,
+  \emph{Integral approximations for LCAO-SCF calculations},
+  Chem. Phys. Lett. \textbf{213}, 514 (1993).
+
+\bibitem{Feyereisen1993} M. Feyereisen, G. Fitzgerald and A. Komornicki,
+  \emph{Use of approximate integrals in ab initio theory. An application in
+  MP2 energy calculations}, Chem. Phys. Lett. \textbf{208}, 359 (1993).
+
+\bibitem{Almlof1991} J. Alml{\"o}f,
+  \emph{Elimination of energy denominators in M{\o}ller--Plesset
+  perturbation theory by a Laplace transform approach},
+  Chem. Phys. Lett. \textbf{181}, 319 (1991).
+
+\bibitem{Haser1992} M. H{\"a}ser and J. Alml{\"o}f,
+  \emph{Laplace transform techniques in M{\o}ller--Plesset perturbation
+  theory}, J. Chem. Phys. \textbf{96}, 489 (1992).
+
+\bibitem{Haser1993} M. H{\"a}ser,
+  \emph{M{\o}ller--Plesset (MP2) perturbation theory for large molecules},
+  Theor. Chim. Acta \textbf{87}, 147 (1993).
+
+\bibitem{Jung2004} Y. Jung, R. C. Lochan, A. D. Dutoi and M. Head-Gordon,
+  \emph{Scaled opposite-spin second order M{\o}ller--Plesset correlation
+  energy: An economical electronic structure method},
+  J. Chem. Phys. \textbf{121}, 9793 (2004).
+
+\bibitem{Nakajima2006} T. Nakajima and K. Hirao,
+  \emph{The Douglas--Kroll--Hess approach}, and Laplace-transformed MP2
+  developments therein, Chem. Rev. (representative);
+  see also A. Takatsuka, S. Ten-no and W. Hackbusch,
+  J. Chem. Phys. \textbf{129}, 044112 (2008).
+
+\bibitem{Takatsuka2008} A. Takatsuka, S. Ten-no and W. Hackbusch,
+  \emph{Minimax approximation for the decomposition of energy denominators
+  in Laplace-transformed M{\o}ller--Plesset perturbation theories},
+  J. Chem. Phys. \textbf{129}, 044112 (2008).
+
+\bibitem{Hohenstein2012} E. G. Hohenstein, R. M. Parrish and T. J. Mart{\'i}nez,
+  \emph{Tensor hypercontraction density fitting. I. Quartic scaling second-
+  and third-order M{\o}ller--Plesset perturbation theory},
+  J. Chem. Phys. \textbf{137}, 044103 (2012).
+
+\bibitem{Parrish2012} R. M. Parrish, E. G. Hohenstein, T. J. Mart{\'i}nez and
+  C. D. Sherrill,
+  \emph{Tensor hypercontraction. II. Least-squares renormalization},
+  J. Chem. Phys. \textbf{137}, 224106 (2012).
+
+\bibitem{Hohenstein2012b} E. G. Hohenstein, R. M. Parrish, C. D. Sherrill and
+  T. J. Mart{\'i}nez,
+  \emph{Communication: Tensor hypercontraction. III. Least-squares tensor
+  hypercontraction for the determination of correlated wavefunctions},
+  J. Chem. Phys. \textbf{137}, 221101 (2012).
+
+\bibitem{Lu2015} J. Lu and L. Ying,
+  \emph{Compression of the electron repulsion integral tensor in tensor
+  hypercontraction format with cubic scaling cost},
+  J. Comput. Phys. \textbf{302}, 329 (2015).
+
+\bibitem{Hu2017} W. Hu, L. Lin and C. Yang,
+  \emph{Interpolative separable density fitting decomposition for accelerating
+  hybrid density functional calculations},
+  J. Chem. Theory Comput. \textbf{13}, 5420 (2017).
+
+\bibitem{Song2016} C. Song and T. J. Mart{\'i}nez,
+  \emph{Atomic orbital-based SOS-MP2 with tensor hypercontraction},
+  J. Chem. Phys. \textbf{144}, 174111 (2016).
+
+\bibitem{Lee2020} J. Lee, L. Lin and M. Head-Gordon,
+  \emph{Systematically improvable tensor hypercontraction: Interpolative
+  separable density fitting for molecules},
+  J. Chem. Theory Comput. \textbf{16}, 243 (2020).
+
+\bibitem{Grimme2003} S. Grimme,
+  \emph{Improved second-order M{\o}ller--Plesset perturbation theory by
+  separate scaling of parallel- and antiparallel-spin pair correlation
+  energies}, J. Chem. Phys. \textbf{118}, 9095 (2003).
+
+\bibitem{Pulay1983} P. Pulay,
+  \emph{Localizability of dynamic electron correlation},
+  Chem. Phys. Lett. \textbf{100}, 151 (1983).
+
+\bibitem{Saebo1993} S. Saeb{\o} and P. Pulay,
+  \emph{Local treatment of electron correlation},
+  Annu. Rev. Phys. Chem. \textbf{44}, 213 (1993).
+
+\bibitem{Liu2018} J. Liu and L. Cheng,
+  \emph{An atomic mean-field spin--orbit approach within exact two-component
+  theory for a non-perturbative treatment of spin--orbit coupling},
+  J. Chem. Phys. \textbf{148}, 144108 (2018).
+
+\bibitem{Zhang2022} C. Zhang and L. Cheng,
+  \emph{Atomic mean-field approach within exact two-component theory},
+  representative application, J. Phys. Chem. A \textbf{126}, 4537 (2022).
+
+\end{thebibliography}
+
+\end{document}

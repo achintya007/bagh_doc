@@ -292,6 +292,66 @@ Dispatch the four-virtual contraction to the compiled C++ GEMM kernel
 
    use_cxx True
 
+**lt_spacing** ``Float``
+
+Laplace quadrature spacing :math:`h` for the ``THC-LT-MP2`` direct term
+(and reused as the default for other THC+LT methods). Smaller is tighter;
+:math:`0.4` gives :math:`\sim 10^{-7}` relative accuracy on :math:`1/x`.
+Default 0.4.
+
+.. code-block:: shell
+
+   lt_spacing 0.35
+
+**scs_os** ``Float``
+
+``THC-LT-MP2`` scale factor on the direct (Coulomb) diagram
+:math:`c_\mathrm{os}`. Default 1.0.
+
+.. code-block:: shell
+
+   scs_os 1.2
+
+**scs_ss** ``Float``
+
+``THC-LT-MP2`` scale factor on the exchange diagram :math:`c_\mathrm{ss}`.
+Default 1.0. Setting ``scs_ss 0`` is SOS-MP2: the exchange term is skipped
+entirely and only the :math:`O(K^3)` direct term is evaluated -- the
+scalable choice for the largest spinor bases.
+
+.. code-block:: shell
+
+   scs_ss 0.33
+
+**thc_mp2_exchange** ``Logical``
+
+``THC-LT-MP2``: include the RI exchange diagram. Default True. Forced off
+when ``scs_ss 0``.
+
+.. code-block:: shell
+
+   thc_mp2_exchange True
+
+**thc_mp2_mode** ``String``
+
+``THC-LT-MP2`` direct-term residency: ``auto`` (default; keep the
+:math:`K\times K` matrices resident when they fit ~80 % of free memory,
+else stream :math:`Z` from HDF5), ``incore``, or ``ooc``.
+
+.. code-block:: shell
+
+   thc_mp2_mode auto
+
+**thc_mp2_pair_thresh** ``Float``
+
+``THC-LT-MP2``: Schwarz bound below which an occupied pair is dropped from
+the exchange sum. Default 0.0 (keep all pairs). Only reduces the pair
+count with localized occupied orbitals (``DoLoc``).
+
+.. code-block:: shell
+
+   thc_mp2_pair_thresh 1e-8
+
 **DoADC2** ``Logical``
 
 .. code-block:: shell

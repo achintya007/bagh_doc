@@ -10,6 +10,43 @@ For the PySCF interface, use the keyword 'spinor'
 *******************
 Ground State Energy
 *******************
+=====================================================
+Second-Order Perturbation Theory (MP2)
+=====================================================
+
+Low-memory THC-LT-MP2
+---------------------
+
+``THC-LT-MP2`` evaluates the second-order Møller--Plesset
+correlation energy on the ``SOC-X2CAMF`` interface without forming any
+four-index quantity. The direct (Coulomb) diagram is contracted through
+tensor-hypercontraction (THC) factors of the ERIs and a Laplace transform
+of the doubles denominator, so it collapses onto :math:`K\times K` grid
+matrices at :math:`O(K^3)`; the exchange diagram is evaluated by the
+resolution of the identity with exact orbital-energy denominators. Peak
+memory is :math:`O(K^2)` (in-core) or :math:`2K^2 + O(K n_\mathrm{mo})`
+out-of-core -- never :math:`o^2v^2` or
+:math:`n_\mathrm{aux}n_\mathrm{mo}^2`.
+
+.. code-block:: shell
+
+   ! THC-LT-MP2 SOC-X2CAMF spinor aug-cc-pvdz
+
+   %cc
+   cd True
+   thc True
+   lt_spacing 0.35
+   end
+
+   *xyz 0 1
+   Ar 0.0 0.0 0.0
+
+``scs_os`` / ``scs_ss`` scale the direct and exchange diagrams (SCS-MP2);
+``scs_ss 0`` gives SOS-MP2 (direct term only, the scalable large-system
+choice). ``fc`` / ``fc_no`` freeze cores on both diagrams;
+``thc_mp2_mode`` (``auto`` / ``incore`` / ``ooc``) controls the direct
+term's residency. See :doc:`thc_lt_mp2` for the full description.
+
 ================================
 Coupled Cluster (CC)
 ================================
