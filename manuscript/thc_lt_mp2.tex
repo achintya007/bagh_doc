@@ -64,7 +64,9 @@ explicit no quadrature is required and the exact orbital-energy denominator
 is used, so the exchange contribution carries no Laplace error. The
 interpolation points and the THC core are built by a grid-blocked
 interpolative separable density fitting procedure that never forms an
-$\Ngrid\times\Ngrid$ or $\Ngrid\times n_{\mathrm{mo}}^2$ array. The direct
+$\Ngrid\times\Ngrid$ or $\Ngrid\times n_{\mathrm{mo}}^2$ array and whose
+least-squares normal equations are contracted over a single orbital or
+atomic-orbital index rather than the orbital pair. The direct
 kernel has an in-core path and an out-of-core path in which only two
 $K\times K$ matrices are resident and the THC core is streamed in row
 panels, so the peak memory is $\Ord{K^2}$ or $2K^2+\Ord{K\,n_{\mathrm{mo}}}$
@@ -311,38 +313,62 @@ Sec.~\ref{sec:val}.
 
 \subsection{ISDF factor construction}
 
-When the reference is run with the THC option the X2CAMF driver supplies
-$X^{o}$, $X^{v}$ and $Z$ directly. Otherwise they are built here from the
-density-fitted integrals without forming any array of grid-squared or
+The X2CAMF driver's own in-core THC factorisation forms an
+$\Ord{\Ngrid n_{\mathrm{mo}}^{2}}$ array and is not used for this method;
+the factors $X^{o}$, $X^{v}$, $Z$ are always built here, from the
+density-fitted integrals, without any array of grid-squared or
 grid$\times$orbital-squared size:
 \begin{enumerate}
-\item The two-component collocation
+\item The two-component weighted collocation
   $X_{kPp}=w_P^{1/4}\sum_{\mu}\phi^{(k)}_{\mu}(\rr_P)\,C_{\mu p}$
-  is evaluated in blocks of grid points, $w_P$ the quadrature weight.
+  ($w_P$ the quadrature weight) is evaluated in blocks of grid points and
+  held resident. It is $2\Ngrid n_{\mathrm{mo}}$ complex numbers --- a few
+  hundred megabytes --- not the $\Ord{\Ngrid n_{\mathrm{mo}}^{2}}$ object,
+  and every step below indexes into it.
 \item Interpolation points are chosen by a pivoted Cholesky factorisation of
   the collocation Gram matrix
   $S_{PQ}=\sum_{pq}\rho_{P}(pq)^{*}\rho_{Q}(pq)
-        =\sum_{kk'}\bigl|\sum_p X_{kPp}X^{*}_{k'Qp}\bigr|^{2}$,
-  with the Schur-updated diagonal maintained explicitly and each required
-  column of $S$ recomputed on demand in $\Ord{\Ngrid n_{\mathrm{mo}}}$ work;
-  no $\Ngrid\times\Ngrid$ matrix is ever stored. Selection stops when the
-  updated diagonal falls below a relative floor, so $K$ is rank-adaptive.
+        =\sum_{kk'}\bigl|\textstyle\sum_p X_{kPp}X^{*}_{k'Qp}\bigr|^{2}$,
+  the Schur-updated diagonal maintained explicitly. Each required column of
+  $S$ is a few matrix--vector products into the resident collocation,
+  $\Ord{\Ngrid n_{\mathrm{mo}}}$ work, not a re-evaluation of the atomic
+  orbitals; no $\Ngrid\times\Ngrid$ matrix is stored. Selection stops when
+  the updated diagonal falls below a relative floor, so $K$ is
+  rank-adaptive.
 \item The collocation is gathered on the $K$ retained points to give
   $X^{o}$ and $X^{v}$.
-\item The THC core solves the least-squares problem
-  $Z = S^{-1} E\, S^{-1}$ with
-  $E_{PQ}=\sum_{L}\bigl(\sum_{pq}\rho_P(pq)L^{L}_{pq}\bigr)
-                  \bigl(\sum_{rs}\rho_Q(rs)L^{L}_{rs}\bigr)$,
-  the pair densities on the retained points formed in blocks of $P$ and the
-  auxiliary index streamed; $E$ is accumulated as one $K\times\Naux$ panel
-  times its transpose. $S$ is regularised with a small multiple of its
-  trace and inverted by a Cholesky solve (a pseudoinverse with an explicit
-  cutoff as fallback). $Z$ is symmetrised.
+\item The THC core solves $Z = S^{-1} E\, S^{-1}$. Both $S$ and
+  $E=\mathbf{T}\mathbf{T}^{\mathsf T}$ are formed by contracting a
+  \emph{single} index, not the orbital pair $pq$:
+  \begin{equation}
+    S_{PQ}=\sum_{kk'}\bigl|(X_{k}X_{k'}^{\dagger})_{PQ}\bigr|^{2},
+    \qquad
+    \mathbf{T}_{PL}
+      = \sum_{ab} L^{L}_{ab}
+        \sum_{k,\,c\in\{\ell,s\}}
+        \bigl(\bar X_{k}C_{c}^{\mathsf T}\bigr)_{\!Pa}
+        \bigl(X_{k}\bar C_{c}^{\mathsf T}\bigr)_{\!Pb},
+    \label{eq:lsthc}
+  \end{equation}
+  with $S$ assembled from four $(K\times n_{\mathrm{mo}})(n_{\mathrm{mo}}
+  \times K)$ products and a Hadamard modulus-square, and the
+  $\Naux\times n_{\mathrm{mo}}^{2}$ molecular-orbital fitting tensor
+  $L^{L}_{pq}$ never built: $L^{L}_{ab}$ is the auxiliary Cholesky tensor
+  (streamed over $L$), $C_{\ell},C_{s}$ the large/small-component MO
+  coefficients, and $\bar{\phantom{x}}$ complex conjugation. The $(a,b)$
+  block is formed in panels of $P$ and never exceeds
+  $(p_{\mathrm{blk}}, n_{\mathrm{ao}}, n_{\mathrm{ao}})$. Since
+  $n_{\mathrm{ao}}\approx n_{\mathrm{mo}}/2$ enters each sum in place of
+  $n_{\mathrm{mo}}$, the solve costs roughly $n_{\mathrm{mo}}$ times fewer
+  operations than the naive pair-index form for $S$ and about four times
+  fewer for $E$. $S$ is regularised with a small multiple of its trace and
+  inverted by a Cholesky solve (a pseudoinverse with an explicit cutoff as
+  fallback); $Z$ is symmetrised.
 \end{enumerate}
 For large $K$ the core is written to disk and returned as a lazy dataset.
 The block sizes are chosen from the available memory; the construction is
-guarded so that a request whose $K\,n_{\mathrm{mo}}^{2}$ working set would
-not fit is refused with a diagnostic rather than thrashing.
+guarded so that a request whose $K\times K$ working set (a handful of such
+matrices) would not fit is refused with a diagnostic rather than thrashing.
 
 \subsection{Direct kernel: in-core and out-of-core}
 
@@ -397,17 +423,21 @@ and quadrature accuracy.
 
 \begin{table}[t]
 \caption{Formal cost and peak working memory. $o$, $v$ occupied and virtual
-spinor counts; $\Naux$ auxiliary functions; $K$ retained interpolation
-points ($K\sim c\,n_{\mathrm{mo}}$, $c\sim 8$--$15$); $\Ngrid$ parent grid
-points; $\Ngrid^{\mathrm{LT}}$ Laplace nodes; $p$ the $P$-block size in the
-ISDF build.}
+spinor counts; $n_{\mathrm{ao}}\approx n_{\mathrm{mo}}/2$ scalar atomic
+orbitals; $\Naux$ auxiliary functions; $K$ retained interpolation points
+($K\sim c\,n_{\mathrm{mo}}$, $c\sim 8$--$15$); $\Ngrid$ parent grid points;
+$\Ngrid^{\mathrm{LT}}$ Laplace nodes; $p$ the $P$-block size in the ISDF
+build.}
 \label{tab:cost}
 \begin{ruledtabular}
 \begin{tabular}{lll}
 step & cost & peak memory \\
 \colrule
-ISDF points \& core & $K\,\Naux\,n_{\mathrm{mo}}^{2}$ &
-   $K^{2}+p\,n_{\mathrm{mo}}^{2}$ \\
+ISDF collocation \& points & $\Ngrid\,K\,n_{\mathrm{mo}}$ &
+   $\Ngrid\,n_{\mathrm{mo}} + \Ngrid\,K$ \\
+ISDF core, $S$ & $K^{2}\,n_{\mathrm{mo}}$ & $K^{2}$ \\
+ISDF core, $E$ & $K\,\Naux\,n_{\mathrm{ao}}^{2}$ &
+   $K^{2}+p\,n_{\mathrm{ao}}^{2}$ \\
 direct, in-core     & $K^{3}\,\Ngrid^{\mathrm{LT}}$ & $4K^{2}$ \\
 direct, out-of-core & $K^{3}\,\Ngrid^{\mathrm{LT}}$ &
    $2K^{2}+K\,n_{\mathrm{mo}}$ \\
@@ -417,10 +447,16 @@ exchange (RI)       & $o^{2}(\Naux+v)\,v^{2}$ & $v^{2}$ \\
 \end{table}
 
 Table~\ref{tab:cost} collects the counts. No step scales as $o^2v^2$ or
-$\Naux n_{\mathrm{mo}}^2$ in memory. The direct diagram is the
-rate-determining arithmetic at $\Ord{K^3}$ per node; with the geometric
-Laplace quadrature $\Ngrid^{\mathrm{LT}}\sim 10$--$20$ suffices for
-$10^{-6}$--$10^{-7}$ relative accuracy on the denominator. The exchange
+$\Naux n_{\mathrm{mo}}^2$ in memory, and the single-index form of
+Eq.~\eqref{eq:lsthc} keeps the LS-THC solve off the pair index as well.
+The direct diagram is the rate-determining arithmetic at $\Ord{K^3}$ per
+node; with the geometric Laplace quadrature $\Ngrid^{\mathrm{LT}}\sim
+10$--$20$ suffices for $10^{-6}$--$10^{-7}$ relative accuracy on the
+denominator in a valence basis. An all-electron basis, whose tight
+correlating virtuals push the interval endpoint $\varepsilon_v^{\max}$
+very high, inflates the geometric rule to $\sim 80$ nodes; a minimax
+quadrature would restore the small count and is a natural refinement. The
+exchange
 diagram, at the cost of a conventional RI-MP2 exchange, is the practical
 ceiling on the full calculation: its $v\times v$ per-pair work is not yet
 truncated to pair domains, so it is affordable to $v\sim 3000$--$4000$.
@@ -466,6 +502,23 @@ the compiled and reference kernels, and the scaled-opposite-spin
 ($c_{\mathrm{ss}}=0$) path were checked pairwise for consistency on the
 same inputs.
 
+\emph{A production-scale run.} As a size and stability check the method was
+applied to $n$-hexane in the all-electron Dyall AE2Z basis on a
+two-component X2CAMF reference --- $648$ spinor molecular orbitals, $50$
+occupied of which $12$ are frozen as core --- on a single shared
+$46\,\mathrm{GB}$ node. The chunked ISDF procedure held a
+$0.22\,\mathrm{GB}$ collocation, selected $K=4909$ interpolation points
+from a $10\,640$-point parent grid, and ran the LS-THC solve of
+Eq.~\eqref{eq:lsthc} with a peak working set of a few $K\times K$ matrices;
+the direct and exchange kernels then returned
+$\Edir=-1.4399$, $\Eexc=+0.5057$ and $\Emp=-0.9342\,E_{\mathrm h}$. The
+single-index reformulation of the normal equations cut the kernel wall time
+by about one third relative to the pair-index form, at no change in the
+energy beyond floating-point reassociation ($\sim 10^{-8}\,E_{\mathrm h}$),
+and the run never approached the node's memory. As anticipated above, the
+all-electron basis drove the geometric Laplace rule to $86$ nodes for the
+direct term.
+
 % ===========================================================================
 \section{Conclusions}
 % ===========================================================================
@@ -478,12 +531,15 @@ with $\Ord{K^2}$ storage; the exchange diagram, which the Laplace transform
 does not decouple, by the resolution of the identity with the occupied
 labels explicit, so that it needs no quadrature and is exact to the RI fit.
 The interpolation factors are built by a grid-blocked ISDF procedure that
-avoids every grid-squared array, the direct kernel has an out-of-core path
-that streams the THC core, and the exchange kernel takes a Schwarz pair
-screen. With the exchange diagram removed the method is a scaled-opposite-
-spin relativistic MP2 that scales to the largest spinor bases; the
-remaining obstacle to a full relativistic MP2 at that size is a
-pair-domain truncation of the exchange, which is left for future work.
+avoids every grid-squared array and whose least-squares normal equations
+are contracted over a single index, the direct kernel has an out-of-core
+path that streams the THC core, and the exchange kernel takes a Schwarz
+pair screen. A twenty-atom all-electron test completes on a single
+$46\,\mathrm{GB}$ node. With the exchange diagram removed the method is a
+scaled-opposite-spin relativistic MP2 that scales to the largest spinor
+bases; the remaining refinements are a minimax Laplace quadrature to
+contain the node count with all-electron bases and a pair-domain
+truncation of the exchange, both left for future work.
 
 \appendix
 
