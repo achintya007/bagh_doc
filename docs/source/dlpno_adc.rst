@@ -393,6 +393,45 @@ The canonical limit of this code agrees with PySCF's own IP-ADC(3) to 3.8 meV
 -- a code-versus-code difference in how the third-order :math:`M_{ij}` is
 written, not a DLPNO error.
 
+Convergence with TCutPNO
+------------------------
+
+Formaldehyde is a compact molecule whose PAO domains are complete at
+``TCutDO = 1e-2``, so it measures the PNO truncation and nothing else. A
+chain of four waters 3.2 A apart, at the production domain setting, is the
+other case: there the domains genuinely cut. Error in meV against the same
+code at ``TCutPNO = 0`` with the same domain setting, so the two truncations
+are separated rather than summed; roots matched on singles character, and the
+maximum is over the one-hole states:
+
+.. code-block:: shell
+
+                  H2CO / aug-cc-pVDZ        (H2O)4 chain / cc-pVDZ
+     TCutPNO    n_PNO   max err 1h        n_PNO   max err 1h
+     1e-5        15.4      28.5             3.5      156.9
+     1e-6        24.7      64.5             5.5       28.0
+     3.33e-7     30.2      46.6             6.3       18.0
+     1e-7        35.1      43.9             7.4       11.1
+     1e-8        43.5      38.9            11.4        3.2
+
+The chain converges monotonically to a few meV. Formaldehyde does not
+converge monotonically, and that is not a defect: its error changes sign
+between ``1e-6`` and ``1e-8``, because the PNO truncation does not act
+equally on the neutral and the ionized state and the difference of two
+slowly-converging quantities can cross zero. Its residual at ``1e-8`` is
+still 39 meV, against a full space of only 56 virtuals -- an aug-cc-pVDZ
+basis on four atoms is a hard case for a local method, having almost no
+locality to exploit.
+
+The routing of the ring terms, which is what
+Section `Which pair owns it`_ is about, is worth 50 micro-Eh of MP3 energy on
+the chain at ``TCutPNO = 1e-6`` and **less than 0.001 meV of IP**: the
+IPs are 11.316739, 11.743300 and 12.156378 eV before it and 11.316739,
+11.743300 and 12.156379 after. It is a correctness fix in the correlation
+energy, not an accuracy fix in the excitation energies, and the table above
+is the same before and after it to 0.1 meV. The threshold that did move the
+IPs on this system was ``tcut_doi_occ``, worth 140 meV, and it is now off.
+
 Example input
 =============
 
