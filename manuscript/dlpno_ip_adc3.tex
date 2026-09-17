@@ -644,23 +644,70 @@ Solving Eq.~(\ref{eq:t2}) by division, as the canonical expression permits,
 discards the inter-pair Fock coupling and is a measurable error; the coupled
 system is solved instead.
 
-The routing question here is different from that of
-Section~\ref{sec:routing}, because the target indices $a,b$ are being
-\emph{constructed} rather than met: there is no third pair that owns the
-summed index $c$. The first two terms are safe --- the particle ladder never
-leaves the pair, and the $oooo$ term sums no virtual against an integral --- and
-are evaluated in the pair's PNO space. In the remaining eight, $c$ belongs to
-the summed occupied label $k$ and the amplitude comes from a neighbouring
-pair. These are assembled in the pair's non-redundant semicanonical domain
-basis $\mathbf{d}^{ij}_{\text{nr}}$ of Eq.~(\ref{eq:dpno}), which spans the
-whole domain and therefore truncates nothing the neighbour brings, and
-projected into the PNO space only once, at the end:
+The first two terms are safe --- the particle ladder never leaves the pair,
+and the $oooo$ term sums no virtual against an integral --- and are evaluated
+in the pair's PNO space. The remaining eight are the ring terms, and each of
+them sums a virtual $c$ between an integral and an amplitude $t^{Q}$ that
+belongs to a \emph{neighbouring} pair $Q$, which is exactly the situation
+Section~\ref{sec:routing} legislates for. It is worth being precise about
+which pair owns $c$, because the obvious candidates are not the right one.
+
+The sharpest answer is $Q$ itself. The amplitude is identically zero outside
+$\mathrm{PNO}(Q)$, so
 %
 \begin{equation}
-  \mathcal{D}^{ij} \;\mathrel{+}=\;
-    (\mathbf{v}^{ij})^{\dagger}\,\mathcal{D}^{ij}_{\text{nr}}\,\mathbf{v}^{ij}.
-  \label{eq:proj_nr}
+  \sum_{c \in \mathrm{PNO}(Q)} g_{\ldots c \ldots}\, t^{Q}_{\ldots c \ldots}
+  \;=\; \sum_{c} g_{\ldots c \ldots}\, t^{Q}_{\ldots c \ldots}
+  \label{eq:ampspace}
 \end{equation}
+%
+is not an approximation to the full-space sum but that sum itself, to the
+accuracy of the amplitude, which is the truncation the method is built on in
+any case. The two indices that survive are projected into the target pair's
+PNO space, where the driver lives; only the index that has to travel is
+transformed, and the amplitude is never projected. What this costs is a mixed
+integral, one virtual in $Q$ and one in the target pair. It costs no storage:
+$(k\pao{c}_{Q}|\pao{b}_{P}x)$ is the two pairs' own three-index blocks
+contracted over a common fitting domain, and
+$(kx|\pao{b}_{P}\pao{c}_{Q})$ is formed by contracting the auxiliary index
+against the occupied pair first, so that the mixed $(\mu\nu)$ block appears
+once and the two virtual transforms are matrix multiplications.
+
+Two spaces that look adequate are not. Carrying $c$ in the target pair's own
+non-redundant domain basis $\mathbf{d}^{ij}_{\text{nr}}$ of
+Eq.~(\ref{eq:dpno}) is generous --- it spans the whole domain of $(i,j)$ ---
+but $[i]\cup[j]$ need not contain $[k]$, and it is near $k$ that the integral
+is largest. Carrying it in the orbital domain $[k]$ of the summed occupied
+fixes that and breaks the other side, since $[k]$ need not contain
+$\mathrm{PNO}(Q)$. Table~\ref{tab:ringspace} measures the three on a chain of
+four water molecules $3.2\,\text{\AA}$ apart, as the \emph{domain} error of
+the MP3 energy: the same code at $\text{TCutDO}=10^{-2}$ minus the same code
+with the domains switched off, so that the PNO truncation, which all three
+share, divides out. The two domain answers bracket the exact one from opposite
+sides --- the signature of an amplitude being projected rather than an
+integral being screened --- while Eq.~(\ref{eq:ampspace}) leaves no measurable
+domain error at all. It is also the cheapest of the three, a PNO pair being a
+handful of functions where a PAO domain is tens.
+
+\begin{table}
+  \caption{Domain error of the MP3 energy from the eight ring terms of
+    Eq.~(\ref{eq:t2}), in $\mu E_h$, for three choices of the space carrying
+    the summed virtual $c$. $(\text{H}_2\text{O})_4$ chain,
+    $3.2\,\text{\AA}$ spacing, cc-pVDZ.}
+  \label{tab:ringspace}
+  \begin{tabular}{lrrr}
+    \hline\hline
+    \TCut{PNO} & $\mathrm{PNO}(Q)$ & $[i]\cup[j]$ & $[k]$ \\
+    \hline
+    $10^{-5}$ & $-0.15$ & $-4.88$  & $+5.51$  \\
+    $10^{-6}$ & $-0.43$ & $-50.66$ & $+43.63$ \\
+    \hline\hline
+  \end{tabular}
+\end{table}
+
+A molecule whose domains are complete cannot see any of this: every candidate
+space is then the whole virtual space and all three are exact. Water is such a
+molecule, which is why the measurement above required a chain.
 
 \subsection{Second-order singles}
 

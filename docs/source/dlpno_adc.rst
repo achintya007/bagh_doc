@@ -55,6 +55,46 @@ integral between them, since both factors decay; and an integral whose two
 virtuals sit on the same electron, :math:`(x\,y\,|\,a\,b)`, which has no
 per-electron ownership to respect.
 
+Which pair owns it
+------------------
+
+The rule says the summed index must be carried in a pair that owns it; the
+sharpest answer to *which* is the pair the amplitude itself belongs to. In the
+eight ring terms of the second-order amplitude,
+
+.. math::
+
+   R^{ij}_{ab} \;+\!= \; \sum_c g_{\ldots c \ldots}\, t^{Q}_{\ldots c \ldots},
+
+the amplitude :math:`t^{Q}` is identically zero outside :math:`\mathrm{PNO}(Q)`,
+so summing :math:`c` over :math:`\mathrm{PNO}(Q)` is not an approximation to
+the full-space sum -- it *is* that sum, to the accuracy of the amplitude
+itself. The price is a mixed integral with one virtual in :math:`Q` and the
+other in the target pair, and it is a small one: nothing new is stored, since
+the mixed block is the two pairs' own three-index blocks contracted over a
+common fitting domain inside the pair loop.
+
+Measured as the *domain* error of MP3 -- the same code at ``TCutDO = 1e-2``
+minus the same code with the domains switched off, so that the PNO truncation
+divides out -- on a chain of four waters 3.2 A apart in cc-pVDZ:
+
++-------------+-----------------+-------------------+--------------------+
+| ``TCutPNO`` | PNO(*Q*)        | target pair's PAO | orbital domain of  |
+|             |                 | domain            | the summed occupied|
++=============+=================+===================+====================+
+| 1e-5        | -0.15           | -4.88             | +5.51              |
++-------------+-----------------+-------------------+--------------------+
+| 1e-6        | -0.43           | -50.66            | +43.63             |
++-------------+-----------------+-------------------+--------------------+
+
+(micro-:math:`E_h`). The two domain answers bracket the right one from
+opposite sides, which is the signature of an amplitude being projected rather
+than an integral being screened; routing through the amplitude's own pair is
+two orders of magnitude closer, and is also the cheapest of the three, a PNO
+pair being a handful of functions where a PAO domain is tens. Water shows none
+of this -- its domains are complete -- which is why ``tests/test_ring.py``
+runs on a chain.
+
 Approximations
 --------------
 
@@ -188,7 +228,7 @@ Neese and Izsák, *J. Chem. Phys.* **148**, 244101 (2018):
 +-------------------+-------------+--------------+-------------+
 | ``tcut_do``       | 2e-2        | 1e-2         | 5e-3        |
 +-------------------+-------------+--------------+-------------+
-| ``tcut_doi_occ``  | 1e-2        | 1e-2         | 1e-3        |
+| ``tcut_doi_occ``  | 0           | 0            | 0           |
 +-------------------+-------------+--------------+-------------+
 | ``tcut_pao``      | 1e-8        | 1e-8         | 1e-8        |
 +-------------------+-------------+--------------+-------------+
@@ -202,7 +242,7 @@ and therefore the *largest* domains. Two further thresholds are derived from
 ``tcut_pairs`` unless given explicitly: ``tcut_pre = tcut_pairs/100`` (the
 dipole prescreen) and ``tcut_doi_pair = tcut_pairs/10`` (the overlap guard on
 it). ``tcut_doi_occ``, which screens the occupied lists of the integral store,
-is not from the paper and is not calibrated against anything.
+is not from the paper and is now zero at every level -- see below.
 
 Any single entry can be overridden after the composite is applied, for
 example::
@@ -409,8 +449,20 @@ have no meaning there; asking for them with ``dlpno_python true`` prints a
 note rather than accepting them silently.
 
 ``tcut_doi_occ`` -- which decides, for each pair, the occupied labels its
-integral blocks are generated for -- is not from the paper and has not been
-calibrated. It is the one threshold here with no provenance.
+integral blocks are generated for -- is not from the paper, and is switched
+off at every level. It drops an occupied label ``x`` from pair ``(i,j)`` when
+``x`` has no differential overlap with the pair's PAO domain, and when it was
+finally tested on a system where it does anything, it turned out not to
+converge. On compact molecules every label survives and the threshold is
+inert: H2CO / aug-cc-pVDZ gives IPs identical to five decimals with it at its
+old value and at zero, at all three levels. On a chain of four waters 3.2 A
+apart, where it does cut, it costs 140 meV at ``1e-2`` *and* at ``1e-3`` --
+both of its old values -- and still 15-47 meV at ``1e-4``. Inert where it is
+safe and unconverged where it bites is not a threshold. The replacement is
+not a new number: ``x`` can be dropped from ``(i,j)`` only when neither
+``(x,i)`` nor ``(x,j)`` survived the pair screen, since those are the
+amplitudes the terms it would enter carry. Until that is implemented, every
+occupied label is kept.
 
 Validity
 ========
