@@ -352,6 +352,21 @@ For electron affinity (EA), the name of the method should be replaced with ``EA-
 
    EOM-Coupled Cluster approximate Doubles (EOM-CC2)
    ------------------------------------------------
+For double electron attachment (DEA), the name of the method should be replaced with ``DEA3-EOM-CCSD``; for example
+
+.. code-block:: shell
+
+   ! DEA3-EOM-CCSD spinor ccpvdz
+   
+   %cc
+   fc True
+   nroots 5
+   rootno 0
+   end
+   
+   *xyz 3 1
+   As      0.0000  0.0000  0.0000
+
 
 EOM-Coupled Cluster approximate Triples (EOM-CC3)
 ------------------------------------------------
