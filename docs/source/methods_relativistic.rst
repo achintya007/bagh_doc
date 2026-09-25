@@ -1157,26 +1157,26 @@ A sample input file to run FNO-DIP-ADC(3) with Cholesky Decomposition:
 A sample input file to run DEA-EOM-CCSD with Cholesky Decomposition in the state-specific frozen natural spinor (SS-FNS) basis is given below. The density used to construct the SS-FNS basis can be selected as either DEA-ADC(2) or DEA-CIS(D) by specifying the corresponding input keyword. The desired DEA root can be selected using the rootno keyword.
 
 .. code-block:: shell 
-! SS-FNO2-DEA3-EOM-CCSD soc-x2camf spinor ccpvdz
-
-%cc
-fc True
-cd True
-nroots 5
-rootno 0
-#numproc 4
-#int_restart 1
-#cis_restart 1
-#dodeaadc2 True
-dodeacis_d True
-fnothresh_ex 1e-03
-fnothresh 1e-03
-cc_convergence 1e-06
-eom_convergence 1e-06
-end
-
-*xyz 3 1
-As      0.0000  0.0000  0.0000
+   ! SS-FNO2-DEA3-EOM-CCSD soc-x2camf spinor ccpvdz
+   
+   %cc
+   fc True
+   cd True
+   nroots 5
+   rootno 0
+   #numproc 4
+   #int_restart 1
+   #cis_restart 1
+   #dodeaadc2 True
+   dodeacis_d True
+   fnothresh_ex 1e-03
+   fnothresh 1e-03
+   cc_convergence 1e-06
+   eom_convergence 1e-06
+   end
+   
+   *xyz 3 1
+   As      0.0000  0.0000  0.0000
 
 
 ********************************************
