@@ -726,6 +726,8 @@ To compute polarizability at a specific frequency within the four-component (4c)
 
 The external frequency can be specified by setting ``omega`` to the desired user-defined value.
 
+The EE-ADC(n)/ISR ground- and excited-state polarizability and the first and second hyperpolarizabilities (static, dynamic and damped) are described in :ref:`adc-response-section`.
+
 ************************
 2. Two-component Methods
 ************************

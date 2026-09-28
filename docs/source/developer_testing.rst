@@ -194,6 +194,30 @@ test_utilities.py -- Utility function tests
 * ``methodinfo`` -- method metadata lookups.
 * ``math_util`` -- mathematical helper functions.
 
+test_adc_isr_properties.py -- ADC/ISR response properties
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+15 fast tests (``method_adc``, ``method_rel``) for the relativistic EE-ADC
+response properties, using a spin-orbital water/6-31G calculation from PySCF
+arranged in BAGH's integral conventions:
+
+* ``mtm_adc2_all_dirs`` and ``bmatrix`` reduce to the adcc real-orbital ISR(2)
+  expressions for real orbitals.
+* Under random spinor phases :math:`\phi_p\rightarrow e^{i\theta_p}\phi_p`, the
+  modified transition moments and the B-matrix transform exactly like the ADC
+  vector (this fixes the placement of every complex conjugate), and B is
+  Hermitian.
+* ``mp2_diffdm_nat`` returns the MP2 difference density with the natural phase.
+* The :math:`\beta` and :math:`\gamma` drivers of
+  ``evaluate_hyperpolarizability.py`` (static, OR, EOPE, SHG, damped SHG,
+  ESHG, THG, IDRI) reproduce the sum-over-states expressions in an exact-state
+  model, using BAGH's ``respondo`` solvers, and SHG needs the 12 response
+  equations of the reference implementation.
+
+The corresponding regression entries ``ADC2-ALPHA-H2O``, ``ADC2-BETA-SHG-H2O``
+and ``ADC2-GAMMA-ESHG-H2O`` run ``test/ADC2-HYPERPOL-H2O.inp`` (about 10 s);
+their reference values agree with adcc to about :math:`2\times10^{-6}`.
+
 test_regression.py -- Regression tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

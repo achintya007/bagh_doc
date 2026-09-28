@@ -790,6 +790,70 @@ FNO/FNS truncation, overriding ``fnothresh_ex``/``pct_occ_ex``.
 
    x_axis False
 
+**adc_pol** ``Logical``
+
+Ground-state static/dynamic polarizability with EE-ADC(n)/ISR(2) at the frequencies given by ``omega``, ``omega_list`` or ``omega1``/``omega2``/``omega_step``.
+
+.. code-block:: shell
+
+   adc_pol False
+
+**adc_es_pol** ``Logical``
+
+Excited-state polarizability of the states listed in ``state`` with EE-ADC(n)/ISR(2).
+
+.. code-block:: shell
+
+   adc_es_pol False
+
+**adc_beta** ``Logical``
+
+First hyperpolarizability :math:`\beta` with EE-ADC(n)/ISR(2) (see :ref:`adc-response-section`).
+
+.. code-block:: shell
+
+   adc_beta False
+
+**adc_gamma** ``Logical``
+
+Second hyperpolarizability :math:`\gamma` with EE-ADC(n)/ISR(2).
+
+.. code-block:: shell
+
+   adc_gamma False
+
+**adc_beta_process** ``String (comma-separated)``
+
+Processes for :math:`\beta`: ``static``, ``SHG``, ``EOPE``, ``OR``.
+
+.. code-block:: shell
+
+   adc_beta_process SHG
+
+**adc_gamma_process** ``String (comma-separated)``
+
+Processes for :math:`\gamma`: ``static``, ``ESHG``, ``THG``, ``IDRI``, ``EOKE``, ``dc-OR``.
+
+.. code-block:: shell
+
+   adc_gamma_process ESHG
+
+**adc_damping** ``Float``
+
+Damping parameter (half line width, a.u.) for complex (damped) :math:`\beta` and :math:`\gamma`; 0 gives the real response.
+
+.. code-block:: shell
+
+   adc_damping 0.0
+
+**omega_list** ``Float (comma-separated)``
+
+List of frequencies (a.u.) for the ADC response properties; alternatively ``omega1``, ``omega2`` and ``omega_step`` define an evenly spaced range.
+
+.. code-block:: shell
+
+   omega_list 0.0,0.0428,0.0656
+
 **ucc_prop** ``Logical``
 
 .. code-block:: shell

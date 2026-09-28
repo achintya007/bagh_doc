@@ -164,6 +164,206 @@ By switching on the ``tdm`` and ``exdm`` we obtain:
 
 In the excited state dipole moment section, a change in the dipole moment due to the excitation from ground to excited is listed. To get the total dipole moment for a particular excited state, MP2 contribution needs to be included. 
 
+.. _adc-response-section:
+
+*****************************************************************************
+Response properties: polarizability and first and second hyperpolarizability
+*****************************************************************************
+
+EE-ADC(n) in BAGH gives access to linear and nonlinear electric response
+properties of the ground state, and to the polarizability of an excited state,
+through the intermediate state representation (ISR). All of them are available
+for the relativistic (4c ``spinor`` and 2c X2CAMF) EE-ADC(2) reference and are
+evaluated with the ISR(2) modified transition moments :math:`\mathbf{F}` and the
+ISR(2) :math:`\mathbf{B}`-matrix of the dipole operator. Instead of summing over
+excited states, each property is written with the inverse shifted ADC matrix,
+and only linear response equations :math:`(\mathbf{M}-z)\mathbf{X}=\mathbf{R}` are
+solved (Papapostolou, Scheurer, Dreuw and Rehn, *J. Chem. Theory Comput.* **19**,
+6375 (2023), doi:10.1021/acs.jctc.3c00456).
+
+First hyperpolarizability (quadratic response), summed over the six
+permutations :math:`\hat{P}` of the pairs :math:`(A,-\omega_\sigma)`,
+:math:`(B,\omega_1)`, :math:`(C,\omega_2)` with :math:`\omega_\sigma=\omega_1+\omega_2`:
+
+.. math::
+
+    \beta_{ABC}(-\omega_\sigma;\omega_1,\omega_2) = \sum \hat{P}\;
+    \mathbf{F}^\dagger(\hat\mu_A)\,(\mathbf{M}-\omega_\sigma)^{-1}\,
+    \mathbf{B}(\hat\mu_B)\,(\mathbf{M}-\omega_2)^{-1}\,\mathbf{F}(\hat\mu_C)
+
+Second hyperpolarizability (cubic response), summed over the 24 permutations of
+:math:`(A,-\omega_\sigma)`, :math:`(B,\omega_1)`, :math:`(C,\omega_2)`,
+:math:`(D,\omega_3)`:
+
+.. math::
+
+    \gamma_{ABCD} = \sum \hat{P}\Big[
+    \mathbf{F}^\dagger_A(\mathbf{M}-\omega_\sigma)^{-1}\mathbf{B}_B
+    (\mathbf{M}-\omega_2-\omega_3)^{-1}\mathbf{B}_C(\mathbf{M}-\omega_3)^{-1}\mathbf{F}_D
+    - \mathbf{F}^\dagger_A(\mathbf{M}-\omega_\sigma)^{-1}\mathbf{F}_B\;
+    \mathbf{F}^\dagger_C(\mathbf{M}-\omega_3)^{-1}(\mathbf{M}+\omega_2)^{-1}\mathbf{F}_D\Big]
+
+The second term removes the secular divergence, so :math:`\gamma` is finite in
+the static limit and for equal frequencies. For spinors every quantity is
+complex: a left vector :math:`\mathbf{F}^\dagger(\mathbf{M}-z)^{-1}` is obtained
+as :math:`[(\mathbf{M}-z^*)^{-1}\mathbf{F}]^\dagger`, and the relation
+:math:`\mathbf{X}^\dagger=\mathbf{X}^T` of the real-orbital case is never used.
+Each response vector is solved once and reused over all permutations and tensor
+components (for SHG, four response vectors, i.e. 12 equations).
+
+With ``adc_damping`` :math:`\gamma>0` the complex response is computed: every
+incident frequency becomes :math:`\omega_j+i\gamma`, which turns each resolvent into
+:math:`(\mathbf{M}-\Omega-i\gamma\,\mathrm{sign}\,\Omega)^{-1}` and reproduces the damped
+sum-over-states expression term by term.
+
+The following processes are available (``adc_beta_process`` and
+``adc_gamma_process``, several can be given as a comma-separated list; the
+incident frequency :math:`\omega` is taken from ``omega``, ``omega_list`` or
+``omega1``/``omega2``/``omega_step``):
+
+.. list-table::
+   :header-rows: 1
+   :widths: 18 40 42
+
+   * - keyword value
+     - tensor
+     - process
+   * - ``static``
+     - :math:`\beta(0;0,0)`, :math:`\gamma(0;0,0,0)`
+     - static limit
+   * - ``SHG``
+     - :math:`\beta(-2\omega;\omega,\omega)`
+     - second-harmonic generation
+   * - ``EOPE``
+     - :math:`\beta(-\omega;\omega,0)`
+     - electro-optical Pockels effect
+   * - ``OR``
+     - :math:`\beta(0;\omega,-\omega)`
+     - optical rectification
+   * - ``ESHG``
+     - :math:`\gamma(-2\omega;\omega,\omega,0)`
+     - electric-field-induced second-harmonic generation
+   * - ``THG``
+     - :math:`\gamma(-3\omega;\omega,\omega,\omega)`
+     - third-harmonic generation
+   * - ``IDRI``
+     - :math:`\gamma(-\omega;\omega,-\omega,\omega)`
+     - intensity-dependent refractive index
+   * - ``EOKE``
+     - :math:`\gamma(-\omega;\omega,0,0)`
+     - electro-optical Kerr effect
+   * - ``dc-OR``
+     - :math:`\gamma(0;\omega,-\omega,0)`
+     - dc optical rectification
+
+For every process the full tensor is printed, together with the experimentally
+relevant averages (all in atomic units):
+
+.. math::
+
+    \beta_\parallel = \frac{1}{5}\sum_{A}\frac{\mu_A}{|\mu|}\sum_B(\beta_{ABB}+\beta_{BAB}+\beta_{BBA}),\qquad
+    \gamma_\parallel = \frac{1}{15}\sum_{AB}(\gamma_{AABB}+\gamma_{ABBA}+\gamma_{ABAB}),
+
+:math:`\gamma_\perp=\frac{1}{15}\sum_{AB}(2\gamma_{ABBA}-\gamma_{AABB})` and
+:math:`\gamma_K=\frac{3}{2}(\gamma_\parallel-\gamma_\perp)`. :math:`\beta_\parallel`
+is the component along the MP2 ground-state dipole moment, which is printed as
+well. The values are also written, one line per process and frequency, to
+``beta_hyperpolarizability_rel.dat`` and ``gamma_hyperpolarizability_rel.dat``.
+
+The ground-state polarizability (``adc_pol``) and the excited-state
+polarizability of the states listed in ``state`` (``adc_es_pol``) use the same
+:math:`\mathbf{M}`, :math:`\mathbf{F}` and :math:`\mathbf{B}`; they are written to
+``alpha_polarizability_rel.dat`` and ``es_polarizability_rel.dat``.
+
+A sample input for the static and SHG first hyperpolarizability, the static and
+ESHG second hyperpolarizability and the dynamic polarizability of water at
+:math:`\omega` = 0.0428 a.u. (1064 nm) is given below. ``light_speed 50000``
+switches off relativistic effects, which makes the numbers directly comparable
+with non-relativistic ADC(2) codes.
+
+.. code-block:: shell
+
+   ! EE-ADC(2) spinor 631g
+
+   %cc
+   light_speed 50000
+   adc_pol True
+   adc_beta True
+   adc_gamma True
+   adc_beta_process static,SHG
+   adc_gamma_process static,ESHG
+   incore 5
+   NRoots 1
+   omega 0.0428
+   resp_convergence 1e-8
+   end
+
+   *xyz 0 1
+   O  0.000000  0.000000  0.117300
+   H  0.000000  0.757200 -0.469200
+   H  0.000000 -0.757200 -0.469200
+
+| ``adc_pol True``: ground-state polarizability at ``omega``.
+| ``adc_beta True`` / ``adc_gamma True``: first / second hyperpolarizability.
+| ``adc_beta_process`` / ``adc_gamma_process``: processes to compute (default ``SHG`` / ``ESHG``).
+| ``omega 0.0428``: incident frequency in a.u. (``omega_list 0.0,0.0428`` for several).
+| ``resp_convergence``: residual threshold of the response equations; use 1e-6 or tighter for :math:`\gamma`.
+| ``adc_damping``: optional damping parameter :math:`\gamma` in a.u. for the complex response.
+
+For this input BAGH prints, after the tensor components of each process,
+
+.. code-block:: shell
+
+    beta vector (1/5 sum_B beta_ABB+beta_BAB+beta_BBA): -0.000011  0.000060  -31.883618
+    beta_par = -31.883618 (a.u.)
+    ...
+    gamma_par  = 189.731342 (a.u.)
+    gamma_perp = 63.090043 (a.u.)
+    gamma_K    = 189.961949 (a.u.)
+
+(adcc: :math:`\beta_\parallel` = -31.883555, :math:`\gamma_\parallel` = 189.731803 a.u.).
+
+**Validation.** In the non-relativistic limit the ISR(2) results agree with
+adcc (version 0.16.1) to the convergence threshold of the response equations
+(H\ :sub:`2`\ O, same geometry and basis):
+
+.. list-table::
+   :header-rows: 1
+   :widths: 60 20 20
+
+   * - H\ :sub:`2`\ O, ADC(2)/aug-cc-pVDZ
+     - BAGH
+     - adcc
+   * - :math:`\bar\alpha(0;0)`
+     - 9.683
+     - 9.683
+   * - :math:`\beta_\parallel(0;0,0)`
+     - -24.366
+     - -24.366
+   * - :math:`\beta_\parallel(-2\omega;\omega,\omega)`, :math:`\omega` = 0.0428
+     - -26.547
+     - -26.547
+   * - :math:`\gamma_\parallel(0;0,0,0)`
+     - 1100.46
+     - 1100.45
+   * - :math:`\gamma_\parallel(-2\omega;\omega,\omega,0)`, :math:`\omega` = 0.0428
+     - 1261.76
+     - 1261.75
+
+.. note::
+
+   For spinors the ISR(2) :math:`\mathbf{F}` (``mtm_adc2_all_dirs``) and
+   :math:`\mathbf{B}` (``bmatrix``) contain the MP1 amplitudes both as ket
+   amplitudes :math:`t = -(t_2^{(1)})^*` and as their complex conjugates. The
+   position of every conjugate follows from the requirement that each term
+   transforms like the ADC vector under an arbitrary phase change of the
+   spinors, :math:`\phi_p\rightarrow e^{i\theta_p}\phi_p`. With this choice
+   :math:`\mathbf{B}` is Hermitian and the results do not depend on the spinor
+   phases. The response equations use the Hermitian ``eeadc_matvec_updated``.
+   (Before September 2026 the relativistic ADC polarizability used real-orbital
+   expressions, which gave, e.g., 9.105 a.u. instead of 9.683 a.u. for water.)
+
+
 .. _dip-section:
 ***********************************
 Double Ionization Potential (DIP)
