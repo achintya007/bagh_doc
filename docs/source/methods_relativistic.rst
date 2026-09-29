@@ -1154,12 +1154,32 @@ A sample input file to run CCSD with Cholesky Decomposition:
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+A sample input file to run IP-EOM-CCSD with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf IP-EOM-CCSD spinor unc-ccpvdz
+   
+   %cc
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 A sample input file to run IP-EOM-CCSD* with Cholesky Decomposition:
 
 
 .. code-block:: shell
 
-   ! soc-x2camf IP-EOM-CCSD* spinor sto3g
+   ! soc-x2camf IP-EOM-CCSD* spinor unc-ccpvdz
    
    %cc
    incore 5
@@ -1179,7 +1199,7 @@ A sample input file to run IP-EOM-CCSD(T)(a)* with Cholesky Decomposition:
 
 .. code-block:: shell
 
-   ! soc-x2camf IP-EOM-CCSD(T)(a)* spinor sto3g
+   ! soc-x2camf IP-EOM-CCSD(T)(a)* spinor unc-ccpvdz
    
    %cc
    incore 5
@@ -1199,7 +1219,7 @@ A sample input file to run IP-EOM-CCSD(T)(a) with Cholesky Decomposition:
 
 .. code-block:: shell
 
-   ! soc-x2camf IP-EOM-CCSD(T)(a) spinor sto3g
+   ! soc-x2camf IP-EOM-CCSD(T)(a) spinor unc-ccpvdz
    
    %cc
    incore 5
@@ -1219,7 +1239,7 @@ A sample input file to run IP-EOM-CCSDT with Cholesky Decomposition:
 
 .. code-block:: shell
 
-   ! soc-x2camf IP-EOM-CCSDT spinor sto3g
+   ! soc-x2camf IP-EOM-CCSDT spinor unc-ccpvdz
    
    %cc
    incore 5
@@ -1233,6 +1253,117 @@ A sample input file to run IP-EOM-CCSDT with Cholesky Decomposition:
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
+
+
+A sample input file to run FNO-IP-EOM-CCSD with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf FNO-IP-EOM-CCSD spinor unc-ccpvdz
+   
+   %cc
+   fnothresh 1e-5
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
+A sample input file to run FNO-IP-EOM-CCSD* with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf FNO-IP-EOM-CCSD* spinor unc-ccpvdz
+   
+   %cc
+   fnothresh 1e-5
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
+A sample input file to run FNO-IP-EOM-CCSD(T)(a)* with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf FNO-IP-EOM-CCSD(T)(a)* spinor unc-ccpvdz
+   
+   %cc
+   fnothresh 1e-5
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
+A sample input file to run FNO-IP-EOM-CCSD(T)(a) with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf FNO-IP-EOM-CCSD(T)(a) spinor unc-ccpvdz
+   
+   %cc
+   fnothresh 1e-5
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+
+A sample input file to run FNO-IP-EOM-CCSDT with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf FNO-IP-EOM-CCSDT spinor unc-ccpvdz
+   
+   %cc
+   fnothresh 1e-5
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
 
 A sample input file to run FNO-DIP-ADC(3) with Cholesky Decomposition:
 
