@@ -1091,6 +1091,14 @@ The following methods are available with the CD technique along with their FNS/S
 
 ``IP-EOM-CCSD``
 
+``IP-EOM-CCSD*``
+
+``IP-EOM-CCSD(T)(a)*``
+
+``IP-EOM-CCSD(T)(a)``
+
+``IP-EOM-CCSDT``
+
 ``EE-EOM-CCSD``
 
 ``DEA-EOM-CCSD``
@@ -1117,6 +1125,14 @@ The following methods are available with the CD technique along with their FNS/S
 
 ``DIP-ADC(3)``
 
+``FNO-IP-EOM-CCSD*``
+
+``FNO-IP-EOM-CCSD(T)(a)*``
+
+``FNO-IP-EOM-CCSD(T)(a)``
+
+``FNO-IP-EOM-CCSDT``
+
 ``FNO-DIP-ADC(3)``
 
 
@@ -1131,6 +1147,26 @@ The following methods are available with the CD technique along with their FNS/S
    cc_convergence 1e-7
    end
 
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+A sample input file to run IP-EOM-CCSD* with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf IP-EOM-CCSD(T)(a)* spinor sto3g
+   
+   %cc
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
    *xyz 0 1
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
