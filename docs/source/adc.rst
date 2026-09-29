@@ -360,9 +360,7 @@ adcc (version 0.16.1) to the convergence threshold of the response equations
    spinors, :math:`\phi_p\rightarrow e^{i\theta_p}\phi_p`. With this choice
    :math:`\mathbf{B}` is Hermitian and the results do not depend on the spinor
    phases. The response equations use the Hermitian ``eeadc_matvec_updated``.
-   (Before September 2026 the relativistic ADC polarizability used real-orbital
-   expressions, which gave, e.g., 9.105 a.u. instead of 9.683 a.u. for water.)
-
+  
 
 .. _dip-section:
 ***********************************
