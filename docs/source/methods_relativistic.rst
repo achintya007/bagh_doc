@@ -1136,6 +1136,9 @@ The following methods are available with the CD technique along with their FNS/S
 ``FNO-DIP-ADC(3)``
 
 
+A sample input file to run CCSD with Cholesky Decomposition:
+
+
 .. code-block:: shell 
 
    ! SOC-X2CAMF CCSD spinor unc-ccpvdz
@@ -1156,7 +1159,67 @@ A sample input file to run IP-EOM-CCSD* with Cholesky Decomposition:
 
 .. code-block:: shell
 
+   ! soc-x2camf IP-EOM-CCSD* spinor sto3g
+   
+   %cc
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+A sample input file to run IP-EOM-CCSD(T)(a)* with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
    ! soc-x2camf IP-EOM-CCSD(T)(a)* spinor sto3g
+   
+   %cc
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+A sample input file to run IP-EOM-CCSD(T)(a) with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf IP-EOM-CCSD(T)(a) spinor sto3g
+   
+   %cc
+   incore 5
+   nroots 10
+   cc_convergence 1e-6
+   eom_convergence 1e-6
+   CD True
+   CD_Threshold 1e-3
+   end
+   
+   *xyz 0 1
+   H 0.0 0.0 0.0
+   F 0.0 0.0 0.9168
+
+A sample input file to run IP-EOM-CCSDT with Cholesky Decomposition:
+
+
+.. code-block:: shell
+
+   ! soc-x2camf IP-EOM-CCSDT spinor sto3g
    
    %cc
    incore 5
@@ -1193,6 +1256,7 @@ A sample input file to run FNO-DIP-ADC(3) with Cholesky Decomposition:
    F 0.0 0.0 0.9168
 
 A sample input file to run DEA-EOM-CCSD with Cholesky Decomposition in the state-specific frozen natural spinor (SS-FNS) basis is given below. The density used to construct the SS-FNS basis can be selected as either DEA-ADC(2) or DEA-CIS(D) by specifying the corresponding input keyword. The desired DEA root can be selected using the rootno keyword.
+
 
 .. code-block:: shell 
 
