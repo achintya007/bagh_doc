@@ -47,6 +47,33 @@ choice). ``fc`` / ``fc_no`` freeze cores on both diagrams;
 ``thc_mp2_mode`` (``auto`` / ``incore`` / ``ooc``) controls the direct
 term's residency. See :doc:`thc_lt_mp2` for the full description.
 
+Double-hybrid DFT (RI-DH, THC-LT-DH)
+------------------------------------
+
+``RI-DH`` and ``THC-LT-DH`` run a two-component spinor Kohn--Sham
+calculation on the X2CAMF Hamiltonian and add :math:`c\,E_\mathrm{MP2}`
+on the KS spinors. The PT2 term is either exact RI-MP2 (``RI-DH``) or the
+THC + Laplace kernel of :doc:`thc_lt_mp2` (``THC-LT-DH``).
+``dh_functional`` selects B2PLYP (default), B2GPPLYP, MPW2PLYP, PBE0-DH,
+PBE-QIDH, PBE0-2 or ``custom``.
+
+.. code-block:: shell
+
+   !  SOC-X2CAMF RI-DH spinor cc-pvdz Angstrom
+
+   %cc
+   dh_functional B2PLYP
+   Gaunt True
+   fc True
+   end
+
+   *xyz 0 1
+   H  0.000000  0.000000  0.000000
+   Br 0.000000  0.000000  1.414000
+   *
+
+See :doc:`x2camf_double_hybrid` for the full description.
+
 ================================
 Coupled Cluster (CC)
 ================================

@@ -316,7 +316,7 @@ Default 0.4.
 
 **scs_os** ``Float``
 
-``THC-LT-MP2`` scale factor on the direct (Coulomb) diagram
+``THC-LT-MP2`` (and ``RI-DH`` / ``THC-LT-DH``) scale factor on the direct (Coulomb) diagram
 :math:`c_\mathrm{os}`. Default 1.0.
 
 .. code-block:: shell
@@ -325,7 +325,7 @@ Default 0.4.
 
 **scs_ss** ``Float``
 
-``THC-LT-MP2`` scale factor on the exchange diagram :math:`c_\mathrm{ss}`.
+``THC-LT-MP2`` (and ``RI-DH`` / ``THC-LT-DH``) scale factor on the exchange diagram :math:`c_\mathrm{ss}`.
 Default 1.0. Setting ``scs_ss 0`` is SOS-MP2: the exchange term is skipped
 entirely and only the :math:`O(K^3)` direct term is evaluated -- the
 scalable choice for the largest spinor bases.
@@ -362,6 +362,52 @@ count with localized occupied orbitals (``DoLoc``).
 .. code-block:: shell
 
    thc_mp2_pair_thresh 1e-8
+
+**dh_functional** ``String``
+
+``RI-DH`` / ``THC-LT-DH``: the double hybrid. ``B2PLYP`` (default),
+``B2GPPLYP``, ``MPW2PLYP``, ``PBE0-DH``, ``PBE-QIDH``, ``PBE0-2``, or
+``custom`` (requires ``dh_xc`` and ``dh_cmp2``). See
+:doc:`x2camf_double_hybrid`.
+
+.. code-block:: shell
+
+   dh_functional B2PLYP
+
+**dh_xc** ``String``
+
+``RI-DH`` / ``THC-LT-DH``: KS ``xc`` string, written without blanks
+(PySCF/libxc syntax). Overrides the named functional's KS part.
+
+.. code-block:: shell
+
+   dh_xc 0.53*HF+0.47*B88,0.73*LYP
+
+**dh_cmp2** ``Float``
+
+``RI-DH`` / ``THC-LT-DH``: MP2 coefficient :math:`c`. Overrides the named
+functional's value.
+
+.. code-block:: shell
+
+   dh_cmp2 0.27
+
+**dh_grid_level** ``Integer``
+
+``RI-DH`` / ``THC-LT-DH``: KS integration-grid level. Default 3.
+
+.. code-block:: shell
+
+   dh_grid_level 3
+
+**dh_keep_ints** ``Logical``
+
+``RI-DH`` / ``THC-LT-DH``: keep the ``(ia|L)`` (and the THC AO ``cderi``)
+scratch files after the run. Default False.
+
+.. code-block:: shell
+
+   dh_keep_ints False
 
 **DoADC2** ``Logical``
 

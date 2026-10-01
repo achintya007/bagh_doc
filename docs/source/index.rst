@@ -44,6 +44,7 @@ Contents
    plasma
    kramers_cc
    thc_lt_mp2
+   x2camf_double_hybrid
 
 .. toctree::
    :caption: Basis sets

@@ -15,6 +15,7 @@ Features
 - Exact two and four component approaches for relativistic  coupled cluster method
 - Relativistic CCSDT and CCSDT(Q) with a Laplace-transform / THC treatment of the perturbative quadruples correction
 - Low-memory relativistic MP2 (THC-LT-MP2) on the X2CAMF interface: the direct diagram via tensor hypercontraction and a Laplace transform, the exchange diagram via the resolution of the identity with exact denominators, with in-core and out-of-core paths and SCS/SOS scaling
+- Two-component X2CAMF double-hybrid DFT (B2PLYP, B2GPPLYP, mPW2PLYP, PBE0-DH, PBE-QIDH, PBE0-2 or custom) with the PT2 term by exact RI-MP2 (RI-DH) or THC + Laplace transform (THC-LT-DH)
 - Natural spinors for the relativistic calculations
 - Efficient treatment for core-ionization
 - XES Spectra for closed shell molecules
