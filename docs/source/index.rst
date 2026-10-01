@@ -41,6 +41,7 @@ Contents
    thc_lt_adc3
    thc_lt_sm_adc
    dlpno_adc
+   dlpno_ee_adc
    plasma
    kramers_cc
    thc_lt_mp2
