@@ -21,3 +21,4 @@ Features
 - XES Spectra for closed shell molecules
 - CASCI/CASSCF and strongly-contracted NEVPT2 for two-component (X2CAMF) spinor references
 - DLPNO-IP-ADC(2) and DLPNO-IP-ADC(3) for closed-shell references, in pair natural orbitals over projected-atomic-orbital domains, with a readable pure-Python implementation of the same method selectable by one keyword
+- DLPNO-EE-ADC(3) singlet excitation energies for closed-shell references, state-specific, as a composite over nested local spaces, run entirely in compiled code

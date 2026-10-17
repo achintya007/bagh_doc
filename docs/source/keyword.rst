@@ -1343,3 +1343,62 @@ Not from the paper and not calibrated; raise it only with a check.
 The dipole prescreen and the differential-overlap guard on it. Both default
 to ``tcut_pairs/100`` and ``tcut_pairs/10`` respectively; there is rarely a
 reason to set them.
+
+***********************************************
+**DLPNO-EE-ADC keywords** (``%cc`` **block**)
+***********************************************
+
+See :doc:`dlpno_ee_adc` for the composite these thresholds control.
+``dlpno_thresh``, ``tcut_pno``, ``tcut_pairs``, ``tcut_do`` and ``tcut_pao``
+are the DLPNO-IP-ADC keywords above and act the same way.
+
+**tcut_pairs_excited** ``Float``
+
+.. code-block:: shell
+
+   tcut_pairs_excited 1e-4
+
+Excited-state pair cut, in eV: a pair is kept if its CIS(D) pair contribution
+passes this, or its MP2 pair energy passes ``tcut_pairs``.
+
+**tcut_dno** ``Float``
+
+.. code-block:: shell
+
+   tcut_dno 1e-7
+
+Occupation cut of the per-orbital domain natural orbitals of level S1.
+
+**tcut_pairs_2** / **tcut_pairs_excited_2** ``Float``
+
+.. code-block:: shell
+
+   tcut_pairs_2         1e-4
+   tcut_pairs_excited_2 1e-4
+
+The level-S2 rescreen on the SOS-ADC(2) solution, ground-state channel (Eh)
+and excited channel (eV). They default to ``tcut_pairs`` and
+``tcut_pairs_excited``.
+
+**tcut_mkn** ``Float``
+
+For DLPNO-EE-ADC(3) the MKN fitting-domain cut of the dM3 kernels defaults to
+``1e-4``, tighter than the ``1e-3`` of the DLPNO-IP presets.
+
+**sos_ct** / **sos_cc** ``Float``
+
+.. code-block:: shell
+
+   sos_ct 1.3
+   sos_cc 1.17
+
+The SOS-ADC(2)-s scaling factors of the composite's ADC(2) correction.
+
+**keep_temp** ``Logical``
+
+.. code-block:: shell
+
+   keep_temp False
+
+``True`` keeps the job's temporary files, which are otherwise removed when the
+job ends (any method). Checkpoint files are never removed.
