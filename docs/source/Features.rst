@@ -22,3 +22,4 @@ Features
 - CASCI/CASSCF and strongly-contracted NEVPT2 for two-component (X2CAMF) spinor references
 - DLPNO-IP-ADC(2) and DLPNO-IP-ADC(3) for closed-shell references, in pair natural orbitals over projected-atomic-orbital domains, with a readable pure-Python implementation of the same method selectable by one keyword
 - DLPNO-EE-ADC(3) singlet excitation energies for closed-shell references, state-specific, as a composite over nested local spaces, run entirely in compiled code
+- Folded (doubles-free) QED-EE-ADC(2) for molecules in an optical cavity on a coherent-state QED-RHF reference with the dipole self-energy in the integrals: exact with density fitting, scaled-opposite-spin with Laplace-transformed denominators at O(N^4) (LT-SOS), or exact with THC and Laplace transform (THC-LT)

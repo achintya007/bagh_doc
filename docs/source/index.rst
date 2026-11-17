@@ -38,6 +38,7 @@ Contents
    adc
    thc_lt_adc
    cd_adc2_folded
+   qed_ee_adc2_folded
    thc_lt_adc3
    thc_lt_sm_adc
    dlpno_adc

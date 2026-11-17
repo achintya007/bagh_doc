@@ -972,29 +972,47 @@ List of frequencies (a.u.) for the ADC response properties; alternatively ``omeg
 
    cpy False
 
-**cav_frequency** ``Integer``
+**cav_frequency** ``Float``
 
 .. code-block:: shell
 
    cav_frequency 0
 
-**cav_lambda_x** ``Integer``
+**cav_lambda_x** ``Float``
 
 .. code-block:: shell
 
    cav_lambda_x None
 
-**cav_lambda_y** ``Integer``
+**cav_lambda_y** ``Float``
 
 .. code-block:: shell
 
    cav_lambda_y  None
 
-**cav_lambda_z** ``Integer``
+**cav_lambda_z** ``Float``
 
 .. code-block:: shell
 
    cav_lambda_z  None
+
+Component of the cavity coupling vector lambda (a.u.); with ``cav_frequency`` (a.u.) it defines the cavity mode of the QED methods.
+
+**qed_lt_tol** ``Float``
+
+.. code-block:: shell
+
+   qed_lt_tol 1e-6
+
+LT-SOS-QED-EE-ADC(2) and THC-LT-QED-EE-ADC(2): maximum relative error of the least-squares Laplace quadratures for the MP1 and doubles denominators (about 1e-4 meV in the roots at the default).
+
+**qed_thc_rank** ``Float``
+
+.. code-block:: shell
+
+   qed_thc_rank 8
+
+THC-LT-QED-EE-ADC(2): number of THC interpolation points as a multiple of the number of orbitals (meV-exact at 8, tens of meV off at 4).
 
 **x2c_type** 
 
@@ -1273,7 +1291,7 @@ removes only one of the two error channels; see :doc:`dlpno_adc`.
 
    cos_scale 1.3
 
-The opposite-spin scaling :math:`c_{os}` used by that correction.
+The opposite-spin scaling :math:`c_{os}` used by that correction, and by LT-SOS-QED-EE-ADC(2).
 
 **tcut_pno** ``Float``
 
