@@ -263,6 +263,10 @@ stand-alone checks based on pyscf generalised-HF spin orbitals:
     91.24 and 2.27 eV; experiment 91.58 and 2.38 eV).
   * TEA-EOM-CCSD: TIP 85.48 eV (paper: 85.46 eV).
 
+These checks exercise the module's equations and bagh's EOM conventions on
+pyscf spin orbitals. Runs inside bagh with the ``SOC-X2CAMF`` integrals (the
+``test/*-IHFSCCSD.inp`` inputs) are the next validation step.
+
 References
 ==========
 
