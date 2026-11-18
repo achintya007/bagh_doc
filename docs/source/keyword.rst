@@ -638,6 +638,60 @@ FNO/FNS truncation, overriding ``fnothresh_ex``/``pct_occ_ex``.
 
    nvir_act 100
 
+**fs_nactv** ``Integer``
+
+Fock-space CC (``EE-``, ``DEA-``, ``TEA-IHFSCCSD``; see :doc:`fock_space_cc`): number of active
+virtual spinors, the lowest ones. Default 6. Keep Kramers partners and degenerate shells together.
+
+.. code-block:: shell
+
+   fs_nactv 6
+
+**fs_act** ``List``
+
+Fock-space CC: explicit active virtual spinors, a comma list of MO indices as printed by
+EA-EOM-CCSD (``nocc + a``, 0-based); overrides ``fs_nactv``.
+
+.. code-block:: shell
+
+   fs_act 10,11,12,13,14,15
+
+**fs_nacto** ``Integer``
+
+Fock-space CC (``EE-``, ``DIP-IHFSCCSD``): number of active occupied spinors, the highest ones.
+Default 2.
+
+.. code-block:: shell
+
+   fs_nacto 6
+
+**fs_acto** ``List``
+
+Fock-space CC: explicit active occupied spinors, a comma list of occupied MO indices (0-based,
+correlated numbering); overrides ``fs_nacto``.
+
+.. code-block:: shell
+
+   fs_acto 4,5,6,7,8,9
+
+**fs_ea_extra** ``Integer``
+
+Fock-space CC: extra EA/IP-EOM roots solved in the fallback used when an active EA or IP state is
+fragmented over satellites and cannot be followed by overlap. Default 2 x the number of active spinors.
+
+.. code-block:: shell
+
+   fs_ea_extra 12
+
+**fs_extra_roots** ``Integer``
+
+Fock-space CC: extra roots solved for in the final Davidson; the lowest ``nroots`` are reported.
+Default 4.
+
+.. code-block:: shell
+
+   fs_extra_roots 4
+
 **max_space** ``Integer``
 
 .. code-block:: shell

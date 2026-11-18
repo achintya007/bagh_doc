@@ -414,6 +414,31 @@ EOM-Coupled Cluster approximate Triples (EOM-CC3)
    H 0.0 0.0 0.0
    F 0.0 0.0 0.9168
 
+Intermediate-Hamiltonian Fock-space CCSD (IHFSCCSD)
+---------------------------------------------------
+
+Excitation energies, double ionization potentials, double electron attachments and triple electron
+attachment from the (1,1), (0,2), (2,0) and (3,0) sectors of the Fock space, on a closed-shell CCSD
+reference with the ``SOC-X2CAMF`` Hamiltonian and Cholesky vectors: ``EE-IHFSCCSD``, ``DIP-IHFSCCSD``,
+``DEA-IHFSCCSD`` and ``TEA-IHFSCCSD``. The active spinors are set with ``fs_nactv``/``fs_act``
+(virtual) and ``fs_nacto``/``fs_acto`` (occupied).
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF DIP-IHFSCCSD spinor aug-cc-pvtz
+
+   %cc
+   CD True
+   fc True
+   nroots 15
+   fs_nacto 6
+   end
+
+   *xyz 0 1
+   Kr 0.0 0.0 0.0
+
+See :doc:`fock_space_cc` for the theory, all keywords and the validation.
+
 ===========================================
 Excited state using Unitary Coupled Cluster
 ===========================================

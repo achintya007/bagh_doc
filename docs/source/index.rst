@@ -45,6 +45,7 @@ Contents
    dlpno_ee_adc
    plasma
    kramers_cc
+   fock_space_cc
    thc_lt_mp2
    x2camf_double_hybrid
 

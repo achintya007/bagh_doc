@@ -1,0 +1,274 @@
+Fock-space coupled cluster: IHFSCCSD for EE, DIP, DEA and TEA
+################################################################
+
+Intermediate-Hamiltonian Fock-space coupled-cluster methods at the singles and
+doubles level (IHFSCCSD) on a closed-shell CCSD reference, in the spinor basis
+with Cholesky-decomposed integrals (``SOC-X2CAMF`` interface, ``CD True``).
+Four sectors of the Fock space are available:
+
+``EE-IHFSCCSD``
+   (1,1) sector: excitation energies (1h1p).
+``DIP-IHFSCCSD``
+   (0,2) sector: double ionization potentials (2h).
+``DEA-IHFSCCSD``
+   (2,0) sector: double electron attachment (2p).
+``TEA-IHFSCCSD``
+   (3,0) sector: triple electron attachment (3p), e.g. p\ :sup:`3` atoms and
+   triradicals from the closed-shell system with three electrons fewer.
+``TEA-EOM-CCSD``
+   Hbar in the 3p space alone (no dressing), for comparison.
+
+The (1,1), (2,0) and (0,2) sectors follow Meissner's scheme as implemented with
+spin-orbit coupling by Lu, Wang and Wang; the (3,0) sector follows the new
+scheme of Hu, Wang, Wang and Meissner. In all of them only the (1,0) and
+(0,1) amplitudes are needed. They are taken from the EA- and IP-EOM-CCSD
+vectors of the states of the active spinors, because FSCC(1,0) = EOM-EA-CCSD
+and FSCC(0,1) = EOM-IP-CCSD. The higher-sector amplitudes S(1,1), S(2,0),
+S(0,2) and S(3,0) never appear. The code is in ``bagh_code/fscc/``
+(``ihfscc_sd.py``, ``tea_ihfscc.py``).
+
+Theory
+======
+
+With :math:`\bar H = e^{-T}He^{T} - E_\mathrm{CC}`, the energies are the
+eigenvalues of an intermediate Hamiltonian in the whole single-excitation
+space :math:`P_1` of the sector (all 1h1p, 2h, 2p or 3p determinants). The
+model space :math:`P` holds the determinants whose quasi-particles are all
+active, and :math:`Q = 1 - P_1`.
+
+**EE, DIP, DEA** (Meissner):
+
+.. math::
+
+   H_\mathrm{int} = P_1 \bar H P_1 + P_1 \bar H\, Q\, \{e^{S^{(1,0)} + S^{(0,1)}}\} P .
+
+The dressing :math:`\bar H Y` acts on the model space only, so it is an
+explicit :math:`P_1 \times P` matrix.
+
+**TEA** (new (3,0) scheme):
+
+.. math::
+
+   H_\mathrm{int} = P_1 \bar H \{e^{S_2^{(1,0)}}\} P_1 ,
+
+where only the two-body (1,0) amplitudes enter and the dressing acts on all
+3p determinants. This intermediate Hamiltonian is the same as that of
+STEOM-CCSD.
+
+The (1,0) and (0,1) amplitudes come from the EOM right vectors of the states
+assigned to the active spinors (:math:`(R_P)_{\alpha N} = r_1^N[\alpha]`):
+
+.. math::
+
+   s^c_A = \sum_N r_1^N[c]\,(R_P^{-1})_{NA}, \qquad
+   s^{cd}_{Ak} = \sum_N r_2^N[k,c,d]\,(R_P^{-1})_{NA},
+
+   s^I_k = -\sum_N r_1^N[k]\,(R_P^{-1})_{NI}, \qquad
+   s^{Ic}_{kl} = \sum_N r_2^N[k,l,c]\,(R_P^{-1})_{NI},
+
+with bagh's EOM conventions (EA :math:`r_2[k,a,b] \leftrightarrow a^+b^+k|0\rangle`,
+IP :math:`r_2[i,j,a] \leftrightarrow -a^+ji|0\rangle`). The extensions
+:math:`s^B_A = \delta_{AB}` and :math:`s^J_I = -\delta_{IJ}` come out of these
+formulas automatically. ``r1%`` (single-excitation weight of each EOM state),
+the weight of the active spinors and the condition number of :math:`R_P` are
+printed, because states with sizeable doubles character spoil the results.
+
+Working equations
+=================
+
+The dressings follow the appendices of the two papers, re-derived for spinors
+and checked term by term against a Fock-space brute force. Exact Hbar
+elements are built from t1-dressed Cholesky vectors, e.g.
+
+.. code-block:: text
+
+   L~_ae = L_ae - t_ma L_me
+   W[ab,ef] = sum_L (L~_ae L~_bf - L~_af L~_be) + 1/2 t_mnab <mn||ef>
+   W[cm,ef] = sum_L (L~_ce L_mf - L~_cf L_me)
+
+Note that the vvvv element of Hbar has :math:`\tfrac12\tau\langle mn||ef\rangle`,
+not the :math:`\tfrac14\tau` of the CCSD-equation intermediate.
+
+Three corrections to the printed equations were needed:
+
+* (3,0), Eq. A.5 of Hu et al.: the first term of :math:`I_{abEf}` carries no
+  :math:`P(EF)`, because :math:`f` is not an active index.
+* (1,1), Eq. A11 of Lu et al.: the dressing enters with an overall minus sign
+  when the model determinants are :math:`a_A^+a_I|0\rangle`, like the rows. The
+  equation as printed corresponds to the order :math:`a_I a_A^+|0\rangle`.
+* (1,1), Eq. A11: :math:`S^{Ac}_{mn}` should read :math:`S^{Ic}_{mn}`.
+
+Algorithm and cost
+==================
+
+#. CCSD (``ccsd``, Cholesky).
+#. EA-EOM-CCSD for the active virtuals (EE, DEA, TEA) and/or IP-EOM-CCSD for
+   the active occupied spinors (EE, DIP), with ``eom_SO``. One Koopmans guess
+   is followed per active spinor by overlap, and the residuals are checked.
+   If an active state is fragmented over 2p1h/2h1p satellites, the lowest
+   roots are solved instead and assigned by r1 weight.
+#. Dressing intermediates, computed once.
+
+   * EE: an :math:`(o\,v) \times (A_o A_v)` matrix.
+   * DIP / DEA: :math:`O(A^2 o v^3)` at most.
+   * TEA: the :math:`I_{abAf}` intermediate, :math:`O(A\,o\,v^4)`, stored as
+     :math:`A v^3` numbers.
+
+#. Davidson in :math:`P_1`. The guesses are the eigenvectors of the exact
+   model block :math:`P H_\mathrm{int} P`, and the converged roots are matched
+   one to one with them by overlap. ``nroots + fs_extra_roots`` roots are
+   solved and the lowest ``nroots`` reported. Cost per matvec:
+
+   * DEA: :math:`O(L v^3)`.
+   * DIP: :math:`O(o^4)`.
+   * EE: :math:`O(L o v^2)`.
+   * TEA: :math:`O(L v^4)` (particle-particle ladder with dressed Cholesky
+     vectors, in blocks); TEA vectors are packed :math:`a<b<c`.
+
+For each root the output gives the energy (a.u., eV), the energy relative to
+the lowest root (DIP, DEA, TEA), for TEA also :math:`\mathrm{TIP} = -E`, the
+weight of the model space (``active%``, the paper's measure of an adequate
+active space) and the dominant determinants. Energies and the active lists
+are written to ``<inp>.fscc11/20/02.hdf5`` and ``<inp>.tea.hdf5``.
+
+Input
+=====
+
+Choose complete shells and keep Kramers partners together, e.g.
+np\ :sub:`1/2` + np\ :sub:`3/2` = 6 spinors. An active space that cuts through
+a degenerate set breaks the symmetry of the results. Spin-orbit splittings can
+need a larger active space than scalar-relativistic results do.
+
+Double ionization potentials of Kr (4p\ :sup:`-2`):
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF DIP-IHFSCCSD spinor aug-cc-pvtz
+
+   %cc
+   CD True
+   cd_threshold 1e-5
+   fc True
+   nroots 15
+   fs_nacto 6
+   end
+
+   *xyz 0 1
+   Kr 0.0 0.0 0.0
+
+Excitation energies of Zn (4s → 4p): 2 active occupied and 6 active virtual
+spinors:
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF EE-IHFSCCSD spinor aug-cc-pvtz
+
+   %cc
+   CD True
+   fc True
+   nroots 12
+   fs_nacto 2
+   fs_nactv 6
+   end
+
+   *xyz 0 1
+   Zn 0.0 0.0 0.0
+
+Double electron attachment, the C atom from C\ :sup:`2+`
+(\ :sup:`3`\ P, :sup:`1`\ D, :sup:`1`\ S):
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF DEA-IHFSCCSD spinor aug-cc-pvtz
+
+   %cc
+   CD True
+   nroots 15
+   fs_nactv 6
+   end
+
+   *xyz 2 1
+   C 0.0 0.0 0.0
+
+Triple electron attachment, the N atom (2s\ :sup:`2`\ 2p\ :sup:`3`) from the
+closed-shell N\ :sup:`3+` reference:
+
+.. code-block:: shell
+
+   ! SOC-X2CAMF TEA-IHFSCCSD spinor aug-cc-pvtz
+
+   %cc
+   CD True
+   cd_threshold 1e-5
+   nroots 8
+   fs_nactv 6
+   eom_convergence 1e-7
+   end
+
+   *xyz 3 1
+   N 0.0 0.0 0.0
+
+The usual ``nroots``, ``eom_convergence``, ``eomconv_r``, ``max_cycle``,
+``max_space`` and ``max_memory`` keywords apply. The Fock-space keywords are
+listed below and in the keyword reference.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 60 20
+
+   * - keyword
+     - meaning
+     - default
+   * - ``fs_nactv``
+     - number of active virtual spinors (the lowest ones)
+     - 6
+   * - ``fs_act``
+     - explicit active virtual spinors: comma list of MO indices as printed
+       by EA-EOM-CCSD (``nocc + a``, 0-based)
+     - --
+   * - ``fs_nacto``
+     - number of active occupied spinors (the highest ones)
+     - 2
+   * - ``fs_acto``
+     - explicit active occupied spinors: comma list of occupied MO indices
+       (0-based, correlated numbering)
+     - --
+   * - ``fs_ea_extra``
+     - extra EOM roots in the fallback for fragmented EA/IP states
+     - 2·(number of active spinors)
+   * - ``fs_extra_roots``
+     - extra roots solved for, of which the lowest ``nroots`` are reported
+     - 4
+
+Validation
+==========
+
+``test/tea_ihfscc`` and ``test/ihfscc_sd`` in the bagh repository hold
+stand-alone checks based on pyscf generalised-HF spin orbitals:
+
+* **Fock-space brute force.** Hbar is built from creation and annihilation
+  matrices, the EA/IP-EOM states from it, and the normal-ordered exponential
+  on the model determinants. The intermediate Hamiltonians of all four sectors
+  agree with it to :math:`10^{-15}`, with real and with random complex orbital
+  phases.
+* **Amplitudes and roots.** The amplitudes obtained from the EOM vectors in
+  bagh's conventions agree with the brute-force Bloch amplitudes to
+  :math:`10^{-8}`. The Davidson roots agree with the exact eigenvalues of
+  :math:`H_\mathrm{int}` to :math:`10^{-10}` and come out as complete
+  multiplets.
+* **Comparison with the paper.** N atom from N\ :sup:`3+` (aug-cc-pVTZ,
+  non-relativistic, reference orbitals):
+
+  * TEA-IHFSCCSD: TIP 90.95 eV, :sup:`2`\ D at +2.31 eV (paper, aug-cc-pVQZ:
+    91.24 and 2.27 eV; experiment 91.58 and 2.38 eV).
+  * TEA-EOM-CCSD: TIP 85.48 eV (paper: 85.46 eV).
+
+References
+==========
+
+* Y. Lu, Z. Wang, F. Wang, *J. Chem. Phys.* **156**, 114111 (2022) --
+  IHFSCCSD for EE, DIP and DEA with spin-orbit coupling.
+* Y. Hu, Z. Wang, F. Wang, L. Meissner, *J. Phys. Chem. A* **128**, 8279
+  (2024) -- the new (3,0) IHFSCC scheme for triple electron attachment.
+* L. Meissner, *J. Chem. Phys.* **108**, 9227 (1998) -- the intermediate
+  Hamiltonian Fock-space CC scheme.
