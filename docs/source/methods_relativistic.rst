@@ -437,6 +437,10 @@ reference with the ``SOC-X2CAMF`` Hamiltonian and Cholesky vectors: ``EE-IHFSCCS
    *xyz 0 1
    Kr 0.0 0.0 0.0
 
+STEOM-CCSD in the same sectors (``EE-STEOM-CCSD``, ``DIP-STEOM-CCSD``, ``DEA-STEOM-CCSD``,
+``TEA-STEOM-CCSD``) uses the same active spaces and keywords: the S amplitudes have no one-body part, and
+the dressing acts on the whole single-excitation vector.
+
 See :doc:`fock_space_cc` for the theory, all keywords and the validation.
 
 ===========================================

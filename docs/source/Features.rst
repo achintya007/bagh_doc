@@ -23,4 +23,5 @@ Features
 - DLPNO-IP-ADC(2) and DLPNO-IP-ADC(3) for closed-shell references, in pair natural orbitals over projected-atomic-orbital domains, with a readable pure-Python implementation of the same method selectable by one keyword
 - DLPNO-EE-ADC(3) singlet excitation energies for closed-shell references, state-specific, as a composite over nested local spaces, run entirely in compiled code
 - Intermediate-Hamiltonian Fock-space CCSD (IHFSCCSD) with spin-orbit coupling on a closed-shell reference: excitation energies (1,1), double ionization potentials (0,2), double electron attachments (2,0), and triple electron attachment (3,0) with the new scheme that needs only the (1,0) amplitudes
+- STEOM-CCSD with spin-orbit coupling in the same four sectors (EE, DIP, DEA, TEA), from the same EA/IP-EOM active states
 - Folded (doubles-free) QED-EE-ADC(2) for molecules in an optical cavity on a coherent-state QED-RHF reference with the dipole self-energy in the integrals: exact with density fitting, scaled-opposite-spin with Laplace-transformed denominators at O(N^4) (LT-SOS), or exact with THC and Laplace transform (THC-LT)

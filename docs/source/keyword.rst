@@ -692,6 +692,15 @@ Default 4.
 
    fs_extra_roots 4
 
+**fs_pick_weight** ``Real``
+
+Fock-space CC and STEOM-CCSD: the smallest model-space weight of a root followed in the final Davidson.
+Roots with less weight are followed only when too few qualify. Default 0.2.
+
+.. code-block:: shell
+
+   fs_pick_weight 0.2
+
 **max_space** ``Integer``
 
 .. code-block:: shell

@@ -1,5 +1,5 @@
-Fock-space coupled cluster: IHFSCCSD for EE, DIP, DEA and TEA
-################################################################
+Fock-space coupled cluster and STEOM-CCSD for EE, DIP, DEA and TEA
+####################################################################
 
 Intermediate-Hamiltonian Fock-space coupled-cluster methods at the singles and
 doubles level (IHFSCCSD) on a closed-shell CCSD reference, in the spinor basis
@@ -17,6 +17,9 @@ Four sectors of the Fock space are available:
    triradicals from the closed-shell system with three electrons fewer.
 ``TEA-EOM-CCSD``
    Hbar in the 3p space alone (no dressing), for comparison.
+``EE-STEOM-CCSD``, ``DIP-STEOM-CCSD``, ``DEA-STEOM-CCSD``, ``TEA-STEOM-CCSD``
+   Similarity-transformed EOM-CCSD in the same four sectors, built from the
+   same EA/IP-EOM states of the active spinors (see below).
 
 The (1,1), (2,0) and (0,2) sectors follow Meissner's scheme as implemented with
 spin-orbit coupling by Lu, Wang and Wang; the (3,0) sector follows the new
@@ -54,6 +57,24 @@ explicit :math:`P_1 \times P` matrix.
 where only the two-body (1,0) amplitudes enter and the dressing acts on all
 3p determinants. This intermediate Hamiltonian is the same as that of
 STEOM-CCSD.
+
+**STEOM-CCSD**: the dressing is built differently. There are no one-body
+:math:`S` amplitudes, only :math:`S_2^{(1,0)}` and :math:`S_2^{(0,1)}`, and
+the dressing acts on the full :math:`P_1` vector rather than on its
+model-space part:
+
+.. math::
+
+   G = P_1 \bar H \{e^{S_2^{(1,0)} + S_2^{(0,1)}}\} P_1 .
+
+Because :math:`S` raises the excitation rank, :math:`P_1\{e^{-S}\} = P_1`,
+so :math:`G` is the full second similarity transformation projected on
+:math:`P_1`. :math:`S_2` contracts only with active labels; on a determinant
+with one active quasi-particle the other is a spectator. For EE, DIP and DEA
+the dressing is the IHFSCC one with the genuine one-body amplitudes set to
+zero and the spectator labels running over all spinors. For TEA the (3,0)
+scheme above already has this form, so ``TEA-STEOM-CCSD`` and
+``TEA-IHFSCCSD`` are the same calculation.
 
 The (1,0) and (0,1) amplitudes come from the EOM right vectors of the states
 assigned to the active spinors (:math:`(R_P)_{\alpha N} = r_1^N[\alpha]`):
@@ -114,16 +135,26 @@ Algorithm and cost
    * TEA: the :math:`I_{abAf}` intermediate, :math:`O(A\,o\,v^4)`, stored as
      :math:`A v^3` numbers.
 
-#. Davidson in :math:`P_1`. The guesses are the eigenvectors of the exact
-   model block :math:`P H_\mathrm{int} P`, and the converged roots are matched
-   one to one with them by overlap. ``nroots + fs_extra_roots`` roots are
-   solved and the lowest ``nroots`` reported. Cost per matvec:
+#. Davidson in :math:`P_1`. The guesses are the leading Schur vectors of the
+   exact model block :math:`P H_\mathrm{int} P`. They are orthonormal and span
+   the invariant subspace of its lowest eigenvalues, so no member of a
+   degenerate multiplet is lost (eigenvectors of a non-Hermitian matrix can
+   come out nearly parallel for a degenerate eigenvalue). A degenerate cluster
+   cut by the requested number of roots is taken whole. In each iteration the
+   lowest Ritz values with a model-space weight of at least ``fs_pick_weight``
+   are followed; overlap with the guesses only fills the rest. This keeps
+   roots of the wrong character out of the result.
+   ``nroots + fs_extra_roots`` roots are solved and the lowest ``nroots``
+   reported. Cost per matvec:
 
    * DEA: :math:`O(L v^3)`.
    * DIP: :math:`O(o^4)`.
    * EE: :math:`O(L o v^2)`.
    * TEA: :math:`O(L v^4)` (particle-particle ladder with dressed Cholesky
      vectors, in blocks); TEA vectors are packed :math:`a<b<c`.
+   * STEOM (EE, DIP, DEA): the dressing is applied to the vector instead of
+     being stored as a matrix; its cost per matvec is that of the dressing
+     contractions with the vector, :math:`O(L\,A\,v^2 o)` for EE.
 
 For each root the output gives the energy (a.u., eV), the energy relative to
 the lowest root (DIP, DEA, TEA), for TEA also :math:`\mathrm{TIP} = -E`, the
@@ -134,7 +165,13 @@ are written to ``<inp>.fscc11/20/02.hdf5`` and ``<inp>.tea.hdf5``.
 Input
 =====
 
-Choose complete shells and keep Kramers partners together, e.g.
+The orbital energies of the active spinors are printed, and a warning is
+given when an inactive spinor lies within 10\ :sup:`-3` a.u. of an active
+one: such an active space cuts through a shell and splits the multiplets
+artificially. The ordering of the virtual shells depends on the basis (in
+cc-pVDZ the 3p spinors of N\ :sup:`3+` lie below 3s), so check it, and use
+``fs_act`` / ``fs_acto`` to pick complete shells. Choose complete shells and
+keep Kramers partners together, e.g.
 np\ :sub:`1/2` + np\ :sub:`3/2` = 6 spinors. An active space that cuts through
 a degenerate set breaks the symmetry of the results. Spin-orbit splittings can
 need a larger active space than scalar-relativistic results do.
@@ -239,6 +276,9 @@ listed below and in the keyword reference.
    * - ``fs_extra_roots``
      - extra roots solved for, of which the lowest ``nroots`` are reported
      - 4
+   * - ``fs_pick_weight``
+     - smallest model-space weight of a root followed in the Davidson
+     - 0.2
 
 Validation
 ==========
@@ -263,9 +303,22 @@ stand-alone checks based on pyscf generalised-HF spin orbitals:
     91.24 and 2.27 eV; experiment 91.58 and 2.38 eV).
   * TEA-EOM-CCSD: TIP 85.48 eV (paper: 85.46 eV).
 
-These checks exercise the module's equations and bagh's EOM conventions on
-pyscf spin orbitals. Runs inside bagh with the ``SOC-X2CAMF`` integrals (the
-``test/*-IHFSCCSD.inp`` inputs) are the next validation step.
+* **STEOM.** :math:`G` of all three sectors (EE, DIP, DEA) agrees with
+  :math:`P_1 \bar H \{e^{S_2}\} P_1` from the Fock-space brute force to
+  :math:`10^{-14}`, real and with complex phases (``test/ihfscc_sd/test_steom.py``).
+* **Unitary invariance.** The (3,0) energies are unchanged under unitary
+  rotations inside degenerate shells (``test/tea_ihfscc/test_unitary.py``),
+  as returned by a spinor SCF.
+* **Inside bagh** (``SOC-X2CAMF``, aug-cc-pVQZ, all electrons correlated,
+  active space np + (n+1)s): TEA-EOM-CCSD and TEA-IHFSCCSD for N, O\ :sup:`+`,
+  F\ :sup:`2+`, Ne\ :sup:`3+`, P, S\ :sup:`+`, Cl\ :sup:`2+` and
+  Ar\ :sup:`3+` reproduce Tables 1 and 2 of Hu et al. All :sup:`2`\ D and
+  :sup:`2`\ P excitation energies (J-averaged) agree within 0.04 eV. The TIPs
+  agree within 0.02 eV for N and O\ :sup:`+`, and the difference grows with the
+  nuclear charge to 0.2 eV for Ar\ :sup:`3+` for both methods, the scalar
+  relativistic effect that the non-relativistic reference results do not have.
+  The TEA-IHFSCCSD TIP of P is 0.26 eV higher than the paper's, which used
+  d-aug-cc-pVQZ for N and P.
 
 References
 ==========
