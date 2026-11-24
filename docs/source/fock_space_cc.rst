@@ -327,6 +327,49 @@ stand-alone checks based on pyscf generalised-HF spin orbitals:
   The TEA-IHFSCCSD TIP of P is 0.26 eV higher than the paper's, which used
   d-aug-cc-pVQZ for N and P.
 
+STEOM-CCSD versus IHFSCCSD
+--------------------------
+
+Both methods use the same EA/IP-EOM states of the active spinors and the same
+:math:`S_2` amplitudes; they differ in the dressing. IHFSCCSD dresses only the
+model determinants (all quasi-particles active) and keeps the one-body
+:math:`S` amplitudes; STEOM-CCSD has no one-body :math:`S` and dresses every
+:math:`P_1` determinant with at least one active label. With every spinor
+active the two are the same method. Results inside bagh (``SOC-X2CAMF``,
+cc-pVDZ, Cholesky; the inputs are in ``test/steom_vs_ihfscc`` of the bagh
+repository), energies in eV, degeneracies in parentheses:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 22 39 39
+
+   * - system (active spinors)
+     - IHFSCCSD
+     - STEOM-CCSD
+   * - H\ :sub:`2`\ O, EE (4 occupied, 4 virtual)
+     - 7.4037 (3), 8.0941, 9.7169 (3), 9.8213
+     - 7.4974 (3), 8.1477, 9.8416 (3), 9.9128
+   * - C from C\ :sup:`2+`, DEA, :math:`E(N{+}2)-E_\mathrm{CC}` (2p)
+     - -35.1313, -35.1293 (3), -35.1254 (5), -33.7346 (5), -32.2878
+     - -35.1356, -35.1337 (3), -35.1298 (5), -33.7581 (5), -32.3534
+   * - Ne\ :sup:`2+` from Ne, DIP (2p)
+     - 61.3352 (5), 61.4085 (3), 61.4433, 64.9315 (5), 69.0485
+     - identical
+
+* **EE (H**\ :sub:`2`\ **O):** STEOM lies 0.05--0.12 eV above IHFSCC. The
+  excitations from the active occupied spinors into inactive virtuals (and
+  from inactive occupieds into active virtuals) are dressed in STEOM and not
+  in IHFSCC.
+* **DEA (C):** STEOM is lower by 4--65 meV; the one-body amplitudes, which mix
+  the active 2p with inactive p spinors, are absent in STEOM.
+* **DIP (Ne):** identical, by symmetry. The determinants STEOM dresses beyond
+  the model space (2s\ :sup:`-1`\ 2p\ :sup:`-1`, 1s\ :sup:`-1`\ 2p\ :sup:`-1`)
+  have the opposite parity to the 2p\ :sup:`-2` states, and the IHFSCC
+  one-body amplitudes vanish because 2p does not mix with 2s or 1s.
+
+For TEA the (3,0) scheme already has the STEOM form, so TEA-IHFSCCSD and
+TEA-STEOM-CCSD give the same energies.
+
 References
 ==========
 
@@ -336,3 +379,5 @@ References
   (2024) -- the new (3,0) IHFSCC scheme for triple electron attachment.
 * L. Meissner, *J. Chem. Phys.* **108**, 9227 (1998) -- the intermediate
   Hamiltonian Fock-space CC scheme.
+* M. Nooijen, R. J. Bartlett, *J. Chem. Phys.* **106**, 6441 (1997) --
+  similarity-transformed equation-of-motion coupled cluster (STEOM-CCSD).
