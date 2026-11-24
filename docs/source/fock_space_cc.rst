@@ -152,9 +152,14 @@ Algorithm and cost
    * EE: :math:`O(L o v^2)`.
    * TEA: :math:`O(L v^4)` (particle-particle ladder with dressed Cholesky
      vectors, in blocks); TEA vectors are packed :math:`a<b<c`.
-   * STEOM (EE, DIP, DEA): the dressing is applied to the vector instead of
-     being stored as a matrix; its cost per matvec is that of the dressing
-     contractions with the vector, :math:`O(L\,A\,v^2 o)` for EE.
+   * STEOM: :math:`G` is built once from dressed intermediates, each the bare
+     :math:`\bar H` block plus the :math:`S_2` dressing on its active rows or
+     columns, e.g. :math:`G_{ik} = \bar F_{ik} + \delta_{i\in\mathrm{act}}
+     I_{ik}`. EE stores :math:`G_{oo}`, :math:`G_{vv}` and :math:`G_{ovvo}`
+     (:math:`o^2v^2`), DIP :math:`G_{oo}` and :math:`G_{oooo}`; their matvecs
+     are plain contractions. DEA stores the dressed :math:`G_{vv}` and applies
+     the two-body dressing to the vector. Nothing larger than :math:`o^2v^2`
+     is stored.
 
 For each root the output gives the energy (a.u., eV), the energy relative to
 the lowest root (DIP, DEA, TEA), for TEA also :math:`\mathrm{TIP} = -E`, the
@@ -306,6 +311,8 @@ stand-alone checks based on pyscf generalised-HF spin orbitals:
 * **STEOM.** :math:`G` of all three sectors (EE, DIP, DEA) agrees with
   :math:`P_1 \bar H \{e^{S_2}\} P_1` from the Fock-space brute force to
   :math:`10^{-14}`, real and with complex phases (``test/ihfscc_sd/test_steom.py``).
+  With every spinor active, STEOM and IHFSCC coincide (to :math:`10^{-15}`),
+  as they must.
 * **Unitary invariance.** The (3,0) energies are unchanged under unitary
   rotations inside degenerate shells (``test/tea_ihfscc/test_unitary.py``),
   as returned by a spinor SCF.
