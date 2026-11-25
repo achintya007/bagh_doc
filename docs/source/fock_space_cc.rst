@@ -370,6 +370,97 @@ repository), energies in eV, degeneracies in parentheses:
 For TEA the (3,0) scheme already has the STEOM form, so TEA-IHFSCCSD and
 TEA-STEOM-CCSD give the same energies.
 
+IH-FS-CCSDT for double ionization (DIP-IHFSCCSDT)
+=================================================
+
+``DIP-IHFSCCSDT`` extends the (0,2) intermediate Hamiltonian of Musiał and
+Bartlett to full triples, in both the ground state and the ionized sectors:
+
+.. math::
+
+   H_I = P_o \bar H P_o + P_o \bar H Q_o \{e^{S^{(0,1)}}\} P,
+   \qquad P_o = 2h \oplus 3h1p, \quad Q_o = 1 - P_o .
+
+* :math:`\bar H` comes from CCSDT.
+* :math:`S^{(0,1)} = S_1 + S_2 + S_3` comes from the IP-EOM-CCSDT states of
+  the active holes, through the Bloch wave operator
+  :math:`\Omega|I\rangle = \sum_N R_N (R_P^{-1})_{NI}`.
+* :math:`H_I` is diagonalized in :math:`2h \oplus 3h1p`. Its bare part is
+  DIP-EOM-CCSDT restricted to that space.
+* Only the model columns (both holes active) are dressed. The dressing runs
+  through the Q-space determinants that :math:`\bar H` can bring back to
+  :math:`P_o`:
+
+  * 4h2p: :math:`S_3` with a spectator hole, :math:`S_1 S_3`, :math:`S_2 S_2`;
+  * 5h3p: :math:`S_2 S_3`. Here only :math:`\langle mn\|ef\rangle` couples
+    back to 3h1p.
+
+* These products are contracted directly with the :math:`\bar H` vertices
+  and never stored as 4h2p or 5h3p arrays. The largest intermediate is
+  smaller than :math:`S_3` (:math:`n_\mathrm{act}\, o^3 v^2`), and the
+  dressing is built once, at :math:`n_\mathrm{act}\, o^4 v^3` cost.
+* The overall cost is set by CCSDT (:math:`o^3 v^5` per iteration) and by
+  IP-EOM-CCSDT for the active holes. The diagonalization of :math:`H_I` costs
+  about the same as the 2h + 3h1p part of DIP-EOM-CCSDT, with no 4h2p
+  vectors.
+
+Input (the active space as for ``DIP-IHFSCCSD``):
+
+.. code-block:: none
+
+   ! SOC-X2CAMF DIP-IHFSCCSDT spinor cc-pvdz
+   %cc
+   CD True
+   fs_nacto 6
+   nroots 6
+   end
+
+**Validation.**
+
+* **Fock-space brute force.** :math:`H_I`, dressing included, agrees with a
+  brute force built from creation and annihilation matrices on the same
+  Cholesky Hamiltonian to :math:`10^{-9}` elementwise. The checks were run on
+  LiH and BH (STO-3G); BH has six holes, so the 5h3p term is exercised.
+* **Full DIP-EOM-CCSDT.** H\ :sub:`2`\ O, cc-pVDZ, all electrons, six active
+  spinors (1b\ :sub:`1`, 3a\ :sub:`1`, 1b\ :sub:`2`); energies in eV,
+  degeneracies in parentheses:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 25 25 25
+
+   * - DIP-IHFSCCSD
+     - DIP-IHFSCCSDT
+     - DIP-EOM-CCSDT
+     - IHFSCCSDT - EOM-CCSDT
+   * - 39.553 (3)
+     - 39.234 (3)
+     - 39.251 (3)
+     - -0.016
+   * - 41.020
+     - 40.438
+     - 40.450
+     - -0.012
+   * - 42.364
+     - 41.936
+     - 41.964
+     - -0.029
+   * - 43.805
+     - 43.529
+     - 43.551
+     - -0.022
+
+Triples lower the double ionization energies by 0.3--0.6 eV. IHFSCCSDT stays
+within 0.03 eV of DIP-EOM-CCSDT.
+
+Timings, 8 threads:
+
+* CCSDT: 167 s.
+* IP-EOM-CCSDT: 167 s.
+* Dressing: 11 s.
+* Diagonalization of :math:`H_I`: 8 s.
+* Full DIP-EOM-CCSDT, for comparison: 6900 s.
+
 References
 ==========
 
@@ -381,3 +472,7 @@ References
   Hamiltonian Fock-space CC scheme.
 * M. Nooijen, R. J. Bartlett, *J. Chem. Phys.* **106**, 6441 (1997) --
   similarity-transformed equation-of-motion coupled cluster (STEOM-CCSD).
+* M. Musiał, R. J. Bartlett, *J. Chem. Phys.* **135**, 044121 (2011) --
+  intermediate Hamiltonian Fock-space CC for the (0,2) sector.
+* M. Musiał, *J. Chem. Phys.* **136**, 134111 (2012) -- intermediate
+  Hamiltonian Fock-space CC for the (2,0) sector.
